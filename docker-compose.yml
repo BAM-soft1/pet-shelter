@@ -1,0 +1,84 @@
+services:
+  # DATABASE SERVICES (VM 1 - Database Server)
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./backend/src/main/resources/features.sql:/docker-entrypoint-initdb.d/features.sql
+    profiles: ["db"]
+
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    profiles: ["db"]
+
+  neo4j:
+    image: neo4j:5
+    container_name: neo4j
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: ${NEO4J_USERNAME}/${NEO4J_PASSWORD}
+    ports:
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
+    volumes:
+      - neo4j-data:/data
+    profiles: ["db"]
+
+  # APPLICATION SERVICES (VM2 - App Server)
+  backend:
+    image: benjaminharris1503/pet-shelter-backend:latest
+    container_name: backend
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - app-network
+    profiles: ["app"]
+
+  frontend:
+    image: benjaminharris1503/pet-shelter-frontend:latest
+    container_name: frontend
+    restart: unless-stopped
+    networks:
+      - app-network
+    profiles: ["app"]
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+    profiles: ["app"]
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  mongo-data:
+  neo4j-data:
