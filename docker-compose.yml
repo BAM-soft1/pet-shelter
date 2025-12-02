@@ -62,7 +62,7 @@ services:
     profiles: ["app"]
 
   nginx:
-    image: nginx:latest
+    image: benjaminharris1503/pet-shelter-nginx:latest
     container_name: nginx
     restart: unless-stopped
     ports:
