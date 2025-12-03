@@ -10,7 +10,7 @@ permissions:
   issues: write
 
 jobs:
-  test-backend:
+  run-backend-tests:
     runs-on: ubuntu-latest
 
     steps:
