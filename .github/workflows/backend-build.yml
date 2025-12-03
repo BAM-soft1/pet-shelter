@@ -3,6 +3,7 @@
 name: Backend Build and Test
 
 permissions:
+  contents: read
   checks: write
   pull-requests: write
 
