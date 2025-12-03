@@ -4,7 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.pet.backendpetshelter.DTO.MedicalRecordDTORequest;
 import org.pet.backendpetshelter.DTO.MedicalRecordDTOResponse;
 import org.pet.backendpetshelter.Entity.MedicalRecord;
-import org.pet.backendpetshelter.Reposiotry.MedicalRecordReposiotry;
+import org.pet.backendpetshelter.Repository.MedicalRecordRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,16 +13,16 @@ import java.util.List;
 public class MedicalRecordService {
 
 
-    private final MedicalRecordReposiotry medicalRecordReposiotry;
+    private final MedicalRecordRepository medicalRecordRepository;
 
-    public MedicalRecordService(MedicalRecordReposiotry medicalRecordReposiotry) {
-        this.medicalRecordReposiotry = medicalRecordReposiotry;
+    public MedicalRecordService(MedicalRecordRepository medicalRecordRepository) {
+        this.medicalRecordRepository = medicalRecordRepository;
     }
 
     /* Get all medical records */
 
     public List<MedicalRecordDTOResponse> getAllMedicalRecords() {
-        return medicalRecordReposiotry.findAll().stream()
+        return medicalRecordRepository.findAll().stream()
                 .map(MedicalRecordDTOResponse::new)
                 .toList();
     }
@@ -31,7 +31,7 @@ public class MedicalRecordService {
     /* Get specific medical record */
     public MedicalRecordDTOResponse getMedicalRecordById(Long id) {
 
-        MedicalRecord medicalRecord = medicalRecordReposiotry.findById(id)
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
         return new MedicalRecordDTOResponse(medicalRecord);
 
@@ -48,13 +48,13 @@ public class MedicalRecordService {
         medicalRecord.setDiagnosis(reuqest.getDiagnosis());
         medicalRecord.setTreatment(reuqest.getTreatment());
         medicalRecord.setCost(reuqest.getCost());
-        medicalRecordReposiotry.save(medicalRecord);
+        medicalRecordRepository.save(medicalRecord);
         return new MedicalRecordDTOResponse(medicalRecord);
     }
 
     /* Update medical record */
     public MedicalRecordDTOResponse updateMedicalRecord(Long id, MedicalRecordDTORequest request) {
-        MedicalRecord medicalRecord = medicalRecordReposiotry.findById(id)
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
 
         medicalRecord.setAnimal(request.getAnimal());
@@ -64,17 +64,17 @@ public class MedicalRecordService {
         medicalRecord.setTreatment(request.getTreatment());
         medicalRecord.setCost(request.getCost());
 
-        medicalRecordReposiotry.save(medicalRecord);
+        medicalRecordRepository.save(medicalRecord);
         return new MedicalRecordDTOResponse(medicalRecord);
     }
 
 
     /* Delete medical record */
     public void deleteMedicalRecord(Long id) {
-        if (medicalRecordReposiotry.existsById(id)) {
+        if (medicalRecordRepository.existsById(id)) {
             throw new EntityNotFoundException("Cannot delete. User not found with id: " + id);
         }
-        medicalRecordReposiotry.deleteById(id);
+        medicalRecordRepository.deleteById(id);
 
     }
 }
