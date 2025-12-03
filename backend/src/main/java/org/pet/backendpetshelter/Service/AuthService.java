@@ -7,7 +7,6 @@ import lombok.Getter;
 import org.pet.backendpetshelter.Configuration.JwtProperties;
 import org.pet.backendpetshelter.Configuration.JwtService;
 import org.pet.backendpetshelter.Configuration.RefreshToken;
-import org.pet.backendpetshelter.DTO.AuthResponse;
 import org.pet.backendpetshelter.DTO.LoginRequest;
 import org.pet.backendpetshelter.DTO.RegisterUserRequest;
 import org.pet.backendpetshelter.DTO.UserResponse;
