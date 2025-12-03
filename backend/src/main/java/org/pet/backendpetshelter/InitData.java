@@ -2,9 +2,10 @@ package org.pet.backendpetshelter;
 
 
 import org.pet.backendpetshelter.Entity.*;
-import org.pet.backendpetshelter.Reposiotry.*;
+import org.pet.backendpetshelter.Repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -17,7 +18,7 @@ public class InitData implements CommandLineRunner {
     private final AnimalRepository animalRepository;
     private final SpeciesRepository speciesRepository;
     private final BreedRepository breedRepository;
-    private final MedicalRecordReposiotry medicalRecordReposiotry;
+    private final MedicalRecordRepository medicalRecordRepository;
     private final VeterinarianRepository veterinarianRepository;
     private final VaccinationRepository vaccinationRepository;
     private final VaccinationTypeRepository vaccinationTypeRepository;
@@ -25,14 +26,14 @@ public class InitData implements CommandLineRunner {
     private final FosterCareRepository fosterCareRepository;
     private final AdoptionApplicationRepository adoptionApplicationRepository;
     private final AdoptionRepository adoptionRepository;
-    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public InitData(UserRepository userRepository, AnimalRepository animalRepository, SpeciesRepository speciesRepository, BreedRepository breedRepository, MedicalRecordReposiotry medicalRecordReposiotry, VeterinarianRepository veterinarianRepository, VaccinationRepository vaccinationRepository, VaccinationTypeRepository vaccinationTypeRepository, VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository, FosterCareRepository fosterCareRepository, AdoptionApplicationRepository adoptionApplicationRepository, AdoptionRepository adoptionRepository, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+    public InitData(UserRepository userRepository, AnimalRepository animalRepository, SpeciesRepository speciesRepository, BreedRepository breedRepository, MedicalRecordRepository medicalRecordRepository, VeterinarianRepository veterinarianRepository, VaccinationRepository vaccinationRepository, VaccinationTypeRepository vaccinationTypeRepository, VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository, FosterCareRepository fosterCareRepository, AdoptionApplicationRepository adoptionApplicationRepository, AdoptionRepository adoptionRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.animalRepository = animalRepository;
         this.speciesRepository = speciesRepository;
         this.breedRepository = breedRepository;
-        this.medicalRecordReposiotry = medicalRecordReposiotry;
+        this.medicalRecordRepository = medicalRecordRepository;
         this.veterinarianRepository = veterinarianRepository;
         this.vaccinationRepository = vaccinationRepository;
         this.vaccinationTypeRepository = vaccinationTypeRepository;
@@ -288,7 +289,7 @@ public class InitData implements CommandLineRunner {
         medicalRecord1.setDiagnosis("Regular Checkup - Healthy");
         medicalRecord1.setTreatment("N/A");
         medicalRecord1.setCost(50);
-        medicalRecordReposiotry.save(medicalRecord1);
+        medicalRecordRepository.save(medicalRecord1);
 
 
         /* Vaccination Type */

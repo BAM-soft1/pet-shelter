@@ -6,7 +6,7 @@ import org.pet.backendpetshelter.DTO.SpeciesDTORequest;
 import org.pet.backendpetshelter.DTO.SpeciesDTOResponse;
 import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Entity.Species;
-import org.pet.backendpetshelter.Reposiotry.SpeciesRepository;
+import org.pet.backendpetshelter.Repository.SpeciesRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
