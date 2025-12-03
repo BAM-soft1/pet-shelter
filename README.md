@@ -35,4 +35,3 @@ Full-stack pet shelter application with Spring Boot backend supporting MySQL, Mo
 5. **Access the application**
    - Frontend: http://localhost
    - Backend API: http://localhost/api
-   - Neo4j Browser: http://localhost:7474

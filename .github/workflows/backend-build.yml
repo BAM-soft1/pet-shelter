@@ -1,0 +1,32 @@
+# This workflow tests and builds the Java Spring Boot project. It runs on every pull request to the main branch.
+
+name: Backend Build and Test
+
+permissions:
+  checks: write
+  pull-requests: write
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Build with Maven
+        working-directory: ./backend
+        run: ./mvnw -B clean package -DskipTests
+
+      - name: Run unit tests
+        working-directory: ./backend
+        run: ./mvnw test
