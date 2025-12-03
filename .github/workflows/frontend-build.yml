@@ -4,6 +4,7 @@
 name: Frontend Build
 
 permissions:
+  contents: read
   checks: write
   pull-requests: write
 
