@@ -1,50 +1,52 @@
-# Pet Shelter - Multi-Database Deployment
+# Pet Shelter
 
-Full-stack pet shelter application with Spring Boot backend supporting MySQL, MongoDB, and Neo4j databases
+Full-stack pet shelter application with:
+
+- Frontend made with **React** + **TypeScript**
+- Spring Boot backend with **MySQL**, **MongoDB**, and **Neo4j** support. Each database runs standalone.
 
 ## Quick Start
 
-### Local Development
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/BAM-soft1/pet-shelter.git
-   cd pet-shelter
-   ```
-
-2. **Create .env file**
-
-   ```bash
-   cp .env.sample .env
-   # Edit .env with your local configuration
-   ```
-
-3. **Start databases locally**
-
-   ```bash
-   docker compose -f docker-compose.dev.yml --profile db up -d
-   ```
-
-3.5 **If you only want mysql, mongo or neo4j**
-
 ```bash
-# Start MongoDB
-docker-compose -f docker-compose.dev.yml --profile mongo up -d
-
-# Start Neo4j
-docker-compose -f docker-compose.dev.yml --profile neo4j up -d
-
-# Start MySQL
-docker-compose -f docker-compose.dev.yml --profile mysql up -d
+git clone https://github.com/BAM-soft1/pet-shelter.git
+cd pet-shelter
+cp .env.sample .env
 ```
 
-4. **Start application locally**
+## Running Standalone Databases
 
-   ```bash
-   docker compose -f docker-compose.dev.yml --profile app up -d
-   ```
+### MySQL (Default)
 
-5. **Access the application**
-   - Frontend: http://localhost
-   - Backend API: http://localhost/api
+- Change SPRING_PROFILE_ACTIVE to = mysql in .env
+
+```bash
+docker compose -f docker-compose.dev.yml --profile mysql --profile app up -d
+```
+
+API: `http://localhost/api/*`
+
+See Swagger Docs: `http://localhost:8080/swagger-ui/index.html`
+
+### MongoDB
+
+- Change SPRING_PROFILE_ACTIVE to = mongo in .env
+
+```bash
+docker compose -f docker-compose.dev.yml --profile mongo --profile app up -d
+```
+
+API: `http://localhost/api/mongo/*`
+
+See Swagger Docs: `http://localhost:8080/swagger-ui/index.html`
+
+### Neo4j
+
+- Change SPRING_PROFILE_ACTIVE to = neo4j in .env
+
+```bash
+docker compose -f docker-compose.dev.yml --profile neo4j --profile app up -d
+```
+
+API: `http://localhost/api/neo4j/*`
+
+See Swagger Docs: `http://localhost:8080/swagger-ui/index.html`
