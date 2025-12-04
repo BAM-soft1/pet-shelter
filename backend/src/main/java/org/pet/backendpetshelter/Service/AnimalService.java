@@ -6,12 +6,14 @@ import org.pet.backendpetshelter.DTO.AnimalDTORequest;
 import org.pet.backendpetshelter.DTO.AnimalDTOResponse;
 import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Repository.AnimalRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("mysql")
 public class AnimalService {
 
     private final AnimalRepository animalRepository;

@@ -11,12 +11,14 @@ import org.pet.backendpetshelter.Repository.AdoptionApplicationRepository;
 import org.pet.backendpetshelter.Repository.AdoptionRepository;
 import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.pet.backendpetshelter.Repository.UserRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("mysql")
 public class AdoptionService {
 
     private final AdoptionRepository adoptionRepository;

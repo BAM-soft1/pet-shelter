@@ -5,11 +5,13 @@ import org.pet.backendpetshelter.DTO.MedicalRecordDTORequest;
 import org.pet.backendpetshelter.DTO.MedicalRecordDTOResponse;
 import org.pet.backendpetshelter.Entity.MedicalRecord;
 import org.pet.backendpetshelter.Repository.MedicalRecordRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Profile("mysql")
 public class MedicalRecordService {
 
 

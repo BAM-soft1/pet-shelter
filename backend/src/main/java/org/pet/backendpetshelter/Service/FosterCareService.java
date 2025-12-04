@@ -3,11 +3,13 @@ package org.pet.backendpetshelter.Service;
 import org.pet.backendpetshelter.DTO.FosterCareRespons;
 import org.pet.backendpetshelter.Entity.FosterCare;
 import org.pet.backendpetshelter.Repository.FosterCareRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Profile("mysql")
 public class FosterCareService {
 
     private final FosterCareRepository repository;

@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.pet.backendpetshelter.DTO.VeterinarianDTORequest;
 import org.pet.backendpetshelter.DTO.VeterinarianDTOResponse;
 import org.pet.backendpetshelter.Service.VeterinarianService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/veterinarian")
 @CrossOrigin
+@Profile("mysql")
 public class VeterinarianController {
 
     private final VeterinarianService veterinarianService;

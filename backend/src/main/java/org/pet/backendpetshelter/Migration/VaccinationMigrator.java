@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Profile("mongo")
+@Profile("migrate-mongo")
 public class VaccinationMigrator implements CommandLineRunner {
 
     private final VaccinationRepository vaccinationRepository;

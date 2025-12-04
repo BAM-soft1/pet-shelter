@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Component
 @Order(100) // Run after other initializations
-@Profile("neo4j")
+@Profile("migrate-neo4j")
 public class Neo4jMigrator implements CommandLineRunner {
 
     @Value("${migration.neo4j.enabled:false}")

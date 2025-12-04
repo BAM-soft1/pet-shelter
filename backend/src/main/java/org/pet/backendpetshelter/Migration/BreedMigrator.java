@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Profile("mongo")
+@Profile("migrate-mongo")
 public class BreedMigrator implements CommandLineRunner {
 
     private final BreedRepository breedRepository;

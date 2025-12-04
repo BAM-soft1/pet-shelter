@@ -2,12 +2,14 @@ package org.pet.backendpetshelter.Controller;
 
 import org.pet.backendpetshelter.DTO.UserResponse;
 import org.pet.backendpetshelter.Repository.UserRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/me")
+@Profile("mysql")
 public class ProfileController {
 
     private final UserRepository userRepository;

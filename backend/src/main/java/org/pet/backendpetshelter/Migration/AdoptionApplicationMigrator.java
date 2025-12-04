@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-@Profile("mongo")
+@Profile("migrate-mongo")
 public class AdoptionApplicationMigrator implements CommandLineRunner {
 
     private final AdoptionApplicationRepository adoptionApplicationRepository;
