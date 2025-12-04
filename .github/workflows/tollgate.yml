@@ -30,7 +30,7 @@ jobs:
         working-directory: ./backend
         continue-on-error: true
         run: |
-          ./mvnw test -Dtest=*Test,*Tests -DexcludeGroups=integration
+          ./mvnw clean test -Dtest=*Test,*Tests -DexcludeGroups=integration
 
       - name: Generate JUnit report summary
         if: always()
@@ -70,6 +70,23 @@ jobs:
         with:
           name: test-results
           path: backend/target/surefire-reports/
+
+  sonarqube-analysis:
+    runs-on: ubuntu-latest
+    needs: [run-backend-tests]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   merge-check:
     runs-on: ubuntu-latest
