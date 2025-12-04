@@ -26,6 +26,19 @@ Full-stack pet shelter application with Spring Boot backend supporting MySQL, Mo
    docker compose -f docker-compose.dev.yml --profile db up -d
    ```
 
+3.5 **If you only want mysql, mongo or neo4j**
+
+```bash
+# Start MongoDB
+docker-compose -f docker-compose.dev.yml --profile mongo up -d
+
+# Start Neo4j
+docker-compose -f docker-compose.dev.yml --profile neo4j up -d
+
+# Start MySQL
+docker-compose -f docker-compose.dev.yml --profile mysql up -d
+```
+
 4. **Start application locally**
 
    ```bash

@@ -6,10 +6,12 @@ import org.pet.backendpetshelter.Mongo.Repository.UserMongoRepository;
 import org.pet.backendpetshelter.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Profile("mongo")
 public class UserMigrator implements CommandLineRunner {
 
     private final UserRepository userRepository;

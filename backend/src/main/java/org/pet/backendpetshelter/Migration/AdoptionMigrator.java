@@ -6,10 +6,12 @@ import org.pet.backendpetshelter.Mongo.Repository.AdoptionMongoRepository;
 import org.pet.backendpetshelter.Repository.AdoptionRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Profile("mongo")
 public class AdoptionMigrator implements CommandLineRunner {
 
     private final AdoptionRepository adoptionRepository;

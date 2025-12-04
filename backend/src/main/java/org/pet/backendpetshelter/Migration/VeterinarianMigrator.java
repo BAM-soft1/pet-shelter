@@ -6,10 +6,12 @@ import org.pet.backendpetshelter.Mongo.Repository.VeterinarianMongoRepository;
 import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Profile("mongo")
 public class VeterinarianMigrator implements CommandLineRunner {
 
     private final VeterinarianRepository veterinarianRepository;
