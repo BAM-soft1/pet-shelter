@@ -54,7 +54,7 @@ public class AnimalMigrator implements CommandLineRunner {
                 .birthDate(a.getBirthDate())
                 .sex(a.getSex())
                 .intakeDate(a.getIntakeDate())
-                .status(a.getStatus())
+                .status(a.getStatus() != null ? a.getStatus().name() : null)
                 .price(a.getPrice())
                 .isActive(a.getIsActive())
                 .imageUrl(a.getImageUrl())

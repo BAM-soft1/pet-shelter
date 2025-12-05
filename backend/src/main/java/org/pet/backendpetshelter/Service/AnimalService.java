@@ -153,11 +153,11 @@ public class AnimalService {
             throw new IllegalArgumentException("Status cannot be null or empty");
         }
 
-        String statusLower = status.toLowerCase();
-        if (!statusLower.equals("available") &&
-                !statusLower.equals("adopted") &&
-                !statusLower.equals("fostered") &&
-                !statusLower.equals("deceased")) {
+        String statusUpper = status.toUpperCase();
+        if (!statusUpper.equals("AVAILABLE") &&
+                !statusUpper.equals("ADOPTED") &&
+                !statusUpper.equals("FOSTERED") &&
+                !statusUpper.equals("DECEASED")) {
             throw new IllegalArgumentException("Status must be Available, Adopted, Fostered, or Deceased");
         }
     }
