@@ -26,43 +26,11 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      - name: Run unit tests
+      - name: Run unit tests (excluding integration tests)
         working-directory: ./backend
         continue-on-error: true
         run: |
-          ./mvnw clean test -Dtest=*Test,*Tests -DexcludeGroups=integration
-
-      - name: Generate JUnit report summary
-        if: always()
-        working-directory: ./backend
-        run: |
-          if [ -d "target/surefire-reports" ]; then
-            # Count test results
-            TOTAL=$(find target/surefire-reports -name "TEST-*.xml" -exec grep -h 'tests=' {} \; | sed 's/.*tests="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
-            FAILURES=$(find target/surefire-reports -name "TEST-*.xml" -exec grep -h 'failures=' {} \; | sed 's/.*failures="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
-            ERRORS=$(find target/surefire-reports -name "TEST-*.xml" -exec grep -h 'errors=' {} \; | sed 's/.*errors="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
-            SKIPPED=$(find target/surefire-reports -name "TEST-*.xml" -exec grep -h 'skipped=' {} \; | sed 's/.*skipped="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
-            
-            # Set defaults if empty
-            TOTAL=${TOTAL:-0}
-            FAILURES=${FAILURES:-0}
-            ERRORS=${ERRORS:-0}
-            SKIPPED=${SKIPPED:-0}
-            
-            PASSED=$((TOTAL - FAILURES - ERRORS - SKIPPED))
-            
-            echo "TOTAL_TESTS=$TOTAL" >> $GITHUB_ENV
-            echo "PASSED_TESTS=$PASSED" >> $GITHUB_ENV
-            echo "FAILED_TESTS=$FAILURES" >> $GITHUB_ENV
-            echo "ERROR_TESTS=$ERRORS" >> $GITHUB_ENV
-            echo "SKIPPED_TESTS=$SKIPPED" >> $GITHUB_ENV
-          else
-            echo "TOTAL_TESTS=0" >> $GITHUB_ENV
-            echo "PASSED_TESTS=0" >> $GITHUB_ENV
-            echo "FAILED_TESTS=0" >> $GITHUB_ENV
-            echo "ERROR_TESTS=0" >> $GITHUB_ENV
-            echo "SKIPPED_TESTS=0" >> $GITHUB_ENV
-          fi
+          ./mvnw clean test -Dtest="org/pet/backendpetshelter/unit/**/*Test.java,org/pet/backendpetshelter/BackendPetShelterApplicationTests.java" jacoco:report
 
       - name: Upload test results
         if: always()
@@ -70,6 +38,13 @@ jobs:
         with:
           name: test-results
           path: backend/target/surefire-reports/
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/target/site/jacoco/
 
   sonarqube-analysis:
     runs-on: ubuntu-latest
@@ -89,9 +64,15 @@ jobs:
           distribution: "temurin"
           cache: maven
 
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/target/site/jacoco/
+
       - name: Build backend
         working-directory: ./backend
-        run: ./mvnw compile test-compile
+        run: ./mvnw compile test-compile -DskipTests
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5.0.0
@@ -155,52 +136,39 @@ jobs:
                 let failedTests = 0;
                 let errorTests = 0;
                 let skippedTests = 0;
-                const testDetails = [];
+                const failedTestDetails = [];
 
-                // Parse each XML file
+                // Parse each XML file - count actual testcase elements
                 xmlFiles.forEach(file => {
                   const content = fs.readFileSync(path.join(testResultsDir, file), 'utf-8');
                   
-                  const testsMatch = content.match(/tests="(\d+)"/);
-                  const failuresMatch = content.match(/failures="(\d+)"/);
-                  const errorsMatch = content.match(/errors="(\d+)"/);
-                  const skippedMatch = content.match(/skipped="(\d+)"/);
-                  
-                  const tests = testsMatch ? parseInt(testsMatch[1]) : 0;
-                  const failures = failuresMatch ? parseInt(failuresMatch[1]) : 0;
-                  const errors = errorsMatch ? parseInt(errorsMatch[1]) : 0;
-                  const skipped = skippedMatch ? parseInt(skippedMatch[1]) : 0;
-                  
-                  totalTests += tests;
-                  failedTests += failures;
-                  errorTests += errors;
-                  skippedTests += skipped;
-                  passedTests += (tests - failures - errors - skipped);
-
-                  // Extract test case details
-                  const testCases = content.match(/<testcase[^>]*>[\s\S]*?<\/testcase>|<testcase[^>]*\/>/g) || [];
+                  // Count testcase elements (self-closing or with content)
+                  const testCases = content.match(/<testcase[^>]*(?:\/>|>[\s\S]*?<\/testcase>)/g) || [];
                   
                   testCases.forEach(testCase => {
+                    totalTests++;
+                    
                     const nameMatch = testCase.match(/name="([^"]+)"/);
                     const classnameMatch = testCase.match(/classname="([^"]+)"/);
-                    
                     const testName = nameMatch ? nameMatch[1] : 'Unknown test';
                     const className = classnameMatch ? classnameMatch[1].split('.').pop() : '';
                     
                     if (testCase.includes('<failure')) {
-                      const failureMatch = testCase.match(/<failure[^>]*>([\s\S]*?)<\/failure>/);
-                      const message = failureMatch ? failureMatch[1].trim().split('\n')[0] : 'Test failed';
-                      testDetails.push(`❌ ${className}.${testName}\n   ${message}`);
+                      failedTests++;
+                      const failureMatch = testCase.match(/<failure[^>]*message="([^"]*)"/);
+                      const message = failureMatch ? failureMatch[1] : 'Test failed';
+                      failedTestDetails.push(`❌ ${className}.${testName}: ${message.substring(0, 100)}`);
                       failWorkflow = true;
                     } else if (testCase.includes('<error')) {
-                      const errorMatch = testCase.match(/<error[^>]*>([\s\S]*?)<\/error>/);
-                      const message = errorMatch ? errorMatch[1].trim().split('\n')[0] : 'Test error';
-                      testDetails.push(`❌ ${className}.${testName}\n   ${message}`);
+                      errorTests++;
+                      const errorMatch = testCase.match(/<error[^>]*message="([^"]*)"/);
+                      const message = errorMatch ? errorMatch[1] : 'Test error';
+                      failedTestDetails.push(`💥 ${className}.${testName}: ${message.substring(0, 100)}`);
                       failWorkflow = true;
                     } else if (testCase.includes('<skipped')) {
-                      testDetails.push(`⏭️  ${className}.${testName}`);
+                      skippedTests++;
                     } else {
-                      testDetails.push(`✅ ${className}.${testName}`);
+                      passedTests++;
                     }
                   });
                 });
@@ -208,32 +176,22 @@ jobs:
                 const hasIssues = failedTests > 0 || errorTests > 0;
                 const statusIcon = hasIssues ? '❌' : '✅';
                 
-                if (hasIssues) {
-                  testOutput = '<details>\n' +
-                    `<summary>Backend Unit Tests: (${passedTests} passed, ${failedTests} failures, ${errorTests} errors, ${skippedTests} skipped) ${statusIcon}</summary>\n\n` +
-                    '```\n' +
-                    testDetails.join('\n\n') + '\n' +
-                    '```\n' +
-                    '</details>';
-                } else {
-                  testOutput = '<details>\n' +
-                    `<summary>Backend Unit Tests: (${passedTests} passed, 0 failures, 0 errors, ${skippedTests} skipped) ${statusIcon}</summary>\n\n` +
-                    '```\n' +
-                    testDetails.join('\n') + '\n' +
-                    '```\n' +
-                    '</details>';
+                let detailsContent = '';
+                if (hasIssues && failedTestDetails.length > 0) {
+                  detailsContent = '\n\n**Failed Tests:**\n```\n' + failedTestDetails.join('\n') + '\n```';
                 }
+                
+                testOutput = `**Backend Unit Tests:** ${passedTests} passed, ${failedTests} failures, ${errorTests} errors, ${skippedTests} skipped ${statusIcon}${detailsContent}`;
               } else {
-                testOutput = 'Backend Unit Tests: ⚠️ No test results found';
+                testOutput = '**Backend Unit Tests:** ⚠️ No test results found';
                 failWorkflow = true;
               }
             } else {
-              testOutput = 'Backend Unit Tests: ❌ Test execution failed';
+              testOutput = '**Backend Unit Tests:** ❌ Test execution failed';
               failWorkflow = true;
             }
 
-            const commentBody = '## 🔍 CI Tollgate Results\n\n' +
-              testOutput + '\n';
+            const commentBody = '## 🔍 CI Tollgate Results\n\n' + testOutput + '\n';
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
