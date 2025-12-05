@@ -60,7 +60,7 @@ public class AnimalServiceTest {
         request.setSex("Male");
         request.setBirthDate(createPastDate(2020, 1, 1));
         request.setIntakeDate(createPastDate(2023, 1, 1));
-        request.setStatus(Status.APPROVED);
+        request.setStatus(Status.AVAILABLE);
         request.setPrice(499);
         request.setIsActive(true);
         request.setImageUrl("http://example.com/image.jpg");
@@ -150,7 +150,7 @@ public class AnimalServiceTest {
             assertEquals(1L, response.getId());
             assertEquals("Ox", response.getName());
             assertEquals("Male", response.getSex());
-            assertEquals("Available", response.getStatus());
+            assertEquals(Status.AVAILABLE, response.getStatus());
             assertEquals(499, response.getPrice());
             verify(animalRepository).save(any(Animal.class));
 
