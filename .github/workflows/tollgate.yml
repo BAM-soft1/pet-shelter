@@ -136,7 +136,7 @@ jobs:
                 let failedTests = 0;
                 let errorTests = 0;
                 let skippedTests = 0;
-                const failedTestDetails = [];
+                const testDetails = [];
 
                 // Parse each XML file - count actual testcase elements
                 xmlFiles.forEach(file => {
@@ -156,19 +156,21 @@ jobs:
                     if (testCase.includes('<failure')) {
                       failedTests++;
                       const failureMatch = testCase.match(/<failure[^>]*message="([^"]*)"/);
-                      const message = failureMatch ? failureMatch[1] : 'Test failed';
-                      failedTestDetails.push(`❌ ${className}.${testName}: ${message.substring(0, 100)}`);
+                      const message = failureMatch ? failureMatch[1].substring(0, 80) : 'Test failed';
+                      testDetails.push(`❌ ${className}.${testName}\n   ${message}`);
                       failWorkflow = true;
                     } else if (testCase.includes('<error')) {
                       errorTests++;
                       const errorMatch = testCase.match(/<error[^>]*message="([^"]*)"/);
-                      const message = errorMatch ? errorMatch[1] : 'Test error';
-                      failedTestDetails.push(`💥 ${className}.${testName}: ${message.substring(0, 100)}`);
+                      const message = errorMatch ? errorMatch[1].substring(0, 80) : 'Test error';
+                      testDetails.push(`❌ ${className}.${testName}\n   ${message}`);
                       failWorkflow = true;
                     } else if (testCase.includes('<skipped')) {
                       skippedTests++;
+                      testDetails.push(`${className}.${testName}`);
                     } else {
                       passedTests++;
+                      testDetails.push(`✅ ${className}.${testName}`);
                     }
                   });
                 });
@@ -176,12 +178,12 @@ jobs:
                 const hasIssues = failedTests > 0 || errorTests > 0;
                 const statusIcon = hasIssues ? '❌' : '✅';
                 
-                let detailsContent = '';
-                if (hasIssues && failedTestDetails.length > 0) {
-                  detailsContent = '\n\n**Failed Tests:**\n```\n' + failedTestDetails.join('\n') + '\n```';
-                }
-                
-                testOutput = `**Backend Unit Tests:** ${passedTests} passed, ${failedTests} failures, ${errorTests} errors, ${skippedTests} skipped ${statusIcon}${detailsContent}`;
+                testOutput = '<details>\n' +
+                  `<summary>Backend Unit Tests: (${passedTests} passed, ${failedTests} failures, ${errorTests} errors, ${skippedTests} skipped) ${statusIcon}</summary>\n\n` +
+                  '```\n' +
+                  testDetails.join('\n') + '\n' +
+                  '```\n' +
+                  '</details>';
               } else {
                 testOutput = '**Backend Unit Tests:** ⚠️ No test results found';
                 failWorkflow = true;
