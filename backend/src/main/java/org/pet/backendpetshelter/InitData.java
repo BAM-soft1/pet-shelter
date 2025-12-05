@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 
 @Component
 @Order(1) // Run first, before DatabaseFeaturesInitializer
-@Profile("mysql") // Only run when MySQL profile is active
+@Profile({"mysql", "migrate-mongo", "migrate-neo4j"}) // Run for mysql and migration profiles
 public class InitData implements CommandLineRunner {
     private final UserRepository userRepository;
     private final AnimalRepository animalRepository;

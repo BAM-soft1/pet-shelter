@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile("mongo")
+@Profile({"mongo", "migrate-mongo"})
 public interface UserMongoRepository extends MongoRepository<UserDocument, String> {
 }

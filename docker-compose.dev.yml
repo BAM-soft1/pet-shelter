@@ -76,6 +76,8 @@ services:
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-access-secret}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost}
+      MIGRATION_ENABLED: ${MIGRATION_ENABLED:-false}
+      MIGRATION_NEO4J_ENABLED: ${MIGRATION_NEO4J_ENABLED:-false}
     ports:
       - "8080:8080"
     # depends_on:

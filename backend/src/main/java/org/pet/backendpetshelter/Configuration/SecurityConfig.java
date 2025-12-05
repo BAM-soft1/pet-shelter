@@ -48,6 +48,10 @@ public class SecurityConfig {
 
                         // Stored procedures GETs
                         .requestMatchers(HttpMethod.GET, "/api/test-procedures/**").permitAll()
+
+                        // Mongo and Neo4j GET's public
+                        .requestMatchers(HttpMethod.GET, "/api/mongo/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/neo4j/**").permitAll()
                         
                         // Public docs
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()

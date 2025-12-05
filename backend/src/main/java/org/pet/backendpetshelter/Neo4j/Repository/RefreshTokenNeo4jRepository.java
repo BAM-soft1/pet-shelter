@@ -6,6 +6,6 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile("neo4j")
+@Profile({"neo4j", "migrate-neo4j"})
 public interface RefreshTokenNeo4jRepository extends Neo4jRepository<RefreshTokenNode, String> {
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@Profile("mongo")
+@Profile({"mongo", "migrate-mongo"})
 public interface RefreshTokenMongoRepository extends MongoRepository<RefreshTokenDocument, String> {
     Optional<RefreshTokenDocument> findByToken(String token);
 }
