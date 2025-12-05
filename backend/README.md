@@ -1,3 +1,5 @@
+@ -1,57 +0,0 @@
+
 ## Data Migration: SQL → MongoDB
 
 This project includes a simple migration setup that copies data from the relational database (MySQL/H2 via JPA) into MongoDB.

@@ -34,4 +34,8 @@ public class Adoption {
     private Date adoptionDate;
     private Boolean isActive;
 
+
+
+
+
 }

@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface SpeciesRepository extends JpaRepository<Species, Long> {
     Species findById(long id);
     Optional<Species> findByName(String name);
+
 }
