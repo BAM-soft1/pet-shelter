@@ -42,7 +42,6 @@ public class DatabaseFeaturesInitializer implements CommandLineRunner {
             System.out.println("Database features loaded successfully!");
         } catch (Exception e) {
             System.err.println("Error loading database features: " + e.getMessage());
-            e.printStackTrace();
             // Don't throw - allow application to start even if features fail
         }
     }
