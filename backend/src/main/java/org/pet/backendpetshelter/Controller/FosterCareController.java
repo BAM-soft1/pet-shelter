@@ -3,6 +3,7 @@ package org.pet.backendpetshelter.Controller;
 
 import org.pet.backendpetshelter.DTO.FosterCareRespons;
 import org.pet.backendpetshelter.Service.FosterCareService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/foster-care")
 @CrossOrigin
+@Profile("mysql")
 public class FosterCareController {
 
     private final FosterCareService fosterCareService;

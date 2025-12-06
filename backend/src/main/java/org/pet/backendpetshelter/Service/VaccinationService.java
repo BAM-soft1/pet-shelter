@@ -4,12 +4,14 @@ import org.pet.backendpetshelter.DTO.VaccinationRequest;
 import org.pet.backendpetshelter.DTO.VaccinationResponse;
 import org.pet.backendpetshelter.Entity.Vaccination;
 import org.pet.backendpetshelter.Repository.VaccinationRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("mysql")
 public class VaccinationService {
 
     private final VaccinationRepository vaccinationRepository;

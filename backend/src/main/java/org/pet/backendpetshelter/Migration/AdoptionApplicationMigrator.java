@@ -11,9 +11,13 @@ import org.pet.backendpetshelter.Mongo.Repository.AdoptionApplicationMongoReposi
 import org.pet.backendpetshelter.Repository.AdoptionApplicationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
+@Profile("migrate-mongo")
 public class AdoptionApplicationMigrator implements CommandLineRunner {
 
     private final AdoptionApplicationRepository adoptionApplicationRepository;

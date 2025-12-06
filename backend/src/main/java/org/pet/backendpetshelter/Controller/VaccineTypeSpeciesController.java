@@ -4,6 +4,7 @@ package org.pet.backendpetshelter.Controller;
 import org.pet.backendpetshelter.DTO.VaccinationRequest;
 import org.pet.backendpetshelter.DTO.VaccineTypeSpeciesResponse;
 import org.pet.backendpetshelter.Service.VaccineTypeSpeciesService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/vaccine-type-species")
 @CrossOrigin
+@Profile("mysql")
 public class VaccineTypeSpeciesController {
 
     private final VaccineTypeSpeciesService vaccineTypeSpeciesService;

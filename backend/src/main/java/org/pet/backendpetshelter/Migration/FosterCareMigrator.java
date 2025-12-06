@@ -6,10 +6,12 @@ import org.pet.backendpetshelter.Mongo.Repository.FosterCareMongoRepository;
 import org.pet.backendpetshelter.Repository.FosterCareRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Profile("migrate-mongo")
 public class FosterCareMigrator implements CommandLineRunner {
 
     private final FosterCareRepository fosterCareRepository;

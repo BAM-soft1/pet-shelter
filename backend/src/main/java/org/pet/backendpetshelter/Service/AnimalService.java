@@ -9,6 +9,7 @@ import org.pet.backendpetshelter.Entity.Breed;
 import org.pet.backendpetshelter.Entity.Species;
 import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.pet.backendpetshelter.Status;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("mysql")
 public class AnimalService {
 
     private final AnimalRepository animalRepository;

@@ -6,10 +6,12 @@ import org.pet.backendpetshelter.Mongo.Repository.VaccinationTypeMongoRepository
 import org.pet.backendpetshelter.Repository.VaccinationTypeRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Profile("migrate-mongo")
 public class VaccinationTypeMigrator implements CommandLineRunner {
 
     private final VaccinationTypeRepository vaccinationTypeRepository;

@@ -13,8 +13,8 @@ import java.text.SimpleDateFormat;
 
 
 @Component
-@Profile("!test")
 @Order(1) // Run first, before DatabaseFeaturesInitializer
+@Profile("(mysql | migrate-mongo | migrate-neo4j) & !test") // Run for mysql and migration profiles
 public class InitData implements CommandLineRunner {
     private final UserRepository userRepository;
     private final AnimalRepository animalRepository;

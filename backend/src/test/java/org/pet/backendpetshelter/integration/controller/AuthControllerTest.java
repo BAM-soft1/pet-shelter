@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "mysql"})
 @DisplayName("AuthController Integration Tests")
 public class AuthControllerTest {
 

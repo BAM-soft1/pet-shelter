@@ -1,6 +1,7 @@
 package org.pet.backendpetshelter.Repository;
 
 import org.pet.backendpetshelter.Entity.Animal;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 
 @Repository
+@Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
 public interface AnimalProceduresRepository extends JpaRepository<Animal, Long> {
 
     /**
