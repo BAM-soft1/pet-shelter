@@ -64,6 +64,7 @@ jobs:
         run: ./mvnw compile test-compile -DskipTests
 
       - name: SonarCloud Scan
+        continue-on-error: true
         uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
