@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost/register");
+  await page.goto("/register");
 });
 
 test("should register successfully with valid data", async ({ page }) => {
@@ -17,7 +17,7 @@ test("should register successfully with valid data", async ({ page }) => {
 
   await page.getByRole("button", { name: "Create Account" }).click();
 
-  await expect(page).toHaveURL("http://localhost/");
+  await expect(page).toHaveURL("/");
 });
 
 test("should fail when registering with existing email", async ({ page }) => {

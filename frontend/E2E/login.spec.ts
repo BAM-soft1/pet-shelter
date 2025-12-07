@@ -4,7 +4,7 @@ test("should login successfully with test account", async ({ page }) => {
   const testUsername = "testuser@mail.com";
   const testPassword = "Testpassword!";
 
-  await page.goto("http://localhost/");
+  await page.goto("/");
   await page.getByRole("link", { name: "Log in" }).click();
 
   // Wait for navigation to login page
@@ -15,14 +15,14 @@ test("should login successfully with test account", async ({ page }) => {
   await page.getByRole("button", { name: "Login" }).click();
 
   // Wait for redirection to home page
-  await expect(page).toHaveURL("http://localhost/");
+  await expect(page).toHaveURL("/");
 });
 
 test("should show error message with invalid credentials", async ({ page }) => {
   const invalidUsername = "invaliduser@mail.com";
   const invalidPassword = "InvalidPassword!";
 
-  await page.goto("http://localhost/");
+  await page.goto("/");
   await page.getByRole("link", { name: "Log in" }).click();
 
   await page.getByRole("textbox", { name: "Email" }).fill(invalidUsername);
