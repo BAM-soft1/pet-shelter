@@ -128,7 +128,7 @@ public class AnimalService {
         }
 
         if (!name.matches("^[a-zA-Z]+$")) {
-            throw new IllegalArgumentException("Name must not contain any non-alphabetic characters");
+            throw new IllegalArgumentException("Name must contain only alphabetic characters");
         }
 
         if (name.length() < 2 || name.length() > 30) {
