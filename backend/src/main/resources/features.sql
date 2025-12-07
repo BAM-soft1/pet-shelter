@@ -189,7 +189,7 @@ BEGIN
     DECLARE v_actual_count INT;
     DECLARE v_animal_species_id INT;
 
-    -- GET THE ANIMAL'S SPECIES (this line was missing!)
+    -- GET THE ANIMAL'S SPECIES
     SELECT species_id INTO v_animal_species_id 
     FROM animal 
     WHERE animal_id = p_animal_id;
@@ -415,9 +415,6 @@ CREATE INDEX idx_application_status ON adoption_application(status);
 -- ============================================================================
 -- EVENTS
 -- ============================================================================
-
--- Enable the event scheduler (you may need to run this separately with admin privileges)
--- SET GLOBAL event_scheduler = ON;
 
 -- Event 1: Daily check for overdue vaccinations and log them
 DROP EVENT IF EXISTS daily_vaccination_check;
