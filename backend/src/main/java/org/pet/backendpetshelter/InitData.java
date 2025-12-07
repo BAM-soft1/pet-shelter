@@ -70,7 +70,7 @@ public class InitData implements CommandLineRunner {
 
         User user2 = new User();
         user2.setEmail("oxVet@gmail.com");
-        user2.setPassword(passwordEncoder.encode("123!"))
+        user2.setPassword(passwordEncoder.encode("123!"));
         user2.setFirstName("oxVet");
         user2.setLastName("wooVet");
         user2.setPhone("424242425");
@@ -285,7 +285,7 @@ public class InitData implements CommandLineRunner {
 
         /* Veterinarian */
         Veterinarian veterinarian1 = new Veterinarian();
-        veterinarian1.setUser(user1);
+        veterinarian1.setUser(user2);
         veterinarian1.setLicenseNumber("VET123456");
         veterinarian1.setClinicName("Happy Pets Clinic");
         veterinarian1.setIsActive(true);
@@ -302,14 +302,14 @@ public class InitData implements CommandLineRunner {
         medicalRecord1.setCost(50);
         medicalRecordReposiotry.save(medicalRecord1);
 
-        MedicalRecord medicalRecord1 = new MedicalRecord();
-        medicalRecord1.setAnimal(animal2);
-        medicalRecord1.setVeterinarian(veterinarian1);
-        medicalRecord1.setDate(dateFormat.parse("2023-08-05"));
-        medicalRecord1.setDiagnosis("Wing Injury");
-        medicalRecord1.setTreatment("Bandaged wing, prescribed antibiotics");
-        medicalRecord1.setCost(120);
-        medicalRecordReposiotry.save(medicalRecord1);
+        MedicalRecord medicalRecord2 = new MedicalRecord();
+        medicalRecord2.setAnimal(animal2);
+        medicalRecord2.setVeterinarian(veterinarian1);
+        medicalRecord2.setDate(dateFormat.parse("2023-08-05"));
+        medicalRecord2.setDiagnosis("Wing Injury");
+        medicalRecord2.setTreatment("Bandaged wing, prescribed antibiotics");
+        medicalRecord2.setCost(120);
+        medicalRecordReposiotry.save(medicalRecord2);
 
 
 

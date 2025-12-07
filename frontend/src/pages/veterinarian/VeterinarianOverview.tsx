@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import type { MedicalRecord } from "@/types/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
 import { MedicalRecordService } from "../../api/medicalRecord";
