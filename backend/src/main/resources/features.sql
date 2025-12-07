@@ -215,26 +215,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- Function 3: Get total adoption fee (animal price + medical costs)
-DROP FUNCTION IF EXISTS GetTotalAdoptionCost;
-DELIMITER //
-CREATE FUNCTION GetTotalAdoptionCost(p_animal_id INT)
-RETURNS DECIMAL(10,2)
-READS SQL DATA
-BEGIN
-    DECLARE v_animal_price DECIMAL(10,2);
-    DECLARE v_medical_costs DECIMAL(10,2);
-    
-    SELECT price INTO v_animal_price FROM animal WHERE animal_id = p_animal_id;
-    
-    SELECT IFNULL(SUM(cost), 0) INTO v_medical_costs
-    FROM medical_record
-    WHERE animal_id = p_animal_id;
-    
-    RETURN v_animal_price + v_medical_costs;
-END //
-DELIMITER ;
-
 -- ============================================================================
 -- TRIGGERS
 -- ============================================================================
