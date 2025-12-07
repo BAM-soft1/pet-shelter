@@ -68,6 +68,18 @@ public class InitData implements CommandLineRunner {
         userRepository.save(user1);
 
 
+        User user2 = new User();
+        user2.setEmail("oxVet@gmail.com");
+        user2.setPassword(passwordEncoder.encode("123!"))
+        user2.setFirstName("oxVet");
+        user2.setLastName("wooVet");
+        user2.setPhone("424242425");
+        user2.setIsActive(true);
+        user2.setRole(Roles.VETERINARIAN);
+        userRepository.save(user2);
+
+
+
         Species species1 = new Species();
         species1.setName("Bird");
         Species savedSpecies1 = speciesRepository.save(species1);
@@ -289,6 +301,16 @@ public class InitData implements CommandLineRunner {
         medicalRecord1.setTreatment("N/A");
         medicalRecord1.setCost(50);
         medicalRecordReposiotry.save(medicalRecord1);
+
+        MedicalRecord medicalRecord1 = new MedicalRecord();
+        medicalRecord1.setAnimal(animal2);
+        medicalRecord1.setVeterinarian(veterinarian1);
+        medicalRecord1.setDate(dateFormat.parse("2023-08-05"));
+        medicalRecord1.setDiagnosis("Wing Injury");
+        medicalRecord1.setTreatment("Bandaged wing, prescribed antibiotics");
+        medicalRecord1.setCost(120);
+        medicalRecordReposiotry.save(medicalRecord1);
+
 
 
         /* Vaccination Type */
