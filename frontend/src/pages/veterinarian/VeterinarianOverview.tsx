@@ -17,7 +17,6 @@ export default function VeterinarianView() {
       try {
         setLoading(true);
         setError(null);
-        // ÆNDRING: Kald din service funktion i stedet for tom array
         const data = await MedicalRecordService.getAllMedicalRecords();
         setRecords(data);
       } catch (err) {
@@ -66,7 +65,6 @@ export default function VeterinarianView() {
       ) : (
         <Table>
           <TableHeader>
-            {/* ÆNDRING: TableRow skal være INDE i TableHeader */}
             <TableRow>
               <TableHead>Record ID</TableHead>
               <TableHead>Animal Name</TableHead>
