@@ -94,7 +94,7 @@ public class MedicalRecordService {
 
     /* Delete medical record */
     public void deleteMedicalRecord(Long id) {
-        if (!medicalRecordReposiotry.existsById(id)) {  // Rettet logik
+        if (!medicalRecordReposiotry.existsById(id)) {  
             throw new EntityNotFoundException("Cannot delete. Medical Record not found with id: " + id);
         }
         medicalRecordReposiotry.deleteById(id);
@@ -104,7 +104,7 @@ public class MedicalRecordService {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String email = authentication.getName();
     
-    Veterinarian vet = veterinarianRepository.findByUser_Email(email);  // ← Ændret
+    Veterinarian vet = veterinarianRepository.findByUser_Email(email); 
     if (vet == null) {
         throw new RuntimeException("Veterinarian not found for user: " + email);
     }
