@@ -30,6 +30,21 @@ export const Header = () => {
                 Animals
               </NavLink>
             </li>
+
+<li>
+                
+              <NavLink
+                to="/veterinarian"
+                className={({ isActive }) =>
+                  `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
+                }
+                onClick={closeMenu}
+              >
+                Veterinarian
+              </NavLink>
+</li>
+
+
             <li>
               <NavLink
                 to="/about"

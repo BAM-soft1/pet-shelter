@@ -32,6 +32,11 @@ public class MedicalRecordController {
         return medicalRecordService.getMedicalRecordById(id);
     }
 
+    @GetMapping("/animal/{animalId}")
+    public List<MedicalRecordDTOResponse> getMedicalRecordsByAnimalId(@PathVariable Long animalId) {
+        return medicalRecordService.getMedicalRecordsByAnimalId(animalId);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<MedicalRecordDTOResponse> addMedicalRecord(@RequestBody MedicalRecordDTORequest medicalRecordDTORequest) {
         return ResponseEntity.status(201).body(medicalRecordService.addMedicalRecord(medicalRecordDTORequest));

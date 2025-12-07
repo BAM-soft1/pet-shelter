@@ -6,6 +6,7 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
+import VeterinarianView from "./pages/veterinarian/VeterinarianOverview"
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -22,7 +23,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          
+          <Route path="/veterinarian" element={<VeterinarianView />} />
+
+
+
 
           {/* Protected Admin Routes */}
           <Route

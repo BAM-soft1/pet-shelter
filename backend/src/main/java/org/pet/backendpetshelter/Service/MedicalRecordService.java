@@ -38,6 +38,14 @@ public class MedicalRecordService {
     }
 
 
+    /* Get medical records by animal id */
+    public List<MedicalRecordDTOResponse> getMedicalRecordsByAnimalId(Long animalId) {
+        return medicalRecordReposiotry.findByAnimalId(animalId).stream()
+                .map(MedicalRecordDTOResponse::new)
+                .toList();
+    }
+
+
     /* Add medical record */
     public MedicalRecordDTOResponse addMedicalRecord(MedicalRecordDTORequest reuqest) {
 
