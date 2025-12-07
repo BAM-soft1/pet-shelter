@@ -70,6 +70,16 @@ public class InitData implements CommandLineRunner {
 
         userRepository.save(user1);
 
+        User user2 = new User();
+        user2.setEmail("testuser@mail.com");
+        user2.setPassword(passwordEncoder.encode("Testpassword!"));
+        user2.setFirstName("Test");
+        user2.setLastName("User");
+        user2.setPhone("12121212");
+        user2.setIsActive(true);
+        user2.setRole(Roles.USER);
+
+        userRepository.save(user2);
 
         Species species1 = new Species();
         species1.setName("Bird");
