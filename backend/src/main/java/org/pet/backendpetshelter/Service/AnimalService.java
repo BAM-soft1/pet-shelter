@@ -126,13 +126,17 @@ public class AnimalService {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
-    
+
+        if (!name.matches("^[a-zA-Z]+$")) {
+            throw new IllegalArgumentException("Name must not contain any non-alphabetic characters");
+        }
+
         if (name.length() < 2 || name.length() > 30) {
             throw new IllegalArgumentException("Name must be between 2 and 30 characters long");
         }
     }
-    
-    
+
+
     private void validateSpecies(Species species) {
         if (species == null) {
             throw new IllegalArgumentException("Species cannot be null");
