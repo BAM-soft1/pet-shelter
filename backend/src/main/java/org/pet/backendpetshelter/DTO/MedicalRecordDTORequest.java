@@ -10,8 +10,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class MedicalRecordDTORequest {
-    private Animal animal;
-    private Veterinarian veterinarian;
+     private Long animalId;       
+    private Long veterinarianId; 
     private Date date;
     private String diagnosis;
     private String treatment;

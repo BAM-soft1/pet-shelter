@@ -15,7 +15,7 @@ export const MedicalRecordService = {
     return response.data;
   },
 
-  createMedicalRecord: async (record: MedicalRecordRequest): Promise<MedicalRecord> => {
+  createMedicalRecord: async (record: Omit<MedicalRecordRequest, 'userId'>): Promise<MedicalRecord> => {
     const response = await axiosWithAuth.post(`${API_URL_MEDICAL_RECORDS}/add`, record);
     return response.data;
   },
