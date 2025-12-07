@@ -33,8 +33,9 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
     speciesId: null as number | null,
     breedId: null as number | null,
     birthDate: "",
+    intakeDate: "",
     sex: "unknown",
-    status: "available",
+    status: "AVAILABLE",
     price: 0,
     imageUrl: "",
   });
@@ -68,6 +69,7 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
         speciesId: animal.species.id,
         breedId: animal.breed?.id || null,
         birthDate: animal.birthDate.split("T")[0], // Convert to YYYY-MM-DD format
+        intakeDate: animal.intakeDate ? animal.intakeDate.split("T")[0] : "",
         sex: animal.sex,
         status: animal.status,
         price: animal.price,
@@ -80,8 +82,9 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
         speciesId: null,
         breedId: null,
         birthDate: "",
+        intakeDate: new Date().toISOString().split("T")[0],
         sex: "unknown",
-        status: "available",
+        status: "AVAILABLE",
         price: 0,
         imageUrl: "",
       });
@@ -128,7 +131,7 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
         name: formData.name,
         sex: formData.sex,
         birthDate: formData.birthDate,
-        intakeDate: animal?.intakeDate || new Date().toISOString().split("T")[0],
+        intakeDate: formData.intakeDate,
         status: formData.status,
         price: formData.price,
         imageUrl: formData.imageUrl,
@@ -214,16 +217,28 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
               </div>
             </div>
 
-            {/* Birth Date */}
-            <div className="space-y-2">
-              <Label htmlFor="birthDate">Birth Date *</Label>
-              <Input
-                id="birthDate"
-                type="date"
-                value={formData.birthDate}
-                onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                required
-              />
+            {/* Birth Date and Intake Date */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="birthDate">Birth Date *</Label>
+                <Input
+                  id="birthDate"
+                  type="date"
+                  value={formData.birthDate}
+                  onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="intakeDate">Intake Date *</Label>
+                <Input
+                  id="intakeDate"
+                  type="date"
+                  value={formData.intakeDate}
+                  onChange={(e) => setFormData({ ...formData, intakeDate: e.target.value })}
+                  required
+                />
+              </div>
             </div>
 
             {/* Sex and Status */}
@@ -251,10 +266,10 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 >
-                  <option value="available">Available</option>
-                  <option value="adopted">Adopted</option>
-                  <option value="fostered">Fostered</option>
-                  <option value="deceased">Deceased</option>
+                  <option value="AVAILABLE">Available</option>
+                  <option value="ADOPTED">Adopted</option>
+                  <option value="FOSTERED">Fostered</option>
+                  <option value="DECEASED">Deceased</option>
                 </select>
               </div>
             </div>
@@ -271,9 +286,7 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
                 onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
                 required
               />
-              <p className="text-xs text-gray-500">
-                Note: Active status is automatically set based on the animal's status
-              </p>
+              <p className="text-xs text-gray-500">Note: Active status is automatically set based on the animal's status</p>
             </div>
 
             {/* Image URL */}
