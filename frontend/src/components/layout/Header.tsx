@@ -33,15 +33,18 @@ export const Header = () => {
 
 <li>
                 
-              <NavLink
-                to="/veterinarian"
-                className={({ isActive }) =>
-                  `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
-                }
-                onClick={closeMenu}
-              >
-                Veterinarian
-              </NavLink>
+{auth?.isLoggedInAs(["VETERINARIAN", "STAFF"]) && (
+                  <NavLink
+                    to="/veterinarian"
+                    className={({ isActive }) => 
+                      `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
+                    }
+                    onClick={closeMenu}
+                  >
+                    Medical Records
+                  </NavLink>
+                )}
+
 </li>
 
 

@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import MainLayout from "../../components/layout/MainLayout";
 import type { MedicalRecord } from "@/types/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
 import { MedicalRecordService } from "../../api/medicalRecord";
 
-export default function VeterinarianView() {
+export default function MedicalRecordOverview() {
   const [records, setRecords] = useState<MedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,32 +26,21 @@ export default function VeterinarianView() {
 
     console.log(records);
 
-
     fetchMedicalRecords();
   }, []);
 
-  
-
   if (loading) {
-    return (
-      <MainLayout>
-        <div className="text-center py-12">Loading...</div>
-      </MainLayout>
-    );
+    return <div className="text-center py-12">Loading...</div>;
   }
 
   if (error) {
-    return (
-      <MainLayout>
-        <div className="text-center py-12 text-red-600">Error: {error}</div>
-      </MainLayout>
-    );
+    return <div className="text-center py-12 text-red-600">Error: {error}</div>;
   }
 
   return (
-    <MainLayout>
+    <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Veterinarian Overview</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">Medical Records Overview</h2>
         <button className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors">
           <PlusIcon className="h-5 w-5 mr-2" />
           Add Record
@@ -98,6 +86,6 @@ export default function VeterinarianView() {
           </TableBody>
         </Table>
       )}
-    </MainLayout>
+    </>
   );
 }
