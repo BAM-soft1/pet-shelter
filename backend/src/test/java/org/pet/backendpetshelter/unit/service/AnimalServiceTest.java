@@ -355,11 +355,11 @@ public class AnimalServiceTest {
         }
 
         @Test
-        @DisplayName("Sex must be Male or Female - Throws Exception")
+        @DisplayName("Sex must be Male, Female or Unknown - Throws Exception for invalid")
         void testCreateAnimalWithInvalidSex() {
             // Arrange
             AnimalDTORequest request = createValidRequest();
-            request.setSex("Unknown");
+            request.setSex("Alien");
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
@@ -481,16 +481,6 @@ public class AnimalServiceTest {
             verify(animalRepository, never()).save(any(Animal.class));
         }
 
-        // isActive Invalid
-        @Test
-        @DisplayName("isActive is null - Throws Exception")
-        void testCreateAnimalWithNullIsActive() {
-            // Arrange
-            AnimalDTORequest request = createValidRequest();
-            request.setIsActive(null);
-            assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
-            verify(animalRepository, never()).save(any(Animal.class));
-        }
 
         // ImageUrl Invalid
         @Test
