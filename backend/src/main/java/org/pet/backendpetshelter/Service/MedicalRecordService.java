@@ -100,13 +100,14 @@ public class MedicalRecordService {
         medicalRecordReposiotry.deleteById(id);
     }
 
-    /* Helper method to get authenticated veterinarian */
     private Veterinarian getAuthenticatedVeterinarian() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        
-        // Find veterinarian baseret på email
-        return veterinarianRepository.findByUserEmail(email)
-                .orElseThrow(() -> new RuntimeException("Veterinarian not found for user: " + email));
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String email = authentication.getName();
+    
+    Veterinarian vet = veterinarianRepository.findByUser_Email(email);  // ← Ændret
+    if (vet == null) {
+        throw new RuntimeException("Veterinarian not found for user: " + email);
     }
+    return vet;
+}
 }

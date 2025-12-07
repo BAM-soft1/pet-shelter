@@ -14,7 +14,7 @@ type MedicalRecord = {
   id: number;
   animal: Animal;
   user: User;
-  date: Date;
+  date: string;
   diagnosis: string;
   treatment: string;
   cost: number;

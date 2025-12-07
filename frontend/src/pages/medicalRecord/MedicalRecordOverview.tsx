@@ -68,7 +68,7 @@ const handleFormSubmit = async (data: MedicalRecordFormData) => {
       // Update existing record
       const updatePayload = {
         animalId: data.animalId!,
-        date: data.date,
+        date: new Date(data.date).toISOString(),
         diagnosis: data.diagnosis,
         treatment: data.treatment,
         cost: data.cost,
