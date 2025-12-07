@@ -1,7 +1,15 @@
 import { useState } from "react";
 import type { MedicalRecord } from "@/types/types";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 type DeleteConfirmDialogVetProps = {
   record: MedicalRecord | null;
@@ -10,7 +18,12 @@ type DeleteConfirmDialogVetProps = {
   onConfirm: () => Promise<void>;
 };
 
-export default function DeleteConfirmDialogVet({ record, isOpen, onClose, onConfirm }: DeleteConfirmDialogVetProps) {
+export default function DeleteConfirmDialogVet({
+  record,
+  isOpen,
+  onClose,
+  onConfirm,
+}: DeleteConfirmDialogVetProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -31,26 +44,55 @@ export default function DeleteConfirmDialogVet({ record, isOpen, onClose, onConf
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Delete Medical Record</DialogTitle>
-          <DialogDescription>Are you sure you want to delete this medical record? This action cannot be undone.</DialogDescription>
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+              <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
+            </div>
+            <div>
+              <DialogTitle className="text-lg">Delete Medical Record</DialogTitle>
+              <DialogDescription className="mt-1">
+                This action cannot be undone.
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
-        <div className="py-4 space-y-3">
-          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-semibold text-lg">Record ID: {record.id}</p>
-                <p className="text-sm text-gray-600">Animal: {record.animal.name}</p>
-                <p className="text-sm text-gray-600">Date: {new Date(record.date).toLocaleDateString()}</p>
+
+        <div className="py-4">
+          <div className="bg-red-50 border border-red-100 p-4 rounded-lg">
+            <div className="flex gap-4">
+              {record.animal?.imageUrl && (
+                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                  <img
+                    src={record.animal.imageUrl}
+                    alt={record.animal.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="space-y-1">
+                <p className="font-semibold text-gray-900">
+                  Record #{record.id}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Patient: <span className="font-medium">{record.animal?.name || "Unknown"}</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Date: <span className="font-medium">{new Date(record.date).toLocaleDateString()}</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Diagnosis: <span className="font-medium">{record.diagnosis}</span>
+                </p>
               </div>
             </div>
           </div>
         </div>
-        <DialogFooter>
+
+        <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose} disabled={isDeleting}>
             Cancel
           </Button>
           <Button variant="destructive" onClick={handleConfirm} disabled={isDeleting}>
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isDeleting ? "Deleting..." : "Delete Record"}
           </Button>
         </DialogFooter>
       </DialogContent>
