@@ -22,7 +22,7 @@ public class VaccinationType {
     private String description;
 
     private int durationMonths;
-    private int requiredForAdoption;
+    private Boolean requiredForAdoption;
 
 }
 

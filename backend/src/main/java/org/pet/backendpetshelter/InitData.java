@@ -333,7 +333,7 @@ public class InitData implements CommandLineRunner {
         vaccinationType.setVaccineName("Rabies Vaccine");
         vaccinationType.setDescription("Protects against rabies virus.");
         vaccinationType.setDurationMonths(12);
-        vaccinationType.setRequiredForAdoption(1);
+        vaccinationType.setRequiredForAdoption(true);
         vaccinationTypeRepository.save(vaccinationType);
 
 
