@@ -105,18 +105,20 @@ public class TestProceduresController {
     @Transactional
     public ResponseEntity<Map<String, String>> testCompleteAdoption(
             @RequestParam Integer applicationId,
-            @RequestParam String adoptionDate) {
+            @RequestParam String adoptionDate,
+            @RequestParam Integer reviewedByUserId) {
         
         try {
             // Parse date (format: yyyy-MM-dd)
             Date date = java.sql.Date.valueOf(adoptionDate);
             
-            animalProceduresRepository.completeAdoption(applicationId, date);
+            animalProceduresRepository.completeAdoption(applicationId, date, reviewedByUserId);
             
             Map<String, String> response = new HashMap<>();
             response.put("message", "Adoption completed successfully");
             response.put("applicationId", applicationId.toString());
             response.put("adoptionDate", adoptionDate);
+            response.put("reviewedByUserId", reviewedByUserId.toString());
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {

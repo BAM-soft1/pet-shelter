@@ -7,37 +7,54 @@ DROP PROCEDURE IF EXISTS CompleteAdoption;
 DELIMITER //
 CREATE PROCEDURE CompleteAdoption(
     IN p_application_id INT,
-    IN p_adoption_date DATE
+    IN p_adoption_date DATE,
+    IN p_reviewed_by_user_id INT
 )
 BEGIN
     DECLARE v_animal_id INT;
     DECLARE v_adopter_id INT;
     DECLARE v_animal_status VARCHAR(20);
     DECLARE v_has_required_vaccines BOOLEAN;
+    DECLARE v_app_status VARCHAR(32);
 
     -- Get application details and validate
-    SELECT aa.animal_id, aa.user_id, a.status 
-    INTO v_animal_id, v_adopter_id, v_animal_status
+    SELECT aa.animal_id, aa.user_id, a.status, aa.status
+    INTO v_animal_id, v_adopter_id, v_animal_status, v_app_status
     FROM adoption_application aa
     JOIN animal a ON aa.animal_id = a.animal_id
     WHERE aa.adoption_application_id = p_application_id 
-    AND aa.status = 'pending' 
     AND aa.is_active = TRUE;
     
-    -- Validate data exists and animal is available
+    -- Validate application exists
     IF v_animal_id IS NULL THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Application already approved or does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Application does not exist or is inactive';
     END IF;
     
-    IF v_animal_status != 'available' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'animal is not available for adoption';
+    -- Check if application is not already approved or rejected
+    IF UPPER(v_app_status) = 'APPROVED' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Application is already approved';
+    END IF;
+    
+    IF UPPER(v_app_status) = 'REJECTED' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Application has been rejected';
+    END IF;
+    
+    -- Validate animal is available
+    IF UPPER(v_animal_status) != 'AVAILABLE' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Animal is not available for adoption';
     END IF;
 
+    -- Check required vaccinations
     SELECT HasRequiredVaccinations(v_animal_id) INTO v_has_required_vaccines;
     
     IF v_has_required_vaccines = FALSE THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot complete adoption: animal does not have all required vaccinations';
     END IF;
+    
+    -- Update application with reviewer
+    UPDATE adoption_application
+    SET reviewed_by_user_id = p_reviewed_by_user_id
+    WHERE adoption_application_id = p_application_id;
     
     -- Create adoption (triggers handle status updates automatically)
     INSERT INTO adoption (application_id, adoption_date, is_active)
