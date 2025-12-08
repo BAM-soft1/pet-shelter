@@ -29,7 +29,7 @@ function App() {
           <Route
             path="/veterinarian"
             element={
-              <RequireAuth roles={["VETERINARIAN", "STAFF"]}>
+              <RequireAuth roles={["VETERINARIAN", "ADMIN", "STAFF"]}>
                 <MedicalRecordLayout />
               </RequireAuth>
             }
@@ -51,6 +51,7 @@ function App() {
             <Route path="animals" element={<AdminAnimals />} />
             <Route path="applications" element={<AdminApplications />} />
             <Route path="adoptions" element={<AdminAdoptions />} />
+            <Route path="veterinarian/overview" element={<MedicalRecordOverview />} />
           </Route>
         </Routes>
       </AuthProvider>

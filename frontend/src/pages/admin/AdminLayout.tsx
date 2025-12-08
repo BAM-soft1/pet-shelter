@@ -10,6 +10,7 @@ export default function AdminLayout() {
     if (location.pathname.includes("animals")) setActiveTab("animals");
     else if (location.pathname.includes("applications")) setActiveTab("applications");
     else if (location.pathname.includes("adoptions")) setActiveTab("adoptions");
+    else if (location.pathname.includes("veterinarian")) setActiveTab("veterinarian");
   }, [location]);
 
   return (
@@ -65,6 +66,18 @@ export default function AdminLayout() {
                 }`}
               >
                 Adoptions
+              </button>
+            </Link>
+
+            <Link to="/admin/veterinarian/overview">
+              <button
+                className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+                  activeTab === "veterinarian"
+                    ? "text-indigo-600 border-indigo-600"
+                    : "text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300"
+                }`}
+              >
+                Medical Records
               </button>
             </Link>
           </nav>

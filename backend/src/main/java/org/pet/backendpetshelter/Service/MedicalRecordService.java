@@ -57,11 +57,10 @@ public class MedicalRecordService {
 
     /* Add medical record */
     public MedicalRecordDTOResponse addMedicalRecord(MedicalRecordDTORequest request) {
-        // Hent Animal fra database
+        
         Animal animal = animalRepository.findById(request.getAnimalId())
                 .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
 
-        // Hent Veterinarian fra den indloggede bruger
         Veterinarian veterinarian = getAuthenticatedVeterinarian();
 
         MedicalRecord medicalRecord = new MedicalRecord();

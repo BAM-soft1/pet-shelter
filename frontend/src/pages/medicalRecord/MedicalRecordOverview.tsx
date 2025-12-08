@@ -169,7 +169,7 @@ export default function MedicalRecordOverview() {
               <TableHead>Date</TableHead>
               <TableHead>Diagnosis</TableHead>
               <TableHead>Treatment</TableHead>
-              <TableHead>Cost</TableHead>
+              <TableHead>Medical Price</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
