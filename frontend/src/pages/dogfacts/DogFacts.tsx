@@ -42,7 +42,7 @@ const DogFacts = () => {
   return (
     <>
       <MainLayout>
-        <div className="container mx-auto px-4 py-4 flex flex-col items-center relative">
+        <div className="container mx-auto px-4 py-4 flex flex-col items-center relative pb-16">
           <div className="mb-14 text-center animate-in fade-in slide-in-from-top duration-700">
             <div className="inline-flex items-center gap-3 mb-4 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-blue-100">
               <PawPrint className="w-6 h-6 text-blue-600" />
