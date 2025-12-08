@@ -27,10 +27,9 @@ public class InitData implements CommandLineRunner {
     private final VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository;
     private final FosterCareRepository fosterCareRepository;
     private final AdoptionApplicationRepository adoptionApplicationRepository;
-    private final AdoptionRepository adoptionRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public InitData(UserRepository userRepository, AnimalRepository animalRepository, SpeciesRepository speciesRepository, BreedRepository breedRepository, MedicalRecordRepository medicalRecordRepository, VeterinarianRepository veterinarianRepository, VaccinationRepository vaccinationRepository, VaccinationTypeRepository vaccinationTypeRepository, VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository, FosterCareRepository fosterCareRepository, AdoptionApplicationRepository adoptionApplicationRepository, AdoptionRepository adoptionRepository, PasswordEncoder passwordEncoder) {
+    public InitData(UserRepository userRepository, AnimalRepository animalRepository, SpeciesRepository speciesRepository, BreedRepository breedRepository, MedicalRecordRepository medicalRecordRepository, VeterinarianRepository veterinarianRepository, VaccinationRepository vaccinationRepository, VaccinationTypeRepository vaccinationTypeRepository, VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository, FosterCareRepository fosterCareRepository, AdoptionApplicationRepository adoptionApplicationRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.animalRepository = animalRepository;
         this.speciesRepository = speciesRepository;
@@ -42,7 +41,6 @@ public class InitData implements CommandLineRunner {
         this.vaccineTypeSpeciesRepository = vaccineTypeSpeciesRepository;
         this.fosterCareRepository = fosterCareRepository;
         this.adoptionApplicationRepository = adoptionApplicationRepository;
-        this.adoptionRepository = adoptionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -373,17 +371,6 @@ public class InitData implements CommandLineRunner {
         adoptionApplication1.setReviewedByUser(null);
         adoptionApplication1.setIsActive(true);
         adoptionApplicationRepository.save(adoptionApplication1);
-
-
-        /* Adoption */
-        Adoption adoption1 = new Adoption();
-        adoption1.setApplication(adoptionApplication1);
-        adoption1.setAdoptionDate(dateFormat.parse("2023-10-20"));
-        adoption1.setIsActive(true);
-        adoptionRepository.save(adoption1);
-
-
-
 
         System.out.println("Database seeded successfully with initial data!");
     }

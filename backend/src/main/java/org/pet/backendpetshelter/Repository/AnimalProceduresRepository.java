@@ -37,12 +37,13 @@ public interface AnimalProceduresRepository extends JpaRepository<Animal, Long> 
 
     /**
      * Call CompleteAdoption stored procedure
-     * Example: CALL CompleteAdoption(1, '2025-11-25')
+     * Example: CALL CompleteAdoption(1, '2025-11-25', 1)
      */
     @Procedure(procedureName = "CompleteAdoption")
     void completeAdoption(
         @Param("p_application_id") Integer applicationId,
-        @Param("p_adoption_date") Date adoptionDate
+        @Param("p_adoption_date") Date adoptionDate,
+        @Param("p_reviewed_by_user_id") Integer reviewedByUserId
     );
 
     /**
