@@ -3,13 +3,15 @@ package org.pet.backendpetshelter.Service;
 import org.pet.backendpetshelter.DTO.VaccinationRequest;
 import org.pet.backendpetshelter.DTO.VaccineTypeSpeciesResponse;
 import org.pet.backendpetshelter.Entity.VaccineTypeSpecies;
-import org.pet.backendpetshelter.Reposiotry.VaccineTypeSpeciesRepository;
+import org.pet.backendpetshelter.Repository.VaccineTypeSpeciesRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("mysql")
 public class VaccineTypeSpeciesService {
 
     private final VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository;

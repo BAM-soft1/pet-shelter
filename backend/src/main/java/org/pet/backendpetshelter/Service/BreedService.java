@@ -4,13 +4,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.pet.backendpetshelter.DTO.BreedDTORequest;
 import org.pet.backendpetshelter.DTO.BreedDTOResponse;
 import org.pet.backendpetshelter.Entity.Breed;
-import org.pet.backendpetshelter.Reposiotry.BreedRepository;
+import org.pet.backendpetshelter.Repository.BreedRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("mysql")
 public class BreedService {
 
     private final BreedRepository breedRepository;
@@ -18,6 +20,45 @@ public class BreedService {
     public BreedService(BreedRepository breedRepository) {
         this.breedRepository = breedRepository;
     }
+
+
+    /**
+     * Add a new breed
+     * @param request BreedDTORequest containing breed information
+     * @return BreedDTOResponse
+     */
+
+    public BreedDTOResponse addBreed(BreedDTORequest request) {
+
+        // Validate Input Data
+
+        validateName(request.getName());
+        validateSpecies(request.getSpecies());
+
+        Breed breed = new Breed();
+        breed.setName(request.getName());
+        breed.setSpecies(request.getSpecies());
+
+        breedRepository.save(breed);
+        return new BreedDTOResponse(breed);
+
+    }
+
+    // Validation Methods
+
+    private void validateName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Breed name cannot be null or empty.");
+        }
+    }
+
+    private void validateSpecies(Object species) {
+        if (species == null) {
+            throw new IllegalArgumentException("Species cannot be null.");
+        }
+    }
+
+
 
     /**
      * Get all breeds
@@ -55,23 +96,7 @@ public class BreedService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Add a new breed
-     * @param request BreedDTORequest containing breed information
-     * @return BreedDTOResponse
-     */
-    public BreedDTOResponse addBreed(BreedDTORequest request) {
-        if (breedRepository.findByName(request.getName()).isPresent()) {
-            throw new IllegalArgumentException("Breed already exists: " + request.getName());
-        }
 
-        Breed newBreed = new Breed();
-        newBreed.setName(request.getName());
-        newBreed.setSpecies(request.getSpecies());
-
-        breedRepository.save(newBreed);
-        return new BreedDTOResponse(newBreed);
-    }
 
     /**
      * Update breed

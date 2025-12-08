@@ -11,12 +11,14 @@ import org.pet.backendpetshelter.DTO.LoginRequest;
 import org.pet.backendpetshelter.DTO.RegisterUserRequest;
 import org.pet.backendpetshelter.DTO.UserResponse;
 import org.pet.backendpetshelter.Service.AuthService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/api/auth")
+@Profile("mysql")
 public class AuthController {
 
     private static final String REFRESH_COOKIE = "refresh_token";
@@ -44,7 +46,7 @@ public class AuthController {
                 .secure(true)            // true i prod (HTTPS)
                 .path("/api/auth")
                 .maxAge(refreshMaxAge)
-                .sameSite("Strict")      // Her kan du sætte SameSite
+                .sameSite("Strict")      
                 .build();
         res.addHeader(HttpHeaders.SET_COOKIE, refresh.toString());
 

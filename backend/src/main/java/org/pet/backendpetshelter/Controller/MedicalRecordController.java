@@ -4,6 +4,7 @@ package org.pet.backendpetshelter.Controller;
 import org.pet.backendpetshelter.DTO.MedicalRecordDTORequest;
 import org.pet.backendpetshelter.DTO.MedicalRecordDTOResponse;
 import org.pet.backendpetshelter.Service.MedicalRecordService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/medical-record")
 @CrossOrigin
+@Profile("mysql")
 public class MedicalRecordController {
 
 

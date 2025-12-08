@@ -1,18 +1,18 @@
 package org.pet.backendpetshelter.Service;
 
 
-import org.pet.backendpetshelter.DTO.AnimalDTOResponse;
 import org.pet.backendpetshelter.DTO.SpeciesDTORequest;
 import org.pet.backendpetshelter.DTO.SpeciesDTOResponse;
-import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Entity.Species;
-import org.pet.backendpetshelter.Reposiotry.SpeciesRepository;
+import org.pet.backendpetshelter.Repository.SpeciesRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("mysql")
 public class SpeciesService {
 
     private final SpeciesRepository speciesRepository;
@@ -38,11 +38,25 @@ public class SpeciesService {
     /* Add Species */
     public SpeciesDTOResponse addSpecies(SpeciesDTORequest request){
 
+        // Validate input data
+        validateName(request.getName());
+
+
+
         Species newSpecies = new Species();
         newSpecies.setName(request.getName());
         speciesRepository.save(newSpecies);
         return new SpeciesDTOResponse(newSpecies);
     }
+
+
+    // Validation Methods
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Species name cannot be null or empty.");
+        }
+    }
+
 
 
     /* Update Species */

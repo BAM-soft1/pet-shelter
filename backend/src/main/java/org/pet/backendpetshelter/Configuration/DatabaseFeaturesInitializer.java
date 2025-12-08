@@ -1,6 +1,7 @@
 package org.pet.backendpetshelter.Configuration;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Order(2) // Run after InitData
+@Profile("mysql") // Only run when MySQL profile is active
 public class DatabaseFeaturesInitializer implements CommandLineRunner {
 
     private final DataSource dataSource;
@@ -40,7 +42,6 @@ public class DatabaseFeaturesInitializer implements CommandLineRunner {
             System.out.println("Database features loaded successfully!");
         } catch (Exception e) {
             System.err.println("Error loading database features: " + e.getMessage());
-            e.printStackTrace();
             // Don't throw - allow application to start even if features fail
         }
     }

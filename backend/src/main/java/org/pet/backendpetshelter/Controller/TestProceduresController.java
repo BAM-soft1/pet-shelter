@@ -1,6 +1,7 @@
 package org.pet.backendpetshelter.Controller;
 
-import org.pet.backendpetshelter.Reposiotry.AnimalProceduresRepository;
+import org.pet.backendpetshelter.Repository.AnimalProceduresRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/test-procedures")
 @CrossOrigin
+@Profile("mysql")
 public class TestProceduresController {
 
     private final AnimalProceduresRepository animalProceduresRepository;

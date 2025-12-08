@@ -7,14 +7,14 @@ import lombok.Getter;
 import org.pet.backendpetshelter.Configuration.JwtProperties;
 import org.pet.backendpetshelter.Configuration.JwtService;
 import org.pet.backendpetshelter.Configuration.RefreshToken;
-import org.pet.backendpetshelter.DTO.AuthResponse;
 import org.pet.backendpetshelter.DTO.LoginRequest;
 import org.pet.backendpetshelter.DTO.RegisterUserRequest;
 import org.pet.backendpetshelter.DTO.UserResponse;
 import org.pet.backendpetshelter.Entity.User;
-import org.pet.backendpetshelter.Reposiotry.RefreshTokenRepository;
-import org.pet.backendpetshelter.Reposiotry.UserRepository;
+import org.pet.backendpetshelter.Repository.RefreshTokenRepository;
+import org.pet.backendpetshelter.Repository.UserRepository;
 import org.pet.backendpetshelter.Roles;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +23,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
-
 @Service
+@Profile("mysql")
 public class AuthService {
 
     private final UserRepository userRepository;

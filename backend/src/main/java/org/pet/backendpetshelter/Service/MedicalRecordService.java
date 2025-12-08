@@ -8,39 +8,42 @@ import org.pet.backendpetshelter.Entity.MedicalRecord;
 import org.pet.backendpetshelter.Entity.User;
 import org.pet.backendpetshelter.Entity.Veterinarian;
 import org.pet.backendpetshelter.Reposiotry.AnimalRepository;
-import org.pet.backendpetshelter.Reposiotry.MedicalRecordReposiotry;
+import org.pet.backendpetshelter.Repository.MedicalRecordRepository;
 import org.pet.backendpetshelter.Reposiotry.VeterinarianRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Profile("mysql")
 public class MedicalRecordService {
 
-    private final MedicalRecordReposiotry medicalRecordReposiotry;
+    private final MedicalRecordRepository medicalRecordRepository;
     private final AnimalRepository animalRepository;
     private final VeterinarianRepository veterinarianRepository;
 
-    public MedicalRecordService(MedicalRecordReposiotry medicalRecordReposiotry, 
+    public MedicalRecordService(MedicalRecordRepository medicalRecordRepository, 
                                 AnimalRepository animalRepository,
                                 VeterinarianRepository veterinarianRepository) {
-        this.medicalRecordReposiotry = medicalRecordReposiotry;
+        this.medicalRecordRepository = medicalRecordRepository;
         this.animalRepository = animalRepository;
         this.veterinarianRepository = veterinarianRepository;
     }
 
     /* Get all medical records */
     public List<MedicalRecordDTOResponse> getAllMedicalRecords() {
-        return medicalRecordReposiotry.findAll().stream()
+        return medicalRecordRepository.findAll().stream()
                 .map(MedicalRecordDTOResponse::new)
                 .toList();
     }
 
     /* Get specific medical record */
     public MedicalRecordDTOResponse getMedicalRecordById(Long id) {
-        MedicalRecord medicalRecord = medicalRecordReposiotry.findById(id)
+
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
         return new MedicalRecordDTOResponse(medicalRecord);
     }
@@ -62,20 +65,19 @@ public class MedicalRecordService {
         Veterinarian veterinarian = getAuthenticatedVeterinarian();
 
         MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setAnimal(animal);
-        medicalRecord.setVeterinarian(veterinarian);
-        medicalRecord.setDate(request.getDate());
-        medicalRecord.setDiagnosis(request.getDiagnosis());
-        medicalRecord.setTreatment(request.getTreatment());
-        medicalRecord.setCost(request.getCost());
-        
-        medicalRecordReposiotry.save(medicalRecord);
+        medicalRecord.setAnimal(reuqest.getAnimal());
+        medicalRecord.setVeterinarian(reuqest.getVeterinarian());
+        medicalRecord.setDate(reuqest.getDate());
+        medicalRecord.setDiagnosis(reuqest.getDiagnosis());
+        medicalRecord.setTreatment(reuqest.getTreatment());
+        medicalRecord.setCost(reuqest.getCost());
+        medicalRecordRepository.save(medicalRecord);
         return new MedicalRecordDTOResponse(medicalRecord);
     }
 
     /* Update medical record */
     public MedicalRecordDTOResponse updateMedicalRecord(Long id, MedicalRecordDTORequest request) {
-        MedicalRecord medicalRecord = medicalRecordReposiotry.findById(id)
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
 
         // Hent Animal fra database
@@ -88,15 +90,18 @@ public class MedicalRecordService {
         medicalRecord.setTreatment(request.getTreatment());
         medicalRecord.setCost(request.getCost());
 
-        medicalRecordReposiotry.save(medicalRecord);
+        medicalRecordRepository.save(medicalRecord);
         return new MedicalRecordDTOResponse(medicalRecord);
     }
 
     /* Delete medical record */
     public void deleteMedicalRecord(Long id) {
-        if (!medicalRecordReposiotry.existsById(id)) {  
-            throw new EntityNotFoundException("Cannot delete. Medical Record not found with id: " + id);
+        if (!medicalRecordRepository.existsById(id)) {
+            throw new EntityNotFoundException("Cannot delete. User not found with id: " + id);
         }
+        medicalRecordRepository.deleteById(id);
+
+    }
         medicalRecordReposiotry.deleteById(id);
     }
 

@@ -2,9 +2,11 @@ package org.pet.backendpetshelter;
 
 
 import org.pet.backendpetshelter.Entity.*;
-import org.pet.backendpetshelter.Reposiotry.*;
+import org.pet.backendpetshelter.Repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -12,12 +14,13 @@ import java.text.SimpleDateFormat;
 
 @Component
 @Order(1) // Run first, before DatabaseFeaturesInitializer
+@Profile("(mysql | migrate-mongo | migrate-neo4j) & !test") // Run for mysql and migration profiles
 public class InitData implements CommandLineRunner {
     private final UserRepository userRepository;
     private final AnimalRepository animalRepository;
     private final SpeciesRepository speciesRepository;
     private final BreedRepository breedRepository;
-    private final MedicalRecordReposiotry medicalRecordReposiotry;
+    private final MedicalRecordRepository medicalRecordRepository;
     private final VeterinarianRepository veterinarianRepository;
     private final VaccinationRepository vaccinationRepository;
     private final VaccinationTypeRepository vaccinationTypeRepository;
@@ -25,14 +28,14 @@ public class InitData implements CommandLineRunner {
     private final FosterCareRepository fosterCareRepository;
     private final AdoptionApplicationRepository adoptionApplicationRepository;
     private final AdoptionRepository adoptionRepository;
-    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public InitData(UserRepository userRepository, AnimalRepository animalRepository, SpeciesRepository speciesRepository, BreedRepository breedRepository, MedicalRecordReposiotry medicalRecordReposiotry, VeterinarianRepository veterinarianRepository, VaccinationRepository vaccinationRepository, VaccinationTypeRepository vaccinationTypeRepository, VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository, FosterCareRepository fosterCareRepository, AdoptionApplicationRepository adoptionApplicationRepository, AdoptionRepository adoptionRepository, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+    public InitData(UserRepository userRepository, AnimalRepository animalRepository, SpeciesRepository speciesRepository, BreedRepository breedRepository, MedicalRecordRepository medicalRecordRepository, VeterinarianRepository veterinarianRepository, VaccinationRepository vaccinationRepository, VaccinationTypeRepository vaccinationTypeRepository, VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository, FosterCareRepository fosterCareRepository, AdoptionApplicationRepository adoptionApplicationRepository, AdoptionRepository adoptionRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.animalRepository = animalRepository;
         this.speciesRepository = speciesRepository;
         this.breedRepository = breedRepository;
-        this.medicalRecordReposiotry = medicalRecordReposiotry;
+        this.medicalRecordRepository = medicalRecordRepository;
         this.veterinarianRepository = veterinarianRepository;
         this.vaccinationRepository = vaccinationRepository;
         this.vaccinationTypeRepository = vaccinationTypeRepository;
@@ -67,6 +70,16 @@ public class InitData implements CommandLineRunner {
 
         userRepository.save(user1);
 
+        User user2 = new User();
+        user2.setEmail("testuser@mail.com");
+        user2.setPassword(passwordEncoder.encode("Testpassword!"));
+        user2.setFirstName("Test");
+        user2.setLastName("User");
+        user2.setPhone("12121212");
+        user2.setIsActive(true);
+        user2.setRole(Roles.USER);
+
+        userRepository.save(user2);
 
         User user2 = new User();
         user2.setEmail("oxVet@gmail.com");
@@ -150,7 +163,7 @@ public class InitData implements CommandLineRunner {
         animal1.setBirthDate(dateFormat.parse("2021-03-14"));
         animal1.setSex("male");
         animal1.setIntakeDate(dateFormat.parse("2022-06-27"));
-        animal1.setStatus("available");
+        animal1.setStatus(Status.AVAILABLE);
         animal1.setPrice(250);
         animal1.setIsActive(true);
         animal1.setImageUrl("https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800");
@@ -164,7 +177,7 @@ public class InitData implements CommandLineRunner {
         animal2.setBirthDate(dateFormat.parse("2020-05-20"));
         animal2.setSex("female");
         animal2.setIntakeDate(dateFormat.parse("2023-01-15"));
-        animal2.setStatus("available");
+        animal2.setStatus(Status.AVAILABLE);
         animal2.setPrice(150);
         animal2.setIsActive(true);
         animal2.setImageUrl("https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=800");
@@ -178,7 +191,7 @@ public class InitData implements CommandLineRunner {
         animal3.setBirthDate(dateFormat.parse("2019-08-10"));
         animal3.setSex("male");
         animal3.setIntakeDate(dateFormat.parse("2023-03-20"));
-        animal3.setStatus("available");
+        animal3.setStatus(Status.AVAILABLE);
         animal3.setPrice(300);
         animal3.setIsActive(true);
         animal3.setImageUrl("https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800");
@@ -192,7 +205,7 @@ public class InitData implements CommandLineRunner {
         animal4.setBirthDate(dateFormat.parse("2022-01-15"));
         animal4.setSex("female");
         animal4.setIntakeDate(dateFormat.parse("2023-05-10"));
-        animal4.setStatus("available");
+        animal4.setStatus(Status.AVAILABLE);
         animal4.setPrice(200);
         animal4.setIsActive(true);
         animal4.setImageUrl("https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=800");
@@ -206,7 +219,7 @@ public class InitData implements CommandLineRunner {
         animal5.setBirthDate(dateFormat.parse("2020-11-05"));
         animal5.setSex("female");
         animal5.setIntakeDate(dateFormat.parse("2023-07-22"));
-        animal5.setStatus("available");
+        animal5.setStatus(Status.AVAILABLE);
         animal5.setPrice(350);
         animal5.setIsActive(true);
         animal5.setImageUrl("https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=800");
@@ -220,7 +233,7 @@ public class InitData implements CommandLineRunner {
         animal6.setBirthDate(dateFormat.parse("2021-06-18"));
         animal6.setSex("male");
         animal6.setIntakeDate(dateFormat.parse("2023-08-05"));
-        animal6.setStatus("available");
+        animal6.setStatus(Status.AVAILABLE);
         animal6.setPrice(250);
         animal6.setIsActive(true);
         animal6.setImageUrl("https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=800");
@@ -234,7 +247,7 @@ public class InitData implements CommandLineRunner {
         animal7.setBirthDate(dateFormat.parse("2018-04-22"));
         animal7.setSex("male");
         animal7.setIntakeDate(dateFormat.parse("2023-09-12"));
-        animal7.setStatus("available");
+        animal7.setStatus(Status.AVAILABLE);
         animal7.setPrice(200);
         animal7.setIsActive(true);
         animal7.setImageUrl("https://images.unsplash.com/photo-1568572933382-74d440642117?w=800");
@@ -248,7 +261,7 @@ public class InitData implements CommandLineRunner {
         animal8.setBirthDate(dateFormat.parse("2023-02-10"));
         animal8.setSex("female");
         animal8.setIntakeDate(dateFormat.parse("2023-10-01"));
-        animal8.setStatus("available");
+        animal8.setStatus(Status.AVAILABLE);
         animal8.setPrice(100);
         animal8.setIsActive(true);
         animal8.setImageUrl("https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=800");
@@ -262,7 +275,7 @@ public class InitData implements CommandLineRunner {
         animal9.setBirthDate(dateFormat.parse("2022-07-30"));
         animal9.setSex("female");
         animal9.setIntakeDate(dateFormat.parse("2023-10-15"));
-        animal9.setStatus("available");
+        animal9.setStatus(Status.AVAILABLE);
         animal9.setPrice(150);
         animal9.setIsActive(true);
         animal9.setImageUrl("https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800");
@@ -276,7 +289,7 @@ public class InitData implements CommandLineRunner {
         animal10.setBirthDate(dateFormat.parse("2019-12-01"));
         animal10.setSex("male");
         animal10.setIntakeDate(dateFormat.parse("2023-01-05"));
-        animal10.setStatus("adopted");
+        animal10.setStatus(Status.ADOPTED);
         animal10.setPrice(300);
         animal10.setIsActive(false);
         animal10.setImageUrl("https://images.unsplash.com/photo-1558788353-f76d92427f16?w=800");
@@ -300,7 +313,7 @@ public class InitData implements CommandLineRunner {
         medicalRecord1.setDiagnosis("Regular Checkup - Healthy");
         medicalRecord1.setTreatment("N/A");
         medicalRecord1.setCost(50);
-        medicalRecordReposiotry.save(medicalRecord1);
+        medicalRecordRepository.save(medicalRecord1);
 
         MedicalRecord medicalRecord2 = new MedicalRecord();
         medicalRecord2.setAnimal(animal2);

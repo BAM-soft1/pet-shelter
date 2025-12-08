@@ -189,7 +189,7 @@ BEGIN
     DECLARE v_actual_count INT;
     DECLARE v_animal_species_id INT;
 
-    -- GET THE ANIMAL'S SPECIES (this line was missing!)
+    -- GET THE ANIMAL'S SPECIES
     SELECT species_id INTO v_animal_species_id 
     FROM animal 
     WHERE animal_id = p_animal_id;
@@ -212,26 +212,6 @@ BEGIN
     AND v.next_due_date >= CURDATE();
     
     RETURN v_actual_count >= v_required_count;
-END //
-DELIMITER ;
-
--- Function 3: Get total adoption fee (animal price + medical costs)
-DROP FUNCTION IF EXISTS GetTotalAdoptionCost;
-DELIMITER //
-CREATE FUNCTION GetTotalAdoptionCost(p_animal_id INT)
-RETURNS DECIMAL(10,2)
-READS SQL DATA
-BEGIN
-    DECLARE v_animal_price DECIMAL(10,2);
-    DECLARE v_medical_costs DECIMAL(10,2);
-    
-    SELECT price INTO v_animal_price FROM animal WHERE animal_id = p_animal_id;
-    
-    SELECT IFNULL(SUM(cost), 0) INTO v_medical_costs
-    FROM medical_record
-    WHERE animal_id = p_animal_id;
-    
-    RETURN v_animal_price + v_medical_costs;
 END //
 DELIMITER ;
 
@@ -415,9 +395,6 @@ CREATE INDEX idx_application_status ON adoption_application(status);
 -- ============================================================================
 -- EVENTS
 -- ============================================================================
-
--- Enable the event scheduler (you may need to run this separately with admin privileges)
--- SET GLOBAL event_scheduler = ON;
 
 -- Event 1: Daily check for overdue vaccinations and log them
 DROP EVENT IF EXISTS daily_vaccination_check;
