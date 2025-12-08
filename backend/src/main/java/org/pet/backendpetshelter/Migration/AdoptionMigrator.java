@@ -50,8 +50,6 @@ public class AdoptionMigrator implements CommandLineRunner {
     private AdoptionDocument toDocument(Adoption a) {
         return AdoptionDocument.builder()
                 .id(toStringOrNull(a.getId()))
-                .adoptionUserId(toStringOrNull(a.getAdoptionUser() != null ? a.getAdoptionUser().getId() : null))
-                .animalId(toStringOrNull(a.getAnimal() != null ? a.getAnimal().getId() : null))
                 .applicationId(toStringOrNull(a.getApplication() != null ? a.getApplication().getId() : null))
                 .adoptionDate(a.getAdoptionDate())
                 .isActive(a.getIsActive())

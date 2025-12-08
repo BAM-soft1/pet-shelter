@@ -21,12 +21,6 @@ public class AdoptionNode {
     private Date adoptionDate;
     private Boolean isActive;
 
-    @Relationship(type = "BY_USER", direction = Relationship.Direction.OUTGOING)
-    private UserNode adoptionUser;
-
-    @Relationship(type = "OF_ANIMAL", direction = Relationship.Direction.OUTGOING)
-    private AnimalNode animal;
-
     @Relationship(type = "FROM_APPLICATION", direction = Relationship.Direction.OUTGOING)
     private AdoptionApplicationNode application;
 }

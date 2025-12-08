@@ -38,7 +38,4 @@ public class AdoptionApplication {
 
     private Boolean isActive;
 
-
-
-
 }
