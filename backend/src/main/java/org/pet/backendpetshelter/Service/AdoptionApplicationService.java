@@ -38,6 +38,7 @@ public class AdoptionApplicationService
         AdoptionApplication application = new AdoptionApplication();
         application.setUser(request.getUser());
         application.setAnimal(request.getAnimal());
+        application.setDescription(request.getDescription());
         application.setApplicationDate(request.getApplicationDate());
         application.setStatus(request.getStatus());
         application.setReviewedByUser(request.getReviewedByUser());
@@ -55,6 +56,7 @@ public class AdoptionApplicationService
 
         application.setUser(request.getUser());
         application.setAnimal(request.getAnimal());
+        application.setDescription(request.getDescription());
         application.setApplicationDate(request.getApplicationDate());
         application.setStatus(request.getStatus());
         application.setReviewedByUser(request.getReviewedByUser());

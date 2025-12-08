@@ -18,6 +18,7 @@ public class AdoptionApplicationRespons {
     private Long id;
     private User user;
     private Animal animal;
+    private String description;
     private Date applicationDate;
     private Status status;
     private User reviewedByUser;
@@ -27,6 +28,7 @@ public class AdoptionApplicationRespons {
         this.id = adoptionApplication.getId();
         this.user = adoptionApplication.getUser();
         this.animal = adoptionApplication.getAnimal();
+        this.description = adoptionApplication.getDescription();
         this.applicationDate = adoptionApplication.getApplicationDate();
         this.status = adoptionApplication.getStatus();
         this.reviewedByUser = adoptionApplication.getReviewedByUser();

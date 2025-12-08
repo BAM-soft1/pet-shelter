@@ -14,6 +14,7 @@ import java.util.Date;
 public class AdoptionApplicationRequest {
     private User user;
     private Animal animal;
+    private String description;
     private Date applicationDate;
     private Status status;
     private User reviewedByUser;

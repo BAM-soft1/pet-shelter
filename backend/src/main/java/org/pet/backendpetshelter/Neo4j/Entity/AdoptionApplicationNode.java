@@ -19,6 +19,7 @@ public class AdoptionApplicationNode {
     @Id
     private String id;
 
+    private String description;
     private Date applicationDate;
     private Status status;
     private Boolean isActive;

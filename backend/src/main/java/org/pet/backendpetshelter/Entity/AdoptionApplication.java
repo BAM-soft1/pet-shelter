@@ -32,6 +32,9 @@ public class AdoptionApplication {
     @Column(nullable = false, length = 32)
     private Status status;
 
+    @Column(name = "description", length = 2000, nullable = false) 
+    private String description; 
+
     @ManyToOne
     @JoinColumn(name = "reviewed_by_user_id")
     private User reviewedByUser;
