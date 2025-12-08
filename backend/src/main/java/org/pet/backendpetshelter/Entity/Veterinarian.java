@@ -15,7 +15,7 @@ public class Veterinarian {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
     private String licenseNumber;
     private String clinicName;

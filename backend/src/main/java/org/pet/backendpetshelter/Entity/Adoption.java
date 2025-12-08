@@ -18,7 +18,7 @@ public class Adoption {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "application_id", nullable = false)
+    @JoinColumn(name = "application_id", nullable = false, unique = true)
     private AdoptionApplication application;
 
     private Date adoptionDate;
