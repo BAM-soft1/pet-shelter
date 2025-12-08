@@ -18,5 +18,5 @@ public class VaccinationTypeNode {
     private String vaccineName;
     private String description;
     private int durationMonths;
-    private int requiredForAdoption;
+    private Boolean requiredForAdoption;
 }

@@ -19,5 +19,5 @@ public class VaccinationTypeDocument {
     private String description;
 
     private int durationMonths;
-    private int requiredForAdoption;
+    private Boolean requiredForAdoption;
 }
