@@ -10,6 +10,25 @@ type Breed = {
   name: string;
 };
 
+type MedicalRecord = {
+  id: number;
+  animal: Animal;
+  user: User;
+  date: string;
+  diagnosis: string;
+  treatment: string;
+  cost: number;
+};
+
+type MedicalRecordRequest = {
+  animalId: number;
+  userId: number;
+  date: string; 
+  diagnosis: string;
+  treatment: string;
+  cost: number;
+};
+
 // Animal type matching backend AnimalDTOResponse
 type Animal = {
   id: number;
@@ -88,4 +107,4 @@ type AuthResponse = {
   expiresInSeconds: number;
 };
 
-export type { Animal, AnimalRequest, Species, Breed, User, Adoption, AuthUser, LoginRequest, RegisterRequest, AuthResponse };
+export type { Animal, AnimalRequest, Species, Breed, User, Adoption, AuthUser, LoginRequest, RegisterRequest, AuthResponse, MedicalRecord, MedicalRecordRequest};

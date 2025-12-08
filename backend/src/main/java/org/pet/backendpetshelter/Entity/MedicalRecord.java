@@ -26,10 +26,10 @@ public class MedicalRecord {
 
     private Date date;
 
-    @Column(nullable = false, length = 32)
+    @Column(nullable = false, length = 1000)
     private String diagnosis;
 
-    @Column(nullable = false, length = 32)
+    @Column(nullable = false, length = 1000)
     private String treatment;
     private int cost;
 }

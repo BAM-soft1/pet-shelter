@@ -6,6 +6,8 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
+import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview"
+import MedicalRecordLayout from "./pages/medicalRecord/MedicalRecordLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -21,6 +23,20 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+
+          {/* Protected Veterinarian Routes */}
+          <Route
+            path="/veterinarian"
+            element={
+              <RequireAuth roles={["VETERINARIAN", "STAFF"]}>
+                <MedicalRecordLayout />
+              </RequireAuth>
+            }
+          >
+            <Route path="overview" element={<MedicalRecordOverview />} />
+          </Route>
+
 
           {/* Protected Admin Routes */}
           <Route

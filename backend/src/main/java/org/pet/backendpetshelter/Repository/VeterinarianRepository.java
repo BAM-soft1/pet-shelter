@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long> {
     Veterinarian findById(long id);
-
+    Veterinarian findByUser_Email(String email);
 }
