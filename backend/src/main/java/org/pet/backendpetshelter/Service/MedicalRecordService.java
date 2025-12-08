@@ -7,9 +7,9 @@ import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Entity.MedicalRecord;
 import org.pet.backendpetshelter.Entity.User;
 import org.pet.backendpetshelter.Entity.Veterinarian;
-import org.pet.backendpetshelter.Reposiotry.AnimalRepository;
+import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.pet.backendpetshelter.Repository.MedicalRecordRepository;
-import org.pet.backendpetshelter.Reposiotry.VeterinarianRepository;
+import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.context.annotation.Profile;
@@ -50,7 +50,7 @@ public class MedicalRecordService {
 
     /* Get medical records by animal id */
     public List<MedicalRecordDTOResponse> getMedicalRecordsByAnimalId(Long animalId) {
-        return medicalRecordReposiotry.findByAnimalId(animalId).stream()
+        return medicalRecordRepository.findByAnimalId(animalId).stream()
                 .map(MedicalRecordDTOResponse::new)
                 .toList();
     }
@@ -65,12 +65,12 @@ public class MedicalRecordService {
         Veterinarian veterinarian = getAuthenticatedVeterinarian();
 
         MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setAnimal(reuqest.getAnimal());
-        medicalRecord.setVeterinarian(reuqest.getVeterinarian());
-        medicalRecord.setDate(reuqest.getDate());
-        medicalRecord.setDiagnosis(reuqest.getDiagnosis());
-        medicalRecord.setTreatment(reuqest.getTreatment());
-        medicalRecord.setCost(reuqest.getCost());
+        medicalRecord.setAnimal(animal);
+        medicalRecord.setVeterinarian(veterinarian);
+        medicalRecord.setDate(request.getDate());
+        medicalRecord.setDiagnosis(request.getDiagnosis());
+        medicalRecord.setTreatment(request.getTreatment());
+        medicalRecord.setCost(request.getCost());
         medicalRecordRepository.save(medicalRecord);
         return new MedicalRecordDTOResponse(medicalRecord);
     }
@@ -100,9 +100,6 @@ public class MedicalRecordService {
             throw new EntityNotFoundException("Cannot delete. User not found with id: " + id);
         }
         medicalRecordRepository.deleteById(id);
-
-    }
-        medicalRecordReposiotry.deleteById(id);
     }
 
     private Veterinarian getAuthenticatedVeterinarian() {

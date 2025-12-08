@@ -81,15 +81,15 @@ public class InitData implements CommandLineRunner {
 
         userRepository.save(user2);
 
-        User user2 = new User();
-        user2.setEmail("oxVet@gmail.com");
-        user2.setPassword(passwordEncoder.encode("123!"));
-        user2.setFirstName("oxVet");
-        user2.setLastName("wooVet");
-        user2.setPhone("424242425");
-        user2.setIsActive(true);
-        user2.setRole(Roles.VETERINARIAN);
-        userRepository.save(user2);
+        User user3 = new User();
+        user3.setEmail("oxVet@gmail.com");
+        user3.setPassword(passwordEncoder.encode("123!"));
+        user3.setFirstName("oxVet");
+        user3.setLastName("wooVet");
+        user3.setPhone("424242425");
+        user3.setIsActive(true);
+        user3.setRole(Roles.VETERINARIAN);
+        userRepository.save(user3);
 
 
 
@@ -322,7 +322,7 @@ public class InitData implements CommandLineRunner {
         medicalRecord2.setDiagnosis("Wing Injury");
         medicalRecord2.setTreatment("Bandaged wing, prescribed antibiotics");
         medicalRecord2.setCost(120);
-        medicalRecordReposiotry.save(medicalRecord2);
+        medicalRecordRepository.save(medicalRecord2);
 
 
 
