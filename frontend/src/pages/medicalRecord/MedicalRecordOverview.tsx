@@ -13,7 +13,7 @@ import MedicalRecordSortButtons from "./helpers/MedicalRecordSortButtonsProps";
 import { useMedicalRecordFilters } from "./helpers/useMedicalRecordFilters";
 
 type MedicalRecordFormData = {
-  animalId: number;
+  animalId: number | null;
   date: string;
   diagnosis: string;
   treatment: string;
@@ -156,11 +156,7 @@ export default function MedicalRecordOverview() {
         filteredCount={filteredAndSortedRecords.length}
       />
 
-      <MedicalRecordSortButtons
-        sortField={sortField}
-        sortDirection={sortDirection}
-        onSort={handleSort}
-      />
+      <MedicalRecordSortButtons sortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
 
       {filteredAndSortedRecords.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No medical records found</div>
@@ -188,25 +184,13 @@ export default function MedicalRecordOverview() {
                 <TableCell>${record.cost.toFixed(2)}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => handleViewClick(record)}
-                      className="text-green-600 hover:text-green-800"
-                      title="View details"
-                    >
+                    <button onClick={() => handleViewClick(record)} className="text-green-600 hover:text-green-800" title="View details">
                       <EyeIcon className="h-5 w-5" />
                     </button>
-                    <button
-                      onClick={() => handleEditClick(record)}
-                      className="text-blue-600 hover:text-blue-800"
-                      title="Edit"
-                    >
+                    <button onClick={() => handleEditClick(record)} className="text-blue-600 hover:text-blue-800" title="Edit">
                       <PencilIcon className="h-5 w-5" />
                     </button>
-                    <button
-                      onClick={() => handleDeleteClick(record)}
-                      className="text-red-600 hover:text-red-800"
-                      title="Delete"
-                    >
+                    <button onClick={() => handleDeleteClick(record)} className="text-red-600 hover:text-red-800" title="Delete">
                       <TrashIcon className="h-5 w-5" />
                     </button>
                   </div>
@@ -217,25 +201,11 @@ export default function MedicalRecordOverview() {
         </Table>
       )}
 
-      <MedicalRecordDetailModal
-        record={selectedRecord}
-        isOpen={isDetailOpen}
-        onClose={() => setIsDetailOpen(false)}
-      />
+      <MedicalRecordDetailModal record={selectedRecord} isOpen={isDetailOpen} onClose={() => setIsDetailOpen(false)} />
 
-      <MedicalRecordFormDialog
-        record={selectedRecord}
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        onSubmit={handleFormSubmit}
-      />
+      <MedicalRecordFormDialog record={selectedRecord} isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSubmit={handleFormSubmit} />
 
-      <DeleteConfirmDialogVet
-        record={selectedRecord}
-        isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        onConfirm={handleDeleteConfirm}
-      />
+      <DeleteConfirmDialogVet record={selectedRecord} isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} onConfirm={handleDeleteConfirm} />
     </>
   );
 }

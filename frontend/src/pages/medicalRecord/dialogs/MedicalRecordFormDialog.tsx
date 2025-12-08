@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 import type { MedicalRecord, Animal } from "@/types/types";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,12 +23,7 @@ type MedicalRecordFormDialogProps = {
   onSubmit: (data: MedicalRecordFormData) => Promise<void>;
 };
 
-export default function MedicalRecordFormDialog({
-  record,
-  isOpen,
-  onClose,
-  onSubmit,
-}: MedicalRecordFormDialogProps) {
+export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSubmit }: MedicalRecordFormDialogProps) {
   const [formData, setFormData] = useState<MedicalRecordFormData>({
     animalId: null,
     date: "",
@@ -80,9 +68,7 @@ export default function MedicalRecordFormDialog({
     fetchAnimals();
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -112,6 +98,7 @@ export default function MedicalRecordFormDialog({
       onClose();
     } catch (err) {
       setError("Failed to submit the form. Please try again.");
+      console.log(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -123,13 +110,9 @@ export default function MedicalRecordFormDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
-            {record ? "Edit Medical Record" : "New Medical Record"}
-          </DialogTitle>
+          <DialogTitle className="text-2xl">{record ? "Edit Medical Record" : "New Medical Record"}</DialogTitle>
           <DialogDescription>
-            {record
-              ? "Update the details of the medical record."
-              : "Fill in the details for a new medical record."}
+            {record ? "Update the details of the medical record." : "Fill in the details for a new medical record."}
           </DialogDescription>
         </DialogHeader>
 
@@ -139,11 +122,7 @@ export default function MedicalRecordFormDialog({
             <div className="flex gap-3 items-center">
               {selectedAnimal?.imageUrl && (
                 <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-indigo-200 flex-shrink-0">
-                  <img
-                    src={selectedAnimal.imageUrl}
-                    alt={selectedAnimal.name}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={selectedAnimal.imageUrl} alt={selectedAnimal.name} className="w-full h-full object-cover" />
                 </div>
               )}
               <select
@@ -167,12 +146,7 @@ export default function MedicalRecordFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="date">Date</Label>
-            <DatePicker
-              id="date"
-              selectedDate={formData.date ? new Date(formData.date) : null}
-              onDateChange={handleDateChange}
-              className="w-full"
-            />
+            <DatePicker id="date" selectedDate={formData.date ? new Date(formData.date) : null} onDateChange={handleDateChange} className="w-full" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -202,22 +176,10 @@ export default function MedicalRecordFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="cost">Cost ($)</Label>
-            <Input
-              type="number"
-              id="cost"
-              name="cost"
-              value={formData.cost}
-              onChange={handleChange}
-              min={0}
-              step={0.01}
-            />
+            <Input type="number" id="cost" name="cost" value={formData.cost} onChange={handleChange} min={0} step={0.01} />
           </div>
 
-          {error && (
-            <div className="p-3 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">
-              {error}
-            </div>
-          )}
+          {error && <div className="p-3 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>}
         </div>
 
         <DialogFooter className="gap-2">

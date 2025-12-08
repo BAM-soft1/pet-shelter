@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import type { MedicalRecord } from "@/types/types";
-import type { SortField, SortDirection } from "../components/MedicalRecordSortButtons";
+import type { SortField, SortDirection } from "./MedicalRecordSortButtonsProps";
 
 export function useMedicalRecordFilters(records: MedicalRecord[]) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,7 +10,7 @@ export function useMedicalRecordFilters(records: MedicalRecord[]) {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const filteredAndSortedRecords = useMemo(() => {
-    let filtered = records.filter((record) => {
+    const filtered = records.filter((record) => {
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch =
         searchTerm === "" ||

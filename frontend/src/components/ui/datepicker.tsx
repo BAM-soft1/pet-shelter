@@ -1,4 +1,3 @@
-import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,7 @@ export function DatePicker({ id, selectedDate, onDateChange, className }: DatePi
         <Calendar
           mode="single"
           selected={selectedDate || undefined}
-          onSelect={(date) => onDateChange(date || null)}
+          onSelect={(date: Date | undefined) => onDateChange(date || null)}
           initialFocus
         />
       </PopoverContent>
