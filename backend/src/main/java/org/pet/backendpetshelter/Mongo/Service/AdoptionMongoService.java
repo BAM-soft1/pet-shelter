@@ -41,8 +41,6 @@ public class AdoptionMongoService {
         
         adoption.setAdoptionDate(request.getAdoptionDate());
         adoption.setIsActive(request.getIsActive());
-        adoption.setAdoptionUserId(request.getAdoptionUserId());
-        adoption.setAnimalId(request.getAnimalId());
         adoption.setApplicationId(request.getApplicationId());
         
         return adoptionRepository.save(adoption);

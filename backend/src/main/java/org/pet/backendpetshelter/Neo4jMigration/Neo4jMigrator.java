@@ -276,8 +276,6 @@ public class Neo4jMigrator implements CommandLineRunner {
                 .id(toStringOrNull(a.getId()))
                 .adoptionDate(a.getAdoptionDate())
                 .isActive(a.getIsActive())
-                .adoptionUser(a.getAdoptionUser() != null ? userCache.get(a.getAdoptionUser().getId()) : null)
-                .animal(a.getAnimal() != null ? animalCache.get(a.getAnimal().getId()) : null)
                 .application(a.getApplication() != null ? applicationCache.get(a.getApplication().getId()) : null)
                 .build()).toList();
         adoptionNeo4jRepository.saveAll(nodes);

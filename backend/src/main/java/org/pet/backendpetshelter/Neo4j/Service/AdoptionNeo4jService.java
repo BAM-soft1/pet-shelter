@@ -41,8 +41,6 @@ public class AdoptionNeo4jService {
         
         adoption.setAdoptionDate(request.getAdoptionDate());
         adoption.setIsActive(request.getIsActive());
-        adoption.setAdoptionUser(request.getAdoptionUser());
-        adoption.setAnimal(request.getAnimal());
         adoption.setApplication(request.getApplication());
         
         return adoptionRepository.save(adoption);

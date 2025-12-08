@@ -377,8 +377,6 @@ public class InitData implements CommandLineRunner {
 
         /* Adoption */
         Adoption adoption1 = new Adoption();
-        adoption1.setAdoptionUser(user1);
-        adoption1.setAnimal(animal10);
         adoption1.setApplication(adoptionApplication1);
         adoption1.setAdoptionDate(dateFormat.parse("2023-10-20"));
         adoption1.setIsActive(true);

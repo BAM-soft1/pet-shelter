@@ -40,8 +40,8 @@ BEGIN
     END IF;
     
     -- Create adoption (triggers handle status updates automatically)
-    INSERT INTO adoption (application_id, animal_id, adoption_user_id, adoption_date)
-    VALUES (p_application_id, v_animal_id, v_adopter_id, p_adoption_date);
+    INSERT INTO adoption (application_id, adoption_date, is_active)
+    VALUES (p_application_id, p_adoption_date, TRUE);
 END //
 DELIMITER ;
 
@@ -228,7 +228,7 @@ FOR EACH ROW
 BEGIN
     UPDATE animal 
     SET status = 'adopted' 
-    WHERE animal_id = NEW.animal_id;
+    WHERE animal_id = (SELECT animal_id FROM adoption_application WHERE adoption_application_id = NEW.application_id);
 END //
 DELIMITER ;
 
@@ -314,10 +314,11 @@ SELECT
     a.adoption_date,
     DATEDIFF(CURDATE(), a.adoption_date) AS days_since_adoption
 FROM adoption a
-JOIN animal an ON a.animal_id = an.animal_id
+JOIN adoption_application aa ON a.application_id = aa.adoption_application_id
+JOIN animal an ON aa.animal_id = an.animal_id
 JOIN species s ON an.species_id = s.species_id
 LEFT JOIN breed b ON an.breed_id = b.breed_id
-JOIN users u ON a.adoption_user_id = u.user_id
+JOIN users u ON aa.user_id = u.user_id
 WHERE a.is_active = TRUE;
 
 -- View 3: vaccination status for all animals

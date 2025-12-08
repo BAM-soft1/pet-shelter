@@ -21,9 +21,12 @@ public class AdoptionResponse {
 
     public AdoptionResponse(Adoption adoption) {
         this.id = adoption.getId();
-        this.user = adoption.getAdoptionUser();
-        this.animal = adoption.getAnimal();
         this.adoptionApplication = adoption.getApplication();
+        // Access user and animal through application (normalized)
+        if (this.adoptionApplication != null) {
+            this.user = this.adoptionApplication.getUser();
+            this.animal = this.adoptionApplication.getAnimal();
+        }
         this.adoptionDate = adoption.getAdoptionDate();
         this.isActive = adoption.getIsActive();
     }

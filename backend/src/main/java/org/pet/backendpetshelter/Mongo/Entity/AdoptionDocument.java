@@ -17,8 +17,6 @@ public class AdoptionDocument {
     @Id
     private String id;
 
-    private String adoptionUserId;
-    private String animalId;
     private String applicationId;
     private Date adoptionDate;
     private Boolean isActive;
