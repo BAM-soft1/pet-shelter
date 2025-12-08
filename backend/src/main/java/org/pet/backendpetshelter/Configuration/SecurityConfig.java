@@ -66,6 +66,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/mongo/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/neo4j/**").permitAll()
                         
+                        // Dog Facts
+                        .requestMatchers(HttpMethod.GET, "/api/dog-facts/**").permitAll()
+
                         // Public docs
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
 
