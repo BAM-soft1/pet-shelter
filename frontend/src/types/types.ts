@@ -65,6 +65,22 @@ type User = {
   role: "ADMIN" | "STAFF" | "VETERINARIAN" | "ADOPTER" | "FOSTER" | "USER";
 };
 
+
+  type AdoptionApplication = {
+  user: User;
+  animal: Animal;
+  applicationDate: string;
+  status: string;
+  description: string;
+  reviewedByUser: User | null;
+  isActive: boolean;
+};
+
+type AdoptionApplicationRequest = {
+  userId: number;
+  animalId: number;
+  description: string;
+}
 type Adoption = {
   adoption_id: number;
   animal_name: string;
@@ -107,4 +123,4 @@ type AuthResponse = {
   expiresInSeconds: number;
 };
 
-export type { Animal, AnimalRequest, Species, Breed, User, Adoption, AuthUser, LoginRequest, RegisterRequest, AuthResponse, MedicalRecord, MedicalRecordRequest};
+export type { Animal, AnimalRequest, Species, Breed, User, Adoption, AdoptionApplicationRequest, AdoptionApplication, AuthUser, LoginRequest, RegisterRequest, AuthResponse, MedicalRecord, MedicalRecordRequest};

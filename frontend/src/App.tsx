@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/landing/Landing";
 import Animals from "./pages/animals/AnimalOverview";
+import AnimalDetailPage from "./pages/animals/AnimalDetailPage";
 import About from "./pages/about/About";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminAnimals from "./pages/admin/AdminAnimals";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/AnimalDetailed" element={<AnimalDetailPage />} />
 
 
           {/* Protected Veterinarian Routes */}

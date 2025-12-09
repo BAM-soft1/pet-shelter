@@ -30,9 +30,9 @@ export default function AnimalDetailPage() {
           <p className="text-sm text-muted-foreground">{animal.breed?.name || animal.species.name} • {age} {age === 1 ? "year" : "years"} old</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Image card */}
-          <Card className="h-full">
+          <Card className="h-full md:col-span-2">
             <CardContent>
               <div className="relative h-96 overflow-hidden rounded-md bg-muted flex items-center justify-center">
                 {animal.imageUrl ? (

@@ -2,6 +2,7 @@ import type { Animal } from "../../types/types";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 import calculateAge from "@/utils/calculateAge";
 
 type AnimalDetailModalProps = {
@@ -14,6 +15,11 @@ export default function AnimalDetailModal({ animal, isOpen, onClose }: AnimalDet
   if (!animal) return null;
 
   const age = calculateAge(animal.birthDate);
+  const navigate = useNavigate();
+
+    const handleApplyForAdoption = () => {
+    navigate("/AnimalDetailed", { state: { animal } });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -53,7 +59,14 @@ export default function AnimalDetailModal({ animal, isOpen, onClose }: AnimalDet
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Status</p>
-                <Badge variant="outline" className="capitalize mt-1">
+                <Badge 
+                  variant="outline" 
+                  className={`capitalize mt-1 ${
+                    animal.status === "AVAILABLE" 
+                      ? "bg-green-100 text-green-800 border-green-300" 
+                      : ""
+                  }`}
+                >
                   {animal.status}
                 </Badge>
               </div>
@@ -84,7 +97,7 @@ export default function AnimalDetailModal({ animal, isOpen, onClose }: AnimalDet
           <Button variant="outline" onClick={onClose} className="flex-1 w-full">
             Close
           </Button>
-          <Button className="flex-1 w-full">Apply for Adoption</Button>
+          <Button className="flex-1 w-full cursor-pointer" onClick={handleApplyForAdoption}>Apply for Adoption</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

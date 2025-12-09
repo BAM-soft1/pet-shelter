@@ -45,8 +45,8 @@ class RefreshTokenRepositoryTest {
     private User createAndSaveUser(String email) {
         User user = new User();
         user.setEmail(email);
-        user.setFirstName("John");
-        user.setLastName("Doe");
+        user.setFirstName("Xabi");
+        user.setLastName("Alonso");
         user.setPassword("hashedPassword123");
         user.setPhone("+45 12345678");
         user.setRole(Roles.USER);

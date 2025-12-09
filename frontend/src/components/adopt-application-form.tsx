@@ -1,5 +1,5 @@
 import { CardContent } from "./ui/card";
-import { type Animal, type AdoptionApplication, type AuthUser, type User } from "@/types/types";
+import { type Animal, type AdoptionApplicationRequest, type AuthUser, type User } from "@/types/types";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -11,7 +11,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 interface AdoptApplicationFormProps {
   animal: Animal;
-  onSubmit?: (application: AdoptionApplication) => void;
+  onSubmit?: (application: AdoptionApplicationRequest) => void;
 }
 
 export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicationFormProps) {
@@ -50,26 +50,17 @@ export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicat
     e.preventDefault();
     if (!user) return handleLoginRedirect();
 
-    const application: AdoptionApplication = {
-      user: {
-        user_id: (user as AuthUser).id,
-        email: user.email,
-        first_name: user.firstName,
-        last_name: user.lastName,
-        phone: user.phone,
-        role: user.role as any,
-      } as unknown as User,
-      animal,
-      applicationDate: new Date().toISOString(),
-      status: "PENDING",
-      description,
-      reviewedByUser: null,
-      isActive: true,
+    const application: AdoptionApplicationRequest = {
+      userId: user.id,
+      animalId: animal.id,
+      description
     };
 
     setSubmitting(true);
     setError(null);
     try {
+        console.log(application);
+        
       const created = await AdoptionApplicationService.createAdoptionApplication(application);
       if (onSubmit) onSubmit(created);
       setSubmitted(true);
