@@ -94,7 +94,7 @@ jobs:
           host: ${{ secrets.APP_VM_IP }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.yml"
+          source: "docker-compose.yml,nginx/nginx.prod.conf"
           target: "~/pet-shelter"
 
       - name: Deploy application on VM2
