@@ -11,6 +11,11 @@
 - Frontend made with **React** + **TypeScript**
 - Spring Boot backend with **MySQL**, **MongoDB**, and **Neo4j** support. Each database runs standalone.
 
+## Deployed Application
+
+**Live Application:** [https://fullstackeksamen.dk](https://fullstackeksamen.dk)  
+**API Documentation:** [https://fullstackeksamen.dk/swagger-ui/index.html](https://fullstackeksamen.dk/swagger-ui/index.html)
+
 ## Quick Start
 
 ```bash
@@ -18,6 +23,8 @@ git clone https://github.com/BAM-soft1/pet-shelter.git
 cd pet-shelter
 cp .env.sample .env
 ```
+
+> **Note:** Initial data seeding only occurs when running the **MySQL** profile. If you need to populate MongoDB or Neo4j with data, see the [Migration Documentation](./backend/README.md#database-migrations) for instructions on migrating data from MySQL.
 
 ## Running Standalone Databases
 

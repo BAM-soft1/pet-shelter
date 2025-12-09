@@ -36,6 +36,7 @@ jobs:
           context: ./frontend
           build-args: |
             VITE_PROD_API_BASE_URL=${{ secrets.VITE_PROD_API_BASE_URL }}
+            VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/pet-shelter-frontend:latest
