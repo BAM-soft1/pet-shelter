@@ -69,6 +69,9 @@ public class SecurityConfig {
                         // Dog Facts
                         .requestMatchers(HttpMethod.GET, "/api/dog-facts/**").permitAll()
 
+                        // sentry test endpoints
+                        .requestMatchers(HttpMethod.GET, "/test-sentry/**").permitAll()
+
                         // Public docs
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
 
