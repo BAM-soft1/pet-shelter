@@ -1,7 +1,5 @@
 package org.pet.backendpetshelter.Neo4jMigration;
 
-import org.pet.backendpetshelter.Configuration.RefreshToken;
-import org.pet.backendpetshelter.Entity.*;
 import org.pet.backendpetshelter.Neo4j.Entity.*;
 import org.pet.backendpetshelter.Neo4j.Repository.*;
 import org.pet.backendpetshelter.Repository.*;

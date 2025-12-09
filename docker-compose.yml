@@ -63,6 +63,7 @@ services:
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       CORS_ORIGINS: ${CORS_ORIGINS}
+      SENTRY_DSN: ${SENTRY_DSN}
     networks:
       - app-network
     profiles: ["app"]
@@ -81,6 +82,12 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      # Override with production config that has HTTPS
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      # Mount Let's Encrypt certificates
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - frontend
       - backend

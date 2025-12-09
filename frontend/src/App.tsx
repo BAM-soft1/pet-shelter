@@ -7,6 +7,7 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
+import DogFacts from "./pages/dogfacts/DogFacts";
 import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview"
 import MedicalRecordLayout from "./pages/medicalRecord/MedicalRecordLayout";
 import Login from "./pages/auth/Login";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/animals" element={<Animals />} />
           <Route path="/about" element={<About />} />
+          <Route path="/dog-facts" element={<DogFacts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/AnimalDetailed" element={<AnimalDetailPage />} />

@@ -23,7 +23,7 @@ public class AdoptionApplication {
     private User user;
 
     @OneToOne
-    @JoinColumn(name = "animal_id", nullable = false)
+    @JoinColumn(name = "animal_id", nullable = false, unique = true)
     private Animal animal;
 
     private Date applicationDate;
