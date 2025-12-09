@@ -23,7 +23,7 @@ type MedicalRecord = {
 type MedicalRecordRequest = {
   animalId: number;
   userId: number;
-  date: string; 
+  date: string;
   diagnosis: string;
   treatment: string;
   cost: number;
@@ -107,4 +107,20 @@ type AuthResponse = {
   expiresInSeconds: number;
 };
 
-export type { Animal, AnimalRequest, Species, Breed, User, Adoption, AuthUser, LoginRequest, RegisterRequest, AuthResponse, MedicalRecord, MedicalRecordRequest};
+type DogFact = string;
+
+export type {
+  Animal,
+  AnimalRequest,
+  Species,
+  Breed,
+  User,
+  Adoption,
+  AuthUser,
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  MedicalRecord,
+  MedicalRecordRequest,
+  DogFact,
+};
