@@ -22,14 +22,17 @@ Configure the `.env` file in the project root (`pet-shelter/.env`):
 # For MySQL (default)
 SPRING_PROFILE_ACTIVE=mysql
 MIGRATION_ENABLED=false
+MIGRATION_NEO4J_ENABLED=false
 
 # For MongoDB
 SPRING_PROFILE_ACTIVE=mongo
 MIGRATION_ENABLED=false
+MIGRATION_NEO4J_ENABLED=false
 
 # For Neo4j
 SPRING_PROFILE_ACTIVE=neo4j
 MIGRATION_ENABLED=false
+MIGRATION_NEO4J_ENABLED=false
 ```
 
 Start the application:
