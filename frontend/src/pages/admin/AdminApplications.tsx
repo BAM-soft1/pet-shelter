@@ -13,11 +13,26 @@ import { AdoptionApplicationService } from "../../api/adoptionApplication";
 import type { AdoptionApplication } from "../../types/types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ApplicationFilters from "./helpers/ApplicationFilters";
+import ApplicationSortButtons from "./helpers/ApplicationSortButtons";
+import { useApplicationFilters } from "./helpers/useApplicationFilters";
 
 export default function AdminApplications() {
   const [applications, setApplications] = useState<AdoptionApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const {
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    sortField,
+    sortDirection,
+    handleSort,
+    clearFilters,
+    filteredAndSortedApplications,
+  } = useApplicationFilters(applications);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -26,7 +41,6 @@ export default function AdminApplications() {
         const applications =
           await AdoptionApplicationService.getAllApplications();
         setApplications(applications);
-        console.log("all applications", applications);
       } catch (error) {
         console.error("Failed to fetch applications:", error);
       } finally {
@@ -37,7 +51,9 @@ export default function AdminApplications() {
   }, []);
 
   const handleReview = (application: AdoptionApplication) => {
-    navigate(`/admin/applications/${application.id}`, {state: {application}});
+    navigate(`/admin/applications/${application.id}`, {
+      state: { application },
+    });
   };
 
   const getStatusBadge = (status: string) => {
@@ -75,173 +91,104 @@ export default function AdminApplications() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-800">
-            Application Management
-          </h2>
-        </div>
+        <h2 className="text-3xl font-bold">Adoption Applications</h2>
+        <Badge variant="outline" className="text-base px-3 py-1">
+          {applications.length} Total
+        </Badge>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-xl font-bold text-gray-800">
-            All Applications ({applications.length})
-          </h3>
-        </div>
-        <div className="p-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Animal</TableHead>
-                <TableHead>Applicant</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Applied</TableHead>
-                <TableHead className="text-right">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {applications.map((application) => (
-                <TableRow key={application.id}>
-                  <TableCell className="font-medium">{application.id}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
+      <ApplicationFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        clearFilters={clearFilters}
+        totalCount={applications.length}
+        filteredCount={filteredAndSortedApplications.length}
+      />
+
+      <ApplicationSortButtons
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+      />
+
+      <Card>
+        <CardHeader>
+          <CardTitle>All Applications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {filteredAndSortedApplications.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              No applications found.
+            </p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Animal</TableHead>
+                  <TableHead>Applicant</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Applied</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredAndSortedApplications.map((application) => (
+                  <TableRow key={application.id}>
+                    <TableCell className="font-medium">
+                      {application.id}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium">
+                          {application.animal.name}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {application.animal.species.name}
+                          {application.animal.breed &&
+                            ` • ${application.animal.breed.name}`}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <span className="font-medium">
-                        {application.animal.name}
+                        {application.user.firstName} {application.user.lastName}
                       </span>
-                      <span className="text-xs text-muted-foreground">
-                        {application.animal.species.name}
-                        {application.animal.breed &&
-                          ` • ${application.animal.breed.name}`}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="font-medium">
-                      {application.user.firstName} {application.user.lastName}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm">{application.user.email}</span>
-                  </TableCell>
-                  <TableCell>{getStatusBadge(application.status)}</TableCell>
-                  <TableCell>
-                    <span className="text-sm text-muted-foreground">
-                      {new Date(application.applicationDate).toLocaleDateString(
-                        "en-US",
-                        {
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm">{application.user.email}</span>
+                    </TableCell>
+                    <TableCell>{getStatusBadge(application.status)}</TableCell>
+                    <TableCell>
+                      <span className="text-sm text-muted-foreground">
+                        {new Date(
+                          application.applicationDate
+                        ).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "short",
                           day: "numeric",
-                        }
-                      )}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleReview(application)}
-                    >
-                      Review
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+                        })}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleReview(application)}
+                      >
+                        Review
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
-
-//   return (
-//     <div className="space-y-6">
-//       <div className="flex items-center justify-between">
-//         <h2 className="text-3xl font-bold">Adoption Applications</h2>
-//         <Badge variant="outline" className="text-base px-3 py-1">
-//           {applications.length} Total
-//         </Badge>
-//       </div>
-
-//       <Card>
-//         <CardHeader>
-//           <CardTitle>All Applications</CardTitle>
-//         </CardHeader>
-//         <CardContent>
-//           {applications.length === 0 ? (
-//             <p className="text-muted-foreground text-center py-8">
-//               No applications found.
-//             </p>
-//           ) : (
-// <Table>
-//   <TableHeader>
-//     <TableRow>
-//       <TableHead>ID</TableHead>
-//       <TableHead>Animal</TableHead>
-//       <TableHead>Applicant</TableHead>
-//       <TableHead>Email</TableHead>
-//       <TableHead>Status</TableHead>
-//       <TableHead>Applied</TableHead>
-//       <TableHead className="text-right">Action</TableHead>
-//     </TableRow>
-//   </TableHeader>
-//   <TableBody>
-//     {applications.map((application) => (
-//       <TableRow key={application.id}>
-//         <TableCell className="font-medium">
-//         {application}
-//         </TableCell>
-//         <TableCell>
-//           <div className="flex flex-col">
-//             <span className="font-medium">
-//               {application.animal.name}
-//             </span>
-//             <span className="text-xs text-muted-foreground">
-//               {application.animal.species.name}
-//               {application.animal.breed &&
-//                 ` • ${application.animal.breed.name}`}
-//             </span>
-//           </div>
-//         </TableCell>
-//         <TableCell>
-//           <span className="font-medium">
-//             {application.user.firstName} {application.user.lastName}
-//           </span>
-//         </TableCell>
-//         <TableCell>
-//           <span className="text-sm">{application.user.email}</span>
-//         </TableCell>
-//         <TableCell>{getStatusBadge(application.status)}</TableCell>
-//         <TableCell>
-//           <span className="text-sm text-muted-foreground">
-//             {new Date(
-//               application.applicationDate
-//             ).toLocaleDateString("en-US", {
-//               year: "numeric",
-//               month: "short",
-//               day: "numeric",
-//             })}
-//           </span>
-//         </TableCell>
-//         <TableCell className="text-right">
-//           <Button
-//             variant="outline"
-//             size="sm"
-//             onClick={() => handleReview(application.id)}
-//           >
-//             Review
-//           </Button>
-//         </TableCell>
-//       </TableRow>
-//     ))}
-//   </TableBody>
-// </Table>
-//           )}
-//         </CardContent>
-//       </Card>
-//     </div>
-//   );
-// }

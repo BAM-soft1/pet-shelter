@@ -2,9 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { AdoptionApplication } from "@/types/types";
+import type { AdoptionApplication, AuthUser } from "@/types/types";
+import { AdoptionApplicationService } from "@/api/adoptionApplication";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import ApproveConfirmDialog from "./dialogs/ApproveConfirmDialog";
+import RejectConfirmDialog from "./dialogs/RejectConfirmDialog";
+import { authProvider } from "@/security/authUtils";
 
 export default function AdminReviewApplication() {
   const location = useLocation();
@@ -12,6 +17,10 @@ export default function AdminReviewApplication() {
   const application = location.state?.application as
     | AdoptionApplication
     | undefined;
+  const [user, setUser] = useState<AuthUser>(null);
+
+  const [isApproveOpen, setIsApproveOpen] = useState(false);
+  const [isRejectOpen, setIsRejectOpen] = useState(false);
 
   if (!application) {
     return (
@@ -34,14 +43,27 @@ export default function AdminReviewApplication() {
     );
   }
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem("token") || "";
+      const userData = await authProvider.getCurrentUser(token);
+      setUser(userData);
+    };
+    fetchUserData();
+  }, [isApproveOpen, isRejectOpen]);
+
   const handleApprove = async () => {
-    // TODO: Call API to approve
-    console.log("Approve application:", application.id);
+    await AdoptionApplicationService.approveApplication(
+      application.id,
+      new Date().toISOString().split('T')[0],
+      user.id
+    );
+    navigate("/admin/applications");
   };
 
   const handleReject = async () => {
-    // TODO: Call API to reject
-    console.log("Reject application:", application.id);
+    await AdoptionApplicationService.rejectApplication(application.id, user.id);
+    navigate("/admin/applications");
   };
 
   const getStatusBadge = (status: string) => {
@@ -247,13 +269,16 @@ export default function AdminReviewApplication() {
                 Make a decision on this application
               </p>
               <div className="flex gap-3">
-                <Button variant="destructive" onClick={handleReject}>
+                <Button
+                  variant="destructive"
+                  onClick={() => setIsRejectOpen(true)}
+                >
                   Reject
                 </Button>
                 <Button
                   variant="default"
                   className="bg-green-600"
-                  onClick={handleApprove}
+                  onClick={() => setIsApproveOpen(true)}
                 >
                   Approve Application
                 </Button>
@@ -262,6 +287,20 @@ export default function AdminReviewApplication() {
           </div>
         )}
       </Card>
+
+      <ApproveConfirmDialog
+        application={application}
+        isOpen={isApproveOpen}
+        onClose={() => setIsApproveOpen(false)}
+        onConfirm={handleApprove}
+      />
+
+      <RejectConfirmDialog
+        application={application}
+        isOpen={isRejectOpen}
+        onClose={() => setIsRejectOpen(false)}
+        onConfirm={handleReject}
+      />
     </div>
   );
 }

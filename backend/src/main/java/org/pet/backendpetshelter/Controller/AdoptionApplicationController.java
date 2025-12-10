@@ -56,6 +56,12 @@ public class AdoptionApplicationController {
 
     }
 
+    @PatchMapping("/reject/{id}")
+    public ResponseEntity<AdoptionApplicationResponse> rejectAdoptionApplication(@PathVariable Long id, @RequestParam Long reviewedByUserId) {
+        AdoptionApplicationResponse rejectedApplication = adoptionApplicationService.rejectAdoptionApplication(id, reviewedByUserId);
+        return ResponseEntity.ok(rejectedApplication);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteAdoptionApplication(@PathVariable Long id){
         adoptionApplicationService.deleteAdoptionApplication(id);

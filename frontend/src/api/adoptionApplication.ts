@@ -24,5 +24,22 @@ export const AdoptionApplicationService = {
     getAllApplications: async (): Promise<AdoptionApplication[]> => {
         const response = await axiosWithAuth.get(`${API_URL_ADOPTION_APPLICATION}/all`);
         return response.data
+    },
+
+    approveApplication: async (applicationId: number, adoptionDate: string, reviewedByUserId: number): Promise<void> => {        
+    await axiosWithAuth.post(`${API_URL}/test-procedures/complete-adoption`, null, {
+        params: {
+            applicationId,
+            adoptionDate,
+            reviewedByUserId
+        }
+    });},
+
+    rejectApplication : async (applicationId: number, reviewedByUserId: number): Promise<AdoptionApplication> => {
+        const response = await axiosWithAuth.patch(`${API_URL_ADOPTION_APPLICATION}/reject/${applicationId}`, null, {
+            params: {
+            reviewedByUserId
+    }});
+        return response.data;
     }
 };

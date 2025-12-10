@@ -130,4 +130,18 @@ public class AdoptionApplicationService
     public Boolean hasUserAppliedForAnimal(Long userId, Long animalId) {
         return adoptionApplicationRepository.existsByUserIdAndAnimalId(userId, animalId);
     }
+
+    public AdoptionApplicationResponse rejectAdoptionApplication(Long id, Long reviewedByUserId) {
+        AdoptionApplication application = adoptionApplicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
+
+        User reviewer = userRepository.findById(reviewedByUserId)
+                .orElseThrow(() -> new RuntimeException("Reviewer user not found with id: " + reviewedByUserId));
+
+        application.setStatus(Status.REJECTED);
+        application.setReviewedByUser(reviewer);
+
+        adoptionApplicationRepository.save(application);
+        return new AdoptionApplicationResponse(application);
+    }
 }
