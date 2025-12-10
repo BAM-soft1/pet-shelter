@@ -34,7 +34,7 @@ export default function MedicalRecordLayout() {
         <div className="container mx-auto px-6">
           <nav className="flex gap-1">
             <Link to="/veterinarian/overview">
-              <button 
+              <button
                 className={`px-6 py-3 font-medium transition-colors border-b-2 ${
                   activeTab === "overview"
                     ? "text-indigo-600 border-indigo-600"
@@ -44,11 +44,8 @@ export default function MedicalRecordLayout() {
                 Medical Record Overview
               </button>
             </Link>
-          </nav>
-
-          <nav className="flex gap-1">
             <Link to="/veterinarian/vaccinations">
-              <button 
+              <button
                 className={`px-6 py-3 font-medium transition-colors border-b-2 ${
                   activeTab === "vaccinations"
                     ? "text-indigo-600 border-indigo-600"
@@ -61,7 +58,6 @@ export default function MedicalRecordLayout() {
           </nav>
         </div>
       </div>
-      
 
       {/* Main content */}
       <main className="container mx-auto px-6 py-8">

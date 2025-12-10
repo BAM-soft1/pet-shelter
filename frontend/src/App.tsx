@@ -56,6 +56,7 @@ function App() {
             <Route path="applications" element={<AdminApplications />} />
             <Route path="adoptions" element={<AdminAdoptions />} />
             <Route path="veterinarian/overview" element={<MedicalRecordOverview />} />
+            <Route path="veterinarian/vaccinations" element={<VaccinationOverview />} />
           </Route>
         </Routes>
       </AuthProvider>
