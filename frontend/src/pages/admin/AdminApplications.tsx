@@ -36,8 +36,8 @@ export default function AdminApplications() {
     fetchApplications();
   }, []);
 
-  const handleReview = (applicationId: number) => {
-    navigate(`/admin/applications/${applicationId}`);
+  const handleReview = (application: AdoptionApplication) => {
+    navigate(`/admin/applications/${application.id}`, {state: {application}});
   };
 
   const getStatusBadge = (status: string) => {
@@ -142,7 +142,7 @@ export default function AdminApplications() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleReview(application.id)}
+                      onClick={() => handleReview(application)}
                     >
                       Review
                     </Button>

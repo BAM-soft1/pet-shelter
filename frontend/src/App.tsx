@@ -11,6 +11,7 @@ import DogFacts from "./pages/dogfacts/DogFacts";
 import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview";
 import MedicalRecordLayout from "./pages/medicalRecord/MedicalRecordLayout";
 import MyAdoptApplications from "./pages/adoptApplication/MyAdoptApplications";
+import AdminReviewApplication from "./pages/admin/AdminReviewApplication";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -63,6 +64,7 @@ function App() {
             <Route index element={<AdminAnimals />} />
             <Route path="animals" element={<AdminAnimals />} />
             <Route path="applications" element={<AdminApplications />} />
+            <Route path="applications/:id" element={<AdminReviewApplication />} />
             <Route path="adoptions" element={<AdminAdoptions />} />
           </Route>
         </Routes>
