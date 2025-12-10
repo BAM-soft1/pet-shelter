@@ -24,10 +24,10 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      - name: Run unit tests with coverage
+      - name: Run all tests with coverage (unit + integration)
         working-directory: ./backend
         run: |
-          ./mvnw clean test -Dtest="org/pet/backendpetshelter/unit/**/*Test.java,org/pet/backendpetshelter/BackendPetShelterApplicationTests.java" jacoco:report
+          ./mvnw clean test jacoco:report
 
       - name: Upload coverage report
         if: always()
