@@ -42,6 +42,15 @@ public class AdoptionApplicationService
         return new AdoptionApplicationRespons(application);
     }
 
+    public List<AdoptionApplicationRespons> getAdoptionApplicationsForUser(Long userId) {
+        // Optional: verify user exists first
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        return adoptionApplicationRepository.findByUserId(userId).stream()
+                .map(AdoptionApplicationRespons::new)
+                .toList();
+    }
 
     public AdoptionApplicationRespons addAdoptionApplication(AdoptionApplicationRequest request) {
         // 1. Find user

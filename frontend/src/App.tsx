@@ -8,8 +8,10 @@ import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
 import DogFacts from "./pages/dogfacts/DogFacts";
-import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview"
+import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview";
 import MedicalRecordLayout from "./pages/medicalRecord/MedicalRecordLayout";
+import MyAdoptApplications from "./pages/adoptApplication/MyAdoptApplications";
+
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -26,8 +28,16 @@ function App() {
           <Route path="/dog-facts" element={<DogFacts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/AnimalDetailed" element={<AnimalDetailPage />} />
+          <Route path="/animal-detailed" element={<AnimalDetailPage />} />
 
+          <Route
+            path="/my-adopt-applications"
+            element={
+              <RequireAuth roles={["USER"]}>
+                <MyAdoptApplications />
+              </RequireAuth>
+            }
+          />
 
           {/* Protected Veterinarian Routes */}
           <Route
@@ -40,7 +50,6 @@ function App() {
           >
             <Route path="overview" element={<MedicalRecordOverview />} />
           </Route>
-
 
           {/* Protected Admin Routes */}
           <Route

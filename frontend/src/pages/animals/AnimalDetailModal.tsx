@@ -18,7 +18,7 @@ export default function AnimalDetailModal({ animal, isOpen, onClose }: AnimalDet
   const navigate = useNavigate();
 
     const handleApplyForAdoption = () => {
-    navigate("/AnimalDetailed", { state: { animal } });
+    navigate("/animal-detailed", { state: { animal } });
   };
 
   return (

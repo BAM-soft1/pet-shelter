@@ -1,9 +1,10 @@
 import { CardContent } from "./ui/card";
-import { type Animal, type AdoptionApplicationRequest, type AuthUser, type User } from "@/types/types";
+import { type Animal, type AdoptionApplicationRequest, type AuthUser } from "@/types/types";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { Spinner } from "././ui/spinner";
 import { useState, useEffect } from "react";
 import { authProvider } from "@/security/authUtils";
 import { AdoptionApplicationService } from "@/api/adoptionApplication";
@@ -29,8 +30,8 @@ export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicat
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("token") || "";
-        const u = await authProvider.getCurrentUser(token);
-        setUser(u ?? null);
+        const user: AuthUser = await authProvider.getCurrentUser(token);
+        setUser(user ?? null);
       } catch (err) {
         setUser(null);
       } finally {
@@ -58,16 +59,24 @@ export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicat
 
     setSubmitting(true);
     setError(null);
-    try {
-        console.log(application);
-        
-      const created = await AdoptionApplicationService.createAdoptionApplication(application);
+    
+    // Start timer and API call simultaneously
+    const minLoadingTime = new Promise(resolve => setTimeout(resolve, 1000));
+    
+    try {      
+      // Wait for both the API call and minimum loading time
+      const [created] = await Promise.all([
+        AdoptionApplicationService.createAdoptionApplication(application),
+        minLoadingTime
+      ]);
+      
       if (onSubmit) onSubmit(created);
       setSubmitted(true);
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error("Failed to create adoption application", err);
       setError("Failed to submit application. Please try again.");
+      // Still wait for minimum time even on error for consistent UX
+      await minLoadingTime;
     } finally {
       setSubmitting(false);
     }
@@ -76,7 +85,10 @@ export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicat
   if (loading) {
     return (
       <CardContent>
-        <div>Loading...</div>
+        <div className="flex items-center gap-2">
+          <Spinner />
+          <span>Loading...</span>
+        </div>
       </CardContent>
     );
   }
@@ -124,7 +136,16 @@ export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicat
           <div className="md:col-span-2 flex flex-col gap-2 mt-2">
             {error && <div className="text-destructive text-sm">{error}</div>}
             <div className="flex gap-2">
-              <Button type="submit" disabled={submitting}>{submitting ? "Submitting..." : "Submit Application"}</Button>
+              <Button type="submit" disabled={submitting}>
+                {submitting ? (
+                  <span className="flex items-center gap-2">
+                    <Spinner />
+                    Submitting...
+                  </span>
+                ) : (
+                  "Submit Application"
+                )}
+              </Button>
               <Button variant="outline" onClick={() => setDescription("")}>Reset</Button>
             </div>
           </div>

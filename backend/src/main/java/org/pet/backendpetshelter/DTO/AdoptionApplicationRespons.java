@@ -10,28 +10,43 @@ import org.pet.backendpetshelter.Status;
 
 import java.util.Date;
 
-
 @Getter
 @Setter
-@NoArgsConstructor
 public class AdoptionApplicationRespons {
     private Long id;
-    private User user;
+
+    // Applicant user – restricted
+    private Long userId;
+    private String userName;
+
     private Animal animal;
+
     private String description;
     private Date applicationDate;
     private Status status;
-    private User reviewedByUser;
+
+    // Reviewer – only name
+    private String reviewedByUserName;
+
     private Boolean isActive;
 
-    public AdoptionApplicationRespons(AdoptionApplication adoptionApplication) {
-        this.id = adoptionApplication.getId();
-        this.user = adoptionApplication.getUser();
-        this.animal = adoptionApplication.getAnimal();
-        this.description = adoptionApplication.getDescription();
-        this.applicationDate = adoptionApplication.getApplicationDate();
-        this.status = adoptionApplication.getStatus();
-        this.reviewedByUser = adoptionApplication.getReviewedByUser();
-        this.isActive = adoptionApplication.getIsActive();
+    public AdoptionApplicationRespons(AdoptionApplication application) {
+        this.id = application.getId();
+
+        if (application.getUser() != null) {
+            this.userId = application.getUser().getId();
+            this.userName = application.getUser().getFirstName();
+        }
+
+        this.animal = application.getAnimal();
+        this.description = application.getDescription();
+        this.applicationDate = application.getApplicationDate();
+        this.status = application.getStatus();
+
+        if (application.getReviewedByUser() != null) {
+            this.reviewedByUserName = application.getReviewedByUser().getFirstName();
+        }
+
+        this.isActive = application.getIsActive();
     }
 }

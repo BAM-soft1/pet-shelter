@@ -65,8 +65,7 @@ type User = {
   role: "ADMIN" | "STAFF" | "VETERINARIAN" | "ADOPTER" | "FOSTER" | "USER";
 };
 
-
-  type AdoptionApplication = {
+type AdoptionApplication = {
   user: User;
   animal: Animal;
   applicationDate: string;
@@ -80,7 +79,20 @@ type AdoptionApplicationRequest = {
   userId: number;
   animalId: number;
   description: string;
-}
+};
+
+type AdoptionApplicationResponse = {
+  id: number;
+  userId: number;
+  userName: string;
+  animal: Animal;
+  description: string;
+  applicationDate: string;
+  status: Status;
+  reviewedByUserName: string | null;
+  isActive: boolean;
+};
+
 type Adoption = {
   adoption_id: number;
   animal_name: string;
@@ -125,13 +137,18 @@ type AuthResponse = {
 
 type DogFact = string;
 
+type Status = "AVAILABLE" | "ADOPTED" | "FOSTERED" | "DECEASED" | "PENDING" | "APPROVED" | "REJECTED";
+
 export type {
   Animal,
   AnimalRequest,
   Species,
   Breed,
   User,
-  Adoption, AdoptionApplicationRequest, AdoptionApplication,
+  Adoption,
+  AdoptionApplicationRequest,
+  AdoptionApplication,
+  AdoptionApplicationResponse,
   AuthUser,
   LoginRequest,
   RegisterRequest,
@@ -139,4 +156,5 @@ export type {
   MedicalRecord,
   MedicalRecordRequest,
   DogFact,
+
 };

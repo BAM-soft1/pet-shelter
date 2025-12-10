@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
 public interface AdoptionApplicationRepository extends JpaRepository<AdoptionApplication, Long> {
     AdoptionApplication findById(long id);
+    List<AdoptionApplication> findByUserId(Long userId);
 }

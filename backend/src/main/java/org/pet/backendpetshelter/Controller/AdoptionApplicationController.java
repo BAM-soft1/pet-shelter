@@ -33,6 +33,11 @@ public class AdoptionApplicationController {
         return adoptionApplicationService.GetAdoptionApplicationById(id);
     }
 
+    @GetMapping("/user/{userId}")
+    public List<AdoptionApplicationRespons> getAdoptionApplicationsForUser(@PathVariable Long userId) {
+        return adoptionApplicationService.getAdoptionApplicationsForUser(userId);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<AdoptionApplicationRespons> addAdoptionApplication(@RequestBody AdoptionApplicationRequest request) {
         return ResponseEntity.status(201).body(adoptionApplicationService.addAdoptionApplication(request));
