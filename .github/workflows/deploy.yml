@@ -36,6 +36,7 @@ jobs:
           context: ./frontend
           build-args: |
             VITE_PROD_API_BASE_URL=${{ secrets.VITE_PROD_API_BASE_URL }}
+            VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/pet-shelter-frontend:latest
@@ -94,7 +95,7 @@ jobs:
           host: ${{ secrets.APP_VM_IP }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.yml"
+          source: "docker-compose.yml,nginx/nginx.prod.conf"
           target: "~/pet-shelter"
 
       - name: Deploy application on VM2

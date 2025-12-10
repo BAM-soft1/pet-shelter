@@ -1,5 +1,6 @@
 package org.pet.backendpetshelter.Configuration;
 
+import io.sentry.Sentry;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -49,6 +50,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> other(Exception ex, HttpServletRequest req) {
+        // Send to Sentry before handling
+        Sentry.captureException(ex);
+        
         ex.printStackTrace(); // Log the full stack trace to console
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage(), req.getRequestURI(),
                 null);

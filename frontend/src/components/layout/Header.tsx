@@ -30,24 +30,19 @@ export const Header = () => {
                 Animals
               </NavLink>
             </li>
-
-<li>
-                
-{auth?.isLoggedInAs(["VETERINARIAN", "STAFF"]) && (
-                  <NavLink
-                    to="/veterinarian"
-                    className={({ isActive }) => 
-                      `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
-                    }
-                    onClick={closeMenu}
-                  >
-                    Medical Records
-                  </NavLink>
-                )}
-
-</li>
-
-
+            {auth?.isLoggedInAs(["VETERINARIAN", "STAFF"]) && (
+              <li>
+                <NavLink
+                  to="/veterinarian"
+                  className={({ isActive }) =>
+                    `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
+                  }
+                  onClick={closeMenu}
+                >
+                  Medical Records
+                </NavLink>
+              </li>
+            )}
             <li>
               <NavLink
                 to="/about"
@@ -57,6 +52,17 @@ export const Header = () => {
                 onClick={closeMenu}
               >
                 About us
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/dog-facts"
+                className={({ isActive }) =>
+                  `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
+                }
+                onClick={closeMenu}
+              >
+                Dog Facts
               </NavLink>
             </li>
             {auth?.isLoggedInAs(["ADMIN", "STAFF"]) && (

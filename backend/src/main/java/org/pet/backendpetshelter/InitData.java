@@ -55,6 +55,12 @@ public class InitData implements CommandLineRunner {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         System.out.println("Seeding database with initial data...");
 
+        // Check if database is already seeded
+        if (userRepository.findByEmail("ox1@gmail.com").isPresent()) {
+            System.out.println("Database already seeded, skipping initialization.");
+            return;
+        }
+
         /* Users */
         User user1 = new User();
         user1.setEmail("ox1@gmail.com");
