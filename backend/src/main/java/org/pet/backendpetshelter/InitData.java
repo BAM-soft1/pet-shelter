@@ -84,7 +84,6 @@ public class InitData implements CommandLineRunner {
         user2.setRole(Roles.VETERINARIAN);
         userRepository.save(user2);
 
-        
 
         User user3 = new User();
         user3.setEmail("testuser@mail.com");
@@ -96,7 +95,6 @@ public class InitData implements CommandLineRunner {
         user3.setRole(Roles.USER);
 
         userRepository.save(user3);
-
 
 
 
@@ -343,14 +341,17 @@ public class InitData implements CommandLineRunner {
         vaccinationTypeRepository.save(vaccinationType);
 
 
+
+
         /* Vaccination */
         Vaccination vaccination1 = new Vaccination();
         vaccination1.setAnimal(animal1);
-        vaccination1.setVaccinationType(vaccinationType);
-        vaccination1.setDateAdministered(dateFormat.parse("2023-07-11"));
-        vaccination1.setNextDueDate(dateFormat.parse("2024-07-11"));
         vaccination1.setVeterinarian(veterinarian1);
+        vaccination1.setVaccinationType(vaccinationType);
+        vaccination1.setDateAdministered(dateFormat.parse("2023-07-10"));
+        vaccination1.setNextDueDate(dateFormat.parse("2024-07-10"));
         vaccinationRepository.save(vaccination1);
+
 
         /* Vaccine Type Species */
         VaccineTypeSpecies vts1 = new VaccineTypeSpecies();
@@ -382,6 +383,3 @@ public class InitData implements CommandLineRunner {
         System.out.println("Database seeded successfully with initial data!");
     }
 }
-
-
-
