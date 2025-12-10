@@ -59,13 +59,14 @@ type AnimalRequest = {
 type User = {
   user_id: number;
   email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   phone: string | null;
   role: "ADMIN" | "STAFF" | "VETERINARIAN" | "ADOPTER" | "FOSTER" | "USER";
 };
 
 type AdoptionApplication = {
+  id: number;
   user: User;
   animal: Animal;
   applicationDate: string;

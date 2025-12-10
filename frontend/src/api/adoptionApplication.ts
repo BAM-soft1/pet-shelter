@@ -1,5 +1,5 @@
 import axiosWithAuth from "../security/axios";
-import type { AdoptionApplicationRequest, AdoptionApplicationResponse } from "../types/types";
+import type { AdoptionApplicationRequest, AdoptionApplicationResponse, AdoptionApplication } from "../types/types";
 import { API_URL } from "../settings";
 
 const API_URL_ADOPTION_APPLICATION = `${API_URL}/adoption-application`; // Note: backend uses /api/animal
@@ -19,5 +19,10 @@ export const AdoptionApplicationService = {
     getHasUserAppliedForAnimal: async (userId: number, animalId: number): Promise<boolean> => {
         const response = await axiosWithAuth.get(`${API_URL_ADOPTION_APPLICATION}/has-applied/${userId}/${animalId}`);
         return response.data;
+    },
+
+    getAllApplications: async (): Promise<AdoptionApplication[]> => {
+        const response = await axiosWithAuth.get(`${API_URL_ADOPTION_APPLICATION}/all`);
+        return response.data
     }
 };

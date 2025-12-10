@@ -55,21 +55,23 @@ export const Header = () => {
                 </NavLink>
               </li>
             )}
-            <li>
-              <NavLink
-                to="/about"
-                className={({ isActive }) =>
-                  `text-lg font-medium transition-colors ${
-                    isActive
-                      ? "text-indigo-600"
-                      : "text-gray-700 hover:text-indigo-600"
-                  }`
-                }
-                onClick={closeMenu}
-              >
-                About us
-              </NavLink>
-            </li>
+              {auth?.isLoggedInAs(["USER"]) && (
+                <li>
+                  <NavLink
+                    to="/my-adopt-applications"
+                    className={({ isActive }) =>
+                      `text-lg font-medium transition-colors ${
+                        isActive
+                          ? "text-indigo-600"
+                          : "text-gray-700 hover:text-indigo-600"
+                      }`
+                    }
+                    onClick={closeMenu}
+                  >
+                    My Applications
+                  </NavLink>
+                </li>
+              )}
             <li>
               <NavLink
                 to="/dog-facts"
@@ -85,23 +87,21 @@ export const Header = () => {
                 Dog Facts
               </NavLink>
             </li>
-            {auth?.isLoggedInAs(["USER"]) && (
-              <li>
-                <NavLink
-                  to="/my-adopt-applications"
-                  className={({ isActive }) =>
-                    `text-lg font-medium transition-colors ${
-                      isActive
-                        ? "text-indigo-600"
-                        : "text-gray-700 hover:text-indigo-600"
-                    }`
-                  }
-                  onClick={closeMenu}
-                >
-                  My Applications
-                </NavLink>
-              </li>
-            )}
+            <li>
+              <NavLink
+                to="/about"
+                className={({ isActive }) =>
+                  `text-lg font-medium transition-colors ${
+                    isActive
+                      ? "text-indigo-600"
+                      : "text-gray-700 hover:text-indigo-600"
+                  }`
+                }
+                onClick={closeMenu}
+              >
+                About us
+              </NavLink>
+            </li>
             {auth?.isLoggedInAs(["ADMIN", "STAFF"]) && (
               <li>
                 <NavLink

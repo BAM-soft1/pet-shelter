@@ -1,8 +1,9 @@
 package org.pet.backendpetshelter.Service;
 
 
+import org.pet.backendpetshelter.DTO.AdminAdoptionApplicationResponse;
 import org.pet.backendpetshelter.DTO.AdoptionApplicationRequest;
-import org.pet.backendpetshelter.DTO.AdoptionApplicationRespons;
+import org.pet.backendpetshelter.DTO.AdoptionApplicationResponse;
 import org.pet.backendpetshelter.Entity.AdoptionApplication;
 import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Entity.User;
@@ -31,29 +32,29 @@ public class AdoptionApplicationService
         this.adoptionApplicationRepository = adoptionApplicationRepository;
     }
 
-    public List<AdoptionApplicationRespons> GetAllAdoptionApplications() {
+    public List<AdminAdoptionApplicationResponse> GetAllAdoptionApplications() {
         return adoptionApplicationRepository.findAll().stream()
-                .map(AdoptionApplicationRespons::new)
+                .map(AdminAdoptionApplicationResponse::new)
                 .toList();
     }
 
-    public AdoptionApplicationRespons GetAdoptionApplicationById(Long id) {
+    public AdoptionApplicationResponse GetAdoptionApplicationById(Long id) {
         AdoptionApplication application = adoptionApplicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
-        return new AdoptionApplicationRespons(application);
+        return new AdoptionApplicationResponse(application);
     }
 
-    public List<AdoptionApplicationRespons> getAdoptionApplicationsForUser(Long userId) {
+    public List<AdoptionApplicationResponse> getAdoptionApplicationsForUser(Long userId) {
         // Optional: verify user exists first
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         return adoptionApplicationRepository.findByUserId(userId).stream()
-                .map(AdoptionApplicationRespons::new)
+                .map(AdoptionApplicationResponse::new)
                 .toList();
     }
 
-    public AdoptionApplicationRespons addAdoptionApplication(AdoptionApplicationRequest request) {
+    public AdoptionApplicationResponse addAdoptionApplication(AdoptionApplicationRequest request) {
         // 1. Find user
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
@@ -80,7 +81,7 @@ public class AdoptionApplicationService
         // 5. Save and return response DTO
         try {
             adoptionApplicationRepository.save(application);
-            return new AdoptionApplicationRespons(application);
+            return new AdoptionApplicationResponse(application);
         } catch (DataIntegrityViolationException e) {
             // Catch duplicate constraint violations (race condition safety net)
             if (e.getMessage().contains("UKd3eita4oito3bvhios11sl3lf") ||
@@ -93,7 +94,7 @@ public class AdoptionApplicationService
     }
 
     /* Update Adoption Application */
-    public AdoptionApplicationRespons updateAdoptionApplication(Long id, AdoptionApplicationRequest request) {
+    public AdoptionApplicationResponse updateAdoptionApplication(Long id, AdoptionApplicationRequest request) {
         AdoptionApplication application = adoptionApplicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
 
@@ -116,7 +117,7 @@ public class AdoptionApplicationService
 
 
         adoptionApplicationRepository.save(application);
-        return new AdoptionApplicationRespons(application);
+        return new AdoptionApplicationResponse(application);
     }
 
     /* Delete Adoption Application */
