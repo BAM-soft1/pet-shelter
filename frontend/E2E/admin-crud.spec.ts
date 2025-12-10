@@ -1,7 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "ox1@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "test123!";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+  throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD environment variables must be set");
+}
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/login");
