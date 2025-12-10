@@ -1,5 +1,6 @@
 package org.pet.backendpetshelter.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.pet.backendpetshelter.DTO.VaccinationRequest;
 import org.pet.backendpetshelter.DTO.VaccinationResponse;
 import org.pet.backendpetshelter.Entity.Animal;
@@ -11,12 +12,14 @@ import org.pet.backendpetshelter.Repository.VaccinationRepository;
 import org.pet.backendpetshelter.Repository.VaccinationTypeRepository;
 import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Profile("mysql")
@@ -38,43 +41,41 @@ public class VaccinationService {
         this.vaccinationTypeRepository = vaccinationTypeRepository;
     }
 
+    /* Get all vaccinations */
     public List<VaccinationResponse> GetAllVaccinations() {
-        return vaccinationRepository.findAllWithRelations().stream()
+        return vaccinationRepository.findAll().stream()
                 .map(VaccinationResponse::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
+    /* Get specific vaccination */
     public VaccinationResponse GetVaccinationById(Long id) {
-        Vaccination vaccination = vaccinationRepository.findByIdWithRelations(id)
+        Vaccination vaccination = vaccinationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
         return new VaccinationResponse(vaccination);
     }
 
+    /* Get vaccinations by animal id */
+    public List<VaccinationResponse> getVaccinationsByAnimalId(Long animalId) {
+        return vaccinationRepository.findByAnimalId(animalId).stream()
+                .map(VaccinationResponse::new)
+                .toList();
+    }
+
+    /* Add vaccination */
     public VaccinationResponse addVaccination(VaccinationRequest request) {
+        Animal animal = animalRepository.findById(request.getAnimalId())
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
+
+        VaccinationType vaccinationType = vaccinationTypeRepository.findById(request.getVaccinationTypeId())
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination type not found with id: " + request.getVaccinationTypeId()));
+
+        Veterinarian veterinarian = getAuthenticatedVeterinarian();
+
         Vaccination vaccination = new Vaccination();
-
-        // Hent Animal fra database
-        if (request.getAnimalId() != null) {
-            Animal animal = animalRepository.findById(request.getAnimalId())
-                    .orElseThrow(() -> new RuntimeException("Animal not found with id: " + request.getAnimalId()));
-            vaccination.setAnimal(animal);
-        }
-
-        // Hent Veterinarian fra database baseret på user ID
-        if (request.getUserId() != null) {
-            Veterinarian veterinarian = veterinarianRepository.findByUserId(request.getUserId())
-                    .orElseThrow(() -> new RuntimeException("Veterinarian not found for user id: " + request.getUserId()));
-            vaccination.setVeterinarian(veterinarian);
-        }
-
-        // Hent VaccinationType fra database
-        if (request.getVaccinationTypeId() != null) {
-            VaccinationType vaccinationType = vaccinationTypeRepository.findById(request.getVaccinationTypeId())
-                    .orElseThrow(() -> new RuntimeException("Vaccination type not found with id: " + request.getVaccinationTypeId()));
-            vaccination.setVaccinationType(vaccinationType);
-        }
-
-        // Parse datoer
+        vaccination.setAnimal(animal);
+        vaccination.setVeterinarian(veterinarian);
+        vaccination.setVaccinationType(vaccinationType);
         vaccination.setDateAdministered(parseDate(request.getDateAdministered()));
         vaccination.setNextDueDate(parseDate(request.getNextDueDate()));
 
@@ -82,32 +83,19 @@ public class VaccinationService {
         return new VaccinationResponse(vaccination);
     }
 
+    /* Update vaccination */
     public VaccinationResponse updateVaccination(Long id, VaccinationRequest request) {
         Vaccination vaccination = vaccinationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
 
-        // Hent Animal fra database
-        if (request.getAnimalId() != null) {
-            Animal animal = animalRepository.findById(request.getAnimalId())
-                    .orElseThrow(() -> new RuntimeException("Animal not found with id: " + request.getAnimalId()));
-            vaccination.setAnimal(animal);
-        }
+        Animal animal = animalRepository.findById(request.getAnimalId())
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
 
-        // Hent Veterinarian fra database
-        if (request.getUserId() != null) {
-            Veterinarian veterinarian = veterinarianRepository.findByUserId(request.getUserId())
-                    .orElseThrow(() -> new RuntimeException("Veterinarian not found for user id: " + request.getUserId()));
-            vaccination.setVeterinarian(veterinarian);
-        }
+        VaccinationType vaccinationType = vaccinationTypeRepository.findById(request.getVaccinationTypeId())
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination type not found with id: " + request.getVaccinationTypeId()));
 
-        // Hent VaccinationType fra database
-        if (request.getVaccinationTypeId() != null) {
-            VaccinationType vaccinationType = vaccinationTypeRepository.findById(request.getVaccinationTypeId())
-                    .orElseThrow(() -> new RuntimeException("Vaccination type not found with id: " + request.getVaccinationTypeId()));
-            vaccination.setVaccinationType(vaccinationType);
-        }
-
-        // Parse datoer
+        vaccination.setAnimal(animal);
+        vaccination.setVaccinationType(vaccinationType);
         vaccination.setDateAdministered(parseDate(request.getDateAdministered()));
         vaccination.setNextDueDate(parseDate(request.getNextDueDate()));
 
@@ -115,13 +103,26 @@ public class VaccinationService {
         return new VaccinationResponse(vaccination);
     }
 
+    /* Delete vaccination */
     public void deleteVaccination(Long id) {
-        Vaccination vaccination = vaccinationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
-        vaccinationRepository.delete(vaccination);
+        if (!vaccinationRepository.existsById(id)) {
+            throw new EntityNotFoundException("Cannot delete. Vaccination not found with id: " + id);
+        }
+        vaccinationRepository.deleteById(id);
     }
 
-    private java.util.Date parseDate(String dateString) {
+    private Veterinarian getAuthenticatedVeterinarian() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Veterinarian vet = veterinarianRepository.findByUser_Email(email);
+        if (vet == null) {
+            throw new RuntimeException("Veterinarian not found for user: " + email);
+        }
+        return vet;
+    }
+
+    private Date parseDate(String dateString) {
         if (dateString == null || dateString.isEmpty()) {
             return null;
         }

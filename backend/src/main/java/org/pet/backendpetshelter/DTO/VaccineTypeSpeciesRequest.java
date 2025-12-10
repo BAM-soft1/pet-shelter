@@ -10,6 +10,6 @@ import org.pet.backendpetshelter.Entity.VaccinationType;
 @Setter
 public class VaccineTypeSpeciesRequest {
     private Species species;
-    private VaccinationType vaccinationType;
+     private Long vaccinationTypeId;
 
 }

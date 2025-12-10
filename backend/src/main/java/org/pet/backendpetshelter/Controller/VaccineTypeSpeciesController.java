@@ -1,7 +1,7 @@
 package org.pet.backendpetshelter.Controller;
 
 
-import org.pet.backendpetshelter.DTO.VaccinationRequest;
+import org.pet.backendpetshelter.DTO.VaccineTypeSpeciesRequest;
 import org.pet.backendpetshelter.DTO.VaccineTypeSpeciesResponse;
 import org.pet.backendpetshelter.Service.VaccineTypeSpeciesService;
 import org.springframework.context.annotation.Profile;
@@ -30,19 +30,19 @@ public class VaccineTypeSpeciesController {
 
 
     @GetMapping("/{id}")
-    public VaccineTypeSpeciesResponse getVaccineTypeSpeciesById(Long id) {
+    public VaccineTypeSpeciesResponse getVaccineTypeSpeciesById(@PathVariable Long id) {
         return vaccineTypeSpeciesService.GetVaccineTypeSpeciesById(id);
     }
 
 
     @PostMapping("/add")
-    public ResponseEntity<VaccineTypeSpeciesResponse> addVaccination(@RequestBody VaccinationRequest vaccinationRequest){
-        return ResponseEntity.status(201).body(vaccineTypeSpeciesService.addVaccineTypeSpecies(vaccinationRequest));
+    public ResponseEntity<VaccineTypeSpeciesResponse> addVaccineTypeSpecies(@RequestBody VaccineTypeSpeciesRequest request){
+        return ResponseEntity.status(201).body(vaccineTypeSpeciesService.addVaccineTypeSpecies(request));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<VaccineTypeSpeciesResponse> updateVaccineTypeSpecies(@PathVariable Long id, @RequestBody VaccinationRequest vaccinationRequest){
-        VaccineTypeSpeciesResponse updatedVaccineTypeSpecies = vaccineTypeSpeciesService.updateVaccineTypeSpecies(id, vaccinationRequest);
+    public ResponseEntity<VaccineTypeSpeciesResponse> updateVaccineTypeSpecies(@PathVariable Long id, @RequestBody VaccineTypeSpeciesRequest request){
+        VaccineTypeSpeciesResponse updatedVaccineTypeSpecies = vaccineTypeSpeciesService.updateVaccineTypeSpecies(id, request);
         return ResponseEntity.ok(updatedVaccineTypeSpecies);
     }
 
