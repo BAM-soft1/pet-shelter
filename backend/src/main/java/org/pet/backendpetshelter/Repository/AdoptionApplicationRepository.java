@@ -12,4 +12,6 @@ import java.util.List;
 public interface AdoptionApplicationRepository extends JpaRepository<AdoptionApplication, Long> {
     AdoptionApplication findById(long id);
     List<AdoptionApplication> findByUserId(Long userId);
+
+    Boolean existsByUserIdAndAnimalId(Long userId, Long animalId);
 }

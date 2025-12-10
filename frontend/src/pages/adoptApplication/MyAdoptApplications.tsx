@@ -3,10 +3,11 @@ import MainLayout from "../../components/layout/MainLayout";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { AdoptionApplicationResponse, AuthUser } from "../../types/types";
+import type { AdoptionApplicationResponse, Animal, AuthUser } from "../../types/types";
 import { authProvider } from "@/security/authUtils";
 import { AdoptionApplicationService } from "../../api/adoptionApplication";
 import { getErrorMessage } from "../../services/fetchUtils";
+import { useNavigate } from "react-router-dom";
 
 export default function MyAdoptApplication() {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -15,6 +16,12 @@ export default function MyAdoptApplication() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleCardClicked = (animal: Animal) => {
+    navigate(`/animal-detailed`, { state: { animal } });
+  }
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -99,7 +106,9 @@ export default function MyAdoptApplication() {
             {applications.map((app) => (
               <Card
                 key={app.id}
-                className="overflow-hidden hover:shadow-lg transition-shadow"
+                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() =>handleCardClicked(app.animal)}
+
               >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start gap-4">

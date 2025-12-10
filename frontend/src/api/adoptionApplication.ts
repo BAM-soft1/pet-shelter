@@ -14,6 +14,10 @@ export const AdoptionApplicationService = {
     getAdoptionApplicationForUser: async (userId: number): Promise<AdoptionApplicationResponse[]> => {
     const response = await axiosWithAuth.get(`${API_URL_ADOPTION_APPLICATION}/user/${userId}`);
     return response.data;
-    }
+    },
 
+    getHasUserAppliedForAnimal: async (userId: number, animalId: number): Promise<boolean> => {
+        const response = await axiosWithAuth.get(`${API_URL_ADOPTION_APPLICATION}/has-applied/${userId}/${animalId}`);
+        return response.data;
+    }
 };

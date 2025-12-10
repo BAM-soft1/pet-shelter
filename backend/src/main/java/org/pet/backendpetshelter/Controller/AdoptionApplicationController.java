@@ -38,6 +38,11 @@ public class AdoptionApplicationController {
         return adoptionApplicationService.getAdoptionApplicationsForUser(userId);
     }
 
+    @GetMapping("/has-applied/{userId}/{animalId}")
+    public Boolean hasUserAppliedForAnimal(@PathVariable Long userId, @PathVariable Long animalId) {
+        return adoptionApplicationService.hasUserAppliedForAnimal(userId, animalId);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<AdoptionApplicationRespons> addAdoptionApplication(@RequestBody AdoptionApplicationRequest request) {
         return ResponseEntity.status(201).body(adoptionApplicationService.addAdoptionApplication(request));

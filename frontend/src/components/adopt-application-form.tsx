@@ -12,35 +12,18 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 interface AdoptApplicationFormProps {
   animal: Animal;
+  user: AuthUser | null;
   onSubmit?: (application: AdoptionApplicationRequest) => void;
 }
 
-export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicationFormProps) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptApplicationFormProps) {
   const [description, setDescription] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token") || "";
-        const user: AuthUser = await authProvider.getCurrentUser(token);
-        setUser(user ?? null);
-      } catch (err) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
 
   const handleLoginRedirect = () => {
     // Send the user to login and return here after login
@@ -81,17 +64,6 @@ export default function AdoptApplicationForm({ animal, onSubmit }: AdoptApplicat
       setSubmitting(false);
     }
   };
-
-  if (loading) {
-    return (
-      <CardContent>
-        <div className="flex items-center gap-2">
-          <Spinner />
-          <span>Loading...</span>
-        </div>
-      </CardContent>
-    );
-  }
 
   if (!user) {
     return (

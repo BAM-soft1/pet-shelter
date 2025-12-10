@@ -11,6 +11,7 @@ import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.pet.backendpetshelter.Repository.UserRepository;
 import org.pet.backendpetshelter.Status;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -61,7 +62,12 @@ public class AdoptionApplicationService
         Animal animal = animalRepository.findById(request.getAnimalId())
                 .orElseThrow(() -> new RuntimeException("Animal not found with id: " + request.getAnimalId()));
 
-        // 3. Create application and set fields
+        // 3. Check if user has already applied for this animal (proactive check)
+        if (adoptionApplicationRepository.existsByUserIdAndAnimalId(user.getId(), animal.getId())) {
+            throw new IllegalStateException("You have already submitted an application for this animal");
+        }
+
+        // 4. Create application and set fields
         AdoptionApplication application = new AdoptionApplication();
         application.setUser(user);
         application.setAnimal(animal);
@@ -71,9 +77,19 @@ public class AdoptionApplicationService
         application.setReviewedByUser(null);              // default
         application.setIsActive(true);                    // default
 
-        // 4. Save and return response DTO
-        adoptionApplicationRepository.save(application);
-        return new AdoptionApplicationRespons(application);
+        // 5. Save and return response DTO
+        try {
+            adoptionApplicationRepository.save(application);
+            return new AdoptionApplicationRespons(application);
+        } catch (DataIntegrityViolationException e) {
+            // Catch duplicate constraint violations (race condition safety net)
+            if (e.getMessage().contains("UKd3eita4oito3bvhios11sl3lf") ||
+                    e.getMessage().contains("Duplicate entry")) {
+                throw new IllegalStateException("You have already submitted an application for this animal");
+            }
+            // Re-throw if it's a different constraint violation
+            throw e;
+        }
     }
 
     /* Update Adoption Application */
@@ -108,5 +124,9 @@ public class AdoptionApplicationService
         AdoptionApplication application = adoptionApplicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
         adoptionApplicationRepository.delete(application);
+    }
+
+    public Boolean hasUserAppliedForAnimal(Long userId, Long animalId) {
+        return adoptionApplicationRepository.existsByUserIdAndAnimalId(userId, animalId);
     }
 }
