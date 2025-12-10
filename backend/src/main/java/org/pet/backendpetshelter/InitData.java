@@ -343,8 +343,6 @@ public class InitData implements CommandLineRunner {
         vaccinationTypeRepository.save(vaccinationType);
 
 
-
-
         /* Vaccination */
         Vaccination vaccination1 = new Vaccination();
         vaccination1.setAnimal(animal1);
