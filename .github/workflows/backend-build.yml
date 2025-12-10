@@ -1,6 +1,6 @@
 # This workflow tests and builds the Java Spring Boot project. It runs on every pull request to the main branch.
 
-name: Backend Build
+name: Backend Build and Test
 
 permissions:
   contents: read
@@ -24,6 +24,10 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      - name: Build backend (compile only, no tests)
+      - name: Build with Maven
         working-directory: ./backend
-        run: ./mvnw -B clean compile
+        run: ./mvnw -B clean package -DskipTests
+
+      - name: Run unit tests
+        working-directory: ./backend
+        run: ./mvnw test
