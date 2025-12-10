@@ -13,9 +13,9 @@ import java.util.Date;
 @Getter
 @Setter
 public class VaccinationRequest {
-    private Animal animal;
-    private Veterinarian veterinarian;
+    private Long animalId;
+    private Long userId;
     private Date dateAdministered;
-    private VaccinationType vaccinationType;
+    private Long vaccinationTypeId;
     private Date nextDueDate;
 }

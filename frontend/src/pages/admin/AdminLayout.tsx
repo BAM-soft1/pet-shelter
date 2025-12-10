@@ -80,6 +80,19 @@ export default function AdminLayout() {
                 Medical Records
               </button>
             </Link>
+
+<Link to="/admin/veterinarian/vaccinations">
+              <button
+                className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+                  activeTab === "veterinarian"
+                    ? "text-indigo-600 border-indigo-600"
+                    : "text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300"
+                }`}
+              >
+                Vaccinations
+              </button>
+            </Link>
+
           </nav>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./pages/landing/Landing";
 import Animals from "./pages/animals/AnimalOverview";
 import About from "./pages/about/About";
@@ -7,9 +7,9 @@ import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
 import DogFacts from "./pages/dogfacts/DogFacts";
-import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview"
-import VaccinationOverview from "./pages/vaccination/Vaccination";
-import VeterinarianLayout from "./pages/medicalRecord/VeterinarianLayout";
+import MedicalRecordOverview from "./pages/veterinarian/medicalRecord/MedicalRecordOverview"
+import VaccinationOverview from "./pages/veterinarian/vaccination/Vaccination";
+import VeterinarianLayout from "./pages/veterinarian/medicalRecord/VeterinarianLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -37,6 +37,7 @@ function App() {
               </RequireAuth>
             }
           >
+            <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<MedicalRecordOverview />} />
             <Route path="vaccinations" element={<VaccinationOverview />} />
           </Route>

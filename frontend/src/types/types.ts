@@ -29,11 +29,13 @@ export type Vaccination = {
 
 
 export type VaccinationRequest = {
-  animalId: number;
-  userId: number;
+  animalId: number | null
+  userId?: number | null;
   dateAdministered: string;
-  vaccinationTypeId: number;
+  vaccinationTypeId: number | null;
+  nextDueDate: string;
 }; 
+
 
 export type VaccinationTypeRequest = {
   vaccineName: string;
@@ -91,8 +93,8 @@ type AnimalRequest = {
 type User = {
   user_id: number;
   email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   phone: string | null;
   role: "ADMIN" | "STAFF" | "VETERINARIAN" | "ADOPTER" | "FOSTER" | "USER";
 };
