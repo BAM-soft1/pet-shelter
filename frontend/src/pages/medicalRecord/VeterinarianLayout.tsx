@@ -8,6 +8,7 @@ export default function MedicalRecordLayout() {
 
   useEffect(() => {
     if (location.pathname.includes("overview")) setActiveTab("overview");
+    if (location.pathname.includes("vaccinations")) setActiveTab("vaccinations");
   }, [location]);
 
   return (
@@ -44,8 +45,23 @@ export default function MedicalRecordLayout() {
               </button>
             </Link>
           </nav>
+
+          <nav className="flex gap-1">
+            <Link to="/veterinarian/vaccinations">
+              <button 
+                className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+                  activeTab === "vaccinations"
+                    ? "text-indigo-600 border-indigo-600"
+                    : "text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300"
+                }`}
+              >
+                Vaccination Overview
+              </button>
+            </Link>
+          </nav>
         </div>
       </div>
+      
 
       {/* Main content */}
       <main className="container mx-auto px-6 py-8">

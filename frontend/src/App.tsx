@@ -8,7 +8,8 @@ import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
 import DogFacts from "./pages/dogfacts/DogFacts";
 import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview"
-import MedicalRecordLayout from "./pages/medicalRecord/MedicalRecordLayout";
+import VaccinationOverview from "./pages/vaccination/Vaccination";
+import VeterinarianLayout from "./pages/medicalRecord/VeterinarianLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -32,11 +33,12 @@ function App() {
             path="/veterinarian"
             element={
               <RequireAuth roles={["VETERINARIAN", "ADMIN", "STAFF"]}>
-                <MedicalRecordLayout />
+                <VeterinarianLayout />
               </RequireAuth>
             }
           >
             <Route path="overview" element={<MedicalRecordOverview />} />
+            <Route path="vaccinations" element={<VaccinationOverview />} />
           </Route>
 
 
