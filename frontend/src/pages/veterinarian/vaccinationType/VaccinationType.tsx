@@ -14,6 +14,9 @@ import { VaccinationService } from "@/api/vaccination";
 import VaccinationTypeDetailModal from "./dialogs/vaccinationTypeDetailModal";
 import VaccinationTypeFormModal from "./dialogs/vaccinationTypeFormModal";
 import VaccinationTypeDeleteModal from "./dialogs/vaccinationTypeDelete";
+import VaccinationTypeFilters from "./helpers/VaccinationTypeFiltersProps";
+import VaccinationTypeSortButtons from "./helpers/VaccinationTypeSortButtonsProps";
+import { useVaccinationTypeFilters } from "./helpers/useVaccinationTypeFilters";
 
 type VaccinationTypeFormData = {
     vaccineName: string;
@@ -31,6 +34,20 @@ export default function VaccinationTypeOverview() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [selectedVaccinationType, setSelectedVaccinationType] = useState<VaccinationType | null>(null);
+
+    const {
+        searchTerm,
+        setSearchTerm,
+        requiredFilter,
+        setRequiredFilter,
+        sortField,
+        sortDirection,
+        handleSort,
+        clearFilters,
+        filteredTypes,
+        totalCount,
+        filteredCount,
+    } = useVaccinationTypeFilters(vaccinationTypes);
 
     const fetchVaccinationTypes = async () => {
         try {
@@ -81,12 +98,12 @@ export default function VaccinationTypeOverview() {
         } catch (err) {
             alert("Error saving vaccination type: " + getErrorMessage(err));
         }
-    }
-
+    };
 
     const handleDelete = async (vaccinationTypeId: number) => {
         try {
             await VaccinationService.deleteVaccinationType(vaccinationTypeId);
+            setIsDeleteOpen(false);
             fetchVaccinationTypes();
         } catch (err) {
             alert("Error deleting vaccination type: " + getErrorMessage(err));
@@ -94,18 +111,33 @@ export default function VaccinationTypeOverview() {
     };
 
     return (
-        <div>
-
+        <div className="p-6 bg-white rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Vaccination Overview</h2>
-        <button
-          onClick={handleAddClick}
-          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
-        >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Add Vaccination Type
-        </button>
-      </div>
+                <h2 className="text-2xl font-semibold text-gray-800">Vaccination Types</h2>
+                <button
+                    onClick={handleAddClick}
+                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
+                >
+                    <PlusIcon className="h-5 w-5 mr-2" />
+                    Add Vaccination Type
+                </button>
+            </div>
+
+            <VaccinationTypeFilters
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                requiredFilter={requiredFilter}
+                setRequiredFilter={setRequiredFilter}
+                clearFilters={clearFilters}
+                totalCount={totalCount}
+                filteredCount={filteredCount}
+            />
+
+            <VaccinationTypeSortButtons
+                sortField={sortField}
+                sortDirection={sortDirection}
+                onSort={handleSort}
+            />
 
             {loading ? (
                 <p>Loading...</p>
@@ -123,14 +155,14 @@ export default function VaccinationTypeOverview() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {vaccinationTypes.length === 0 ? (
+                        {filteredTypes.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={5} className="text-center">
                                     No vaccination types found.
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            vaccinationTypes.map((type) => (
+                            filteredTypes.map((type) => (
                                 <TableRow key={type.id}>
                                     <TableCell>{type.vaccineName}</TableCell>
                                     <TableCell>{type.description}</TableCell>
@@ -138,7 +170,7 @@ export default function VaccinationTypeOverview() {
                                     <TableCell>{type.requiredForAdoption ? "Yes" : "No"}</TableCell>
                                     <TableCell>
                                         <div className="flex space-x-2">
-                                            <button 
+                                            <button
                                                 onClick={() => handleViewClick(type)}
                                                 className="text-green-600 hover:text-green-800"
                                                 title="View details"
@@ -168,7 +200,7 @@ export default function VaccinationTypeOverview() {
                 </Table>
             )}
 
-<VaccinationTypeDetailModal
+            <VaccinationTypeDetailModal
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}
                 vaccinationType={selectedVaccinationType}
