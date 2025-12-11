@@ -21,6 +21,7 @@ public class AdoptionApplicationDocument {
     private String userId;
     private String animalId;
     private Date applicationDate;
+    private String description;
     private Status status;
     private String reviewedByUserId;
     private Boolean isActive;

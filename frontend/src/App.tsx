@@ -1,16 +1,20 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./pages/landing/Landing";
 import Animals from "./pages/animals/AnimalOverview";
+import AnimalDetailPage from "./pages/animals/AnimalDetailPage";
 import About from "./pages/about/About";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
 import DogFacts from "./pages/dogfacts/DogFacts";
-import MedicalRecordOverview from "./pages/veterinarian/medicalRecord/MedicalRecordOverview"
+import MedicalRecordOverview from "./pages/veterinarian/medicalRecord/MedicalRecordOverview";
 import VaccinationOverview from "./pages/veterinarian/vaccination/Vaccination";
 import VaccinationTypeOverview from "./pages/veterinarian/vaccinationType/VaccinationType";
 import VeterinarianLayout from "./pages/veterinarian/layout/VeterinarianLayout";
+import MyAdoptApplications from "./pages/adoptApplication/MyAdoptApplications";
+import AdminReviewApplication from "./pages/admin/AdminReviewApplication";
+
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -28,7 +32,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-
+          {/* Protected Veterinarian Routes */}
           <Route
             path="/veterinarian"
             element={
@@ -43,7 +47,6 @@ function App() {
             <Route path="vaccinations-types" element={<VaccinationTypeOverview />} />
           </Route>
 
-
           {/* Protected Admin Routes */}
           <Route
             path="/admin"
@@ -56,6 +59,7 @@ function App() {
             <Route index element={<AdminAnimals />} />
             <Route path="animals" element={<AdminAnimals />} />
             <Route path="applications" element={<AdminApplications />} />
+            <Route path="applications/:id" element={<AdminReviewApplication />} />
             <Route path="adoptions" element={<AdminAdoptions />} />
             <Route path="veterinarian/overview" element={<MedicalRecordOverview />} />
             <Route path="veterinarian/vaccinations" element={<VaccinationOverview />} />

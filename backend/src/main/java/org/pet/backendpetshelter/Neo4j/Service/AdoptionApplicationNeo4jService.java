@@ -39,6 +39,7 @@ public class AdoptionApplicationNeo4jService {
                 .orElseThrow(() -> new RuntimeException("Adoption Application not found with id: " + id));
         
         application.setApplicationDate(request.getApplicationDate());
+        application.setDescription(request.getDescription());
         application.setStatus(request.getStatus());
         application.setIsActive(request.getIsActive());
         application.setUser(request.getUser());

@@ -96,7 +96,12 @@ export default function AnimalOverview() {
 
                 <CardContent className="pb-3">
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="capitalize">
+                    <Badge variant="outline" className={`capitalize ${
+                    animal.status === "AVAILABLE" 
+                      ? "bg-green-100 text-green-800 border-green-300" 
+                      : ""
+                  }`}
+                >
                       {animal.status}
                     </Badge>
                   </div>
