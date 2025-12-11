@@ -132,7 +132,7 @@ export default function MedicalRecordOverview() {
   }
 
   return (
-    <>
+    <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">Medical Records Overview</h2>
         <button
@@ -206,6 +206,6 @@ export default function MedicalRecordOverview() {
       <MedicalRecordFormDialog record={selectedRecord} isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSubmit={handleFormSubmit} />
 
       <DeleteConfirmDialogVet record={selectedRecord} isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} onConfirm={handleDeleteConfirm} />
-    </>
+    </div>
   );
 }

@@ -13,11 +13,7 @@ export const Header = () => {
     <header className="relative bg-white shadow-sm border-b border-gray-200">
       <div className="container flex items-center justify-between px-6 py-4 mx-auto">
         <h1 className={`${isMenuOpen ? "hidden" : "block"} md:block`}>
-          <NavLink
-            to="/"
-            className="text-3xl font-bold text-gray-800 hover:text-gray-600 transition-colors"
-            onClick={closeMenu}
-          >
+          <NavLink to="/" className="text-3xl font-bold text-gray-800 hover:text-gray-600 transition-colors" onClick={closeMenu}>
             Pet Shelter
           </NavLink>
         </h1>
@@ -27,60 +23,31 @@ export const Header = () => {
               <NavLink
                 to="/animals"
                 className={({ isActive }) =>
-                  `text-lg font-medium transition-colors ${
-                    isActive
-                      ? "text-indigo-600"
-                      : "text-gray-700 hover:text-indigo-600"
-                  }`
+                  `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
                 }
                 onClick={closeMenu}
               >
                 Animals
               </NavLink>
             </li>
-            {auth?.isLoggedInAs(["VETERINARIAN", "STAFF"]) && (
+            {auth?.isLoggedInAs(["USER"]) && (
               <li>
                 <NavLink
-                  to="/veterinarian"
+                  to="/my-adopt-applications"
                   className={({ isActive }) =>
-                    `text-lg font-medium transition-colors ${
-                      isActive
-                        ? "text-indigo-600"
-                        : "text-gray-700 hover:text-indigo-600"
-                    }`
+                    `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
                   }
                   onClick={closeMenu}
                 >
-                  Medical Records
+                  My Applications
                 </NavLink>
               </li>
             )}
-              {auth?.isLoggedInAs(["USER"]) && (
-                <li>
-                  <NavLink
-                    to="/my-adopt-applications"
-                    className={({ isActive }) =>
-                      `text-lg font-medium transition-colors ${
-                        isActive
-                          ? "text-indigo-600"
-                          : "text-gray-700 hover:text-indigo-600"
-                      }`
-                    }
-                    onClick={closeMenu}
-                  >
-                    My Applications
-                  </NavLink>
-                </li>
-              )}
             <li>
               <NavLink
                 to="/dog-facts"
                 className={({ isActive }) =>
-                  `text-lg font-medium transition-colors ${
-                    isActive
-                      ? "text-indigo-600"
-                      : "text-gray-700 hover:text-indigo-600"
-                  }`
+                  `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
                 }
                 onClick={closeMenu}
               >
@@ -91,27 +58,19 @@ export const Header = () => {
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
-                  `text-lg font-medium transition-colors ${
-                    isActive
-                      ? "text-indigo-600"
-                      : "text-gray-700 hover:text-indigo-600"
-                  }`
+                  `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
                 }
                 onClick={closeMenu}
               >
                 About us
               </NavLink>
             </li>
-            {auth?.isLoggedInAs(["ADMIN", "STAFF"]) && (
+            {auth?.isLoggedInAs(["ADMIN", "STAFF", "VETERINARIAN"]) && (
               <li>
                 <NavLink
                   to="/admin"
                   className={({ isActive }) =>
-                    `text-lg font-medium transition-colors ${
-                      isActive
-                        ? "text-indigo-600"
-                        : "text-gray-700 hover:text-indigo-600"
-                    }`
+                    `text-lg font-medium transition-colors ${isActive ? "text-indigo-600" : "text-gray-700 hover:text-indigo-600"}`
                   }
                   onClick={closeMenu}
                 >
@@ -127,11 +86,7 @@ export const Header = () => {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
-          {isMenuOpen ? (
-            <XMarkIcon className="w-6 h-6" />
-          ) : (
-            <Bars3Icon className="w-6 h-6" />
-          )}
+          {isMenuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
         </button>
       </div>
     </header>

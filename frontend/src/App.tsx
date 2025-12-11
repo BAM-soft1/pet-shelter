@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/landing/Landing";
 import Animals from "./pages/animals/AnimalOverview";
 import AnimalDetailPage from "./pages/animals/AnimalDetailPage";
@@ -11,9 +11,9 @@ import DogFacts from "./pages/dogfacts/DogFacts";
 import MedicalRecordOverview from "./pages/veterinarian/medicalRecord/MedicalRecordOverview";
 import VaccinationOverview from "./pages/veterinarian/vaccination/Vaccination";
 import VaccinationTypeOverview from "./pages/veterinarian/vaccinationType/VaccinationType";
-import VeterinarianLayout from "./pages/veterinarian/layout/VeterinarianLayout";
 import MyAdoptApplications from "./pages/adoptApplication/MyAdoptApplications";
 import AdminReviewApplication from "./pages/admin/AdminReviewApplication";
+import RoleBasedRedirect from "./components/RoleBasedRedirect";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -42,38 +42,73 @@ function App() {
             }
           />
 
-          {/* Protected Veterinarian Routes */}
-          <Route
-            path="/veterinarian"
-            element={
-              <RequireAuth roles={["VETERINARIAN", "ADMIN", "STAFF"]}>
-                <VeterinarianLayout />
-              </RequireAuth>
-            }
-          >
-            <Route index element={<Navigate to="overview" replace />} />
-            <Route path="overview" element={<MedicalRecordOverview />} />
-            <Route path="vaccinations" element={<VaccinationOverview />} />
-            <Route path="vaccinations-types" element={<VaccinationTypeOverview />} />
-          </Route>
-
           {/* Protected Admin Routes */}
           <Route
             path="/admin"
             element={
-              <RequireAuth roles={["ADMIN", "STAFF"]}>
+              <RequireAuth roles={["ADMIN", "STAFF", "VETERINARIAN"]}>
                 <AdminLayout />
               </RequireAuth>
             }
           >
-            <Route index element={<AdminAnimals />} />
-            <Route path="animals" element={<AdminAnimals />} />
-            <Route path="applications" element={<AdminApplications />} />
-            <Route path="applications/:id" element={<AdminReviewApplication />} />
-            <Route path="adoptions" element={<AdminAdoptions />} />
-            <Route path="veterinarian/overview" element={<MedicalRecordOverview />} />
-            <Route path="veterinarian/vaccinations" element={<VaccinationOverview />} />
-            <Route path="veterinarian/vaccination-types" element={<VaccinationTypeOverview />} />
+            <Route index element={<RoleBasedRedirect veterinarianPath="/admin/veterinarian/overview" defaultPath="/admin/animals" />} />
+            <Route
+              path="animals"
+              element={
+                <RequireAuth roles={["ADMIN", "STAFF"]}>
+                  <AdminAnimals />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="applications"
+              element={
+                <RequireAuth roles={["ADMIN", "STAFF"]}>
+                  <AdminApplications />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="applications/:id"
+              element={
+                <RequireAuth roles={["ADMIN", "STAFF"]}>
+                  <AdminReviewApplication />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="adoptions"
+              element={
+                <RequireAuth roles={["ADMIN", "STAFF"]}>
+                  <AdminAdoptions />
+                </RequireAuth>
+              }
+            />
+            {/* Veterinarian routes - only ADMIN and VETERINARIAN can access */}
+            <Route
+              path="veterinarian/overview"
+              element={
+                <RequireAuth roles={["ADMIN", "VETERINARIAN"]}>
+                  <MedicalRecordOverview />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="veterinarian/vaccinations"
+              element={
+                <RequireAuth roles={["ADMIN", "VETERINARIAN"]}>
+                  <VaccinationOverview />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="veterinarian/vaccinations-types"
+              element={
+                <RequireAuth roles={["ADMIN", "VETERINARIAN"]}>
+                  <VaccinationTypeOverview />
+                </RequireAuth>
+              }
+            />
           </Route>
         </Routes>
       </AuthProvider>
