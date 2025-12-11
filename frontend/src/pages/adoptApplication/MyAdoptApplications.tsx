@@ -3,14 +3,14 @@ import MainLayout from "../../components/layout/MainLayout";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { AdoptionApplicationResponse, Animal, AuthUser } from "../../types/types";
-import { authProvider } from "@/security/authUtils";
+import type { AdoptionApplicationResponse, Animal } from "../../types/types";
+import { useAuth } from "@/context/AuthProvider";
 import { AdoptionApplicationService } from "../../api/adoptionApplication";
 import { getErrorMessage } from "../../services/fetchUtils";
 import { useNavigate } from "react-router-dom";
 
 export default function MyAdoptApplication() {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const auth = useAuth();
   const [applications, setApplications] = useState<
     AdoptionApplicationResponse[]
   >([]);
@@ -24,29 +24,15 @@ export default function MyAdoptApplication() {
 
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token") || "";
-        const user = await authProvider.getCurrentUser(token);
-        setUser(user ?? null);
-      } catch (err) {
-        setUser(null);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
     const fetchApplications = async () => {
-      if (!user?.id) return;
+      if (!auth?.user?.id) return;
 
       try {
         setLoading(true);
         setError(null);
         const data =
           await AdoptionApplicationService.getAdoptionApplicationForUser(
-            user.id
+            auth.user.id
           );
         setApplications(data);
       } catch (err) {
@@ -57,7 +43,7 @@ export default function MyAdoptApplication() {
     };
 
     fetchApplications();
-  }, [user]);
+  }, [auth?.user?.id]);
 
   if (loading) {
     return (
@@ -117,7 +103,7 @@ export default function MyAdoptApplication() {
                       <img
                         src={app.animal.imageUrl}
                         alt={app.animal.name}
-                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                        className="w-24 h-24 object-cover rounded-lg shrink-0"
                       />
                     )}
 
@@ -147,7 +133,7 @@ export default function MyAdoptApplication() {
                           ? "destructive"
                           : "secondary"
                       }
-                      className="capitalize flex-shrink-0"
+                      className="capitalize shrink-0"
                     >
                       {app.status}
                     </Badge>

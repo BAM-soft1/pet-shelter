@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ApplicationFilters from "./helpers/ApplicationFilters";
 import ApplicationSortButtons from "./helpers/ApplicationSortButtons";
-import { useApplicationFilters } from "./helpers/useApplicationFilters";
+import { useApplicationFilters } from "@/hooks/useApplicationFilters";
 
 export default function AdminApplications() {
   const [applications, setApplications] = useState<AdoptionApplication[]>([]);

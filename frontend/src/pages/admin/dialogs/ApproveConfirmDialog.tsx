@@ -1,11 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import type { AdoptionApplication } from "@/types/types";
 
@@ -16,12 +9,7 @@ type ApproveConfirmDialogProps = {
   onConfirm: () => Promise<void>;
 };
 
-export default function ApproveConfirmDialog({
-  application,
-  isOpen,
-  onClose,
-  onConfirm,
-}: ApproveConfirmDialogProps) {
+export default function ApproveConfirmDialog({ application, isOpen, onClose, onConfirm }: ApproveConfirmDialogProps) {
   if (!application) return null;
 
   const handleConfirm = async () => {
@@ -34,9 +22,7 @@ export default function ApproveConfirmDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Approve Application</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to approve this adoption application?
-          </DialogDescription>
+          <DialogDescription>Are you sure you want to approve this adoption application?</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -58,9 +44,7 @@ export default function ApproveConfirmDialog({
           </div>
 
           <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg p-3">
-            <p className="text-sm text-green-800 dark:text-green-200">
-              ✓ This will approve the application and notify the applicant.
-            </p>
+            <p className="text-sm text-green-800 dark:text-green-200">This will approve the application and notify the applicant.</p>
           </div>
         </div>
 
@@ -68,11 +52,7 @@ export default function ApproveConfirmDialog({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button
-            variant="default"
-            className="bg-green-600 hover:bg-green-700"
-            onClick={handleConfirm}
-          >
+          <Button variant="default" className="bg-green-600 hover:bg-green-700" onClick={handleConfirm}>
             Approve Application
           </Button>
         </DialogFooter>

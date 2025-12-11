@@ -1,11 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import type { AdoptionApplication } from "@/types/types";
 
@@ -16,12 +9,7 @@ type RejectConfirmDialogProps = {
   onConfirm: () => Promise<void>;
 };
 
-export default function RejectConfirmDialog({
-  application,
-  isOpen,
-  onClose,
-  onConfirm,
-}: RejectConfirmDialogProps) {
+export default function RejectConfirmDialog({ application, isOpen, onClose, onConfirm }: RejectConfirmDialogProps) {
   if (!application) return null;
 
   const handleConfirm = async () => {
@@ -34,9 +22,7 @@ export default function RejectConfirmDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Reject Application</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to reject this adoption application?
-          </DialogDescription>
+          <DialogDescription>Are you sure you want to reject this adoption application?</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -58,9 +44,7 @@ export default function RejectConfirmDialog({
           </div>
 
           <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg p-3">
-            <p className="text-sm text-red-800 dark:text-red-200">
-              ⚠ This action will reject the application and notify the applicant.
-            </p>
+            <p className="text-sm text-red-800 dark:text-red-200">This action will reject the application and notify the applicant.</p>
           </div>
         </div>
 

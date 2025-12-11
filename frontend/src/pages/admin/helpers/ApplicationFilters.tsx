@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 type ApplicationFiltersProps = {
@@ -40,12 +39,7 @@ export default function ApplicationFilters({
         <div>
           <label className="block text-sm font-medium mb-2">Status</label>
           <div className="flex gap-2">
-            <Button
-              variant={statusFilter === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setStatusFilter("all")}
-              className="flex-1"
-            >
+            <Button variant={statusFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("all")} className="flex-1">
               All
             </Button>
             <Button

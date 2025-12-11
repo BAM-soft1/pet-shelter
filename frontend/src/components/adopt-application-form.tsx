@@ -5,8 +5,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Spinner } from "././ui/spinner";
-import { useState, useEffect } from "react";
-import { authProvider } from "@/security/authUtils";
+import { useState } from "react";
 import { AdoptionApplicationService } from "@/api/adoptionApplication";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -37,22 +36,19 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
     const application: AdoptionApplicationRequest = {
       userId: user.id,
       animalId: animal.id,
-      description
+      description,
     };
 
     setSubmitting(true);
     setError(null);
-    
+
     // Start timer and API call simultaneously
-    const minLoadingTime = new Promise(resolve => setTimeout(resolve, 1000));
-    
-    try {      
+    const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 1000));
+
+    try {
       // Wait for both the API call and minimum loading time
-      const [created] = await Promise.all([
-        AdoptionApplicationService.createAdoptionApplication(application),
-        minLoadingTime
-      ]);
-      
+      const [created] = await Promise.all([AdoptionApplicationService.createAdoptionApplication(application), minLoadingTime]);
+
       if (onSubmit) onSubmit(created);
       setSubmitted(true);
     } catch (err) {
@@ -72,7 +68,9 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
           <p className="mb-4">You need to be logged in to apply for adoption.</p>
           <div className="flex gap-2">
             <Button onClick={handleLoginRedirect}>Login</Button>
-            <Button variant="outline" onClick={() => navigate(-1)}>Back</Button>
+            <Button variant="outline" onClick={() => navigate(-1)}>
+              Back
+            </Button>
           </div>
         </div>
       </CardContent>
@@ -102,7 +100,11 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
 
           <div className="flex flex-col gap-1">
             <Label>Message</Label>
-            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={`Why would you like to adopt ${animal.name}?`} />
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={`Why would you like to adopt ${animal.name}?`}
+            />
           </div>
 
           <div className="md:col-span-2 flex flex-col gap-2 mt-2">
@@ -118,7 +120,9 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
                   "Submit Application"
                 )}
               </Button>
-              <Button variant="outline" onClick={() => setDescription("")}>Reset</Button>
+              <Button variant="outline" onClick={() => setDescription("")}>
+                Reset
+              </Button>
             </div>
           </div>
         </form>

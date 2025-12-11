@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import type { AdoptionApplication } from "@/types/types";
-import type { SortField, SortDirection } from "./ApplicationSortButtons";
+import type { SortField, SortDirection } from "@/pages/admin/helpers/ApplicationSortButtons";
 
 export function useApplicationFilters(applications: AdoptionApplication[]) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,9 +33,7 @@ export function useApplicationFilters(applications: AdoptionApplication[]) {
           comparison = a.animal.name.localeCompare(b.animal.name);
           break;
         case "applicantName":
-          comparison = `${a.user.firstName} ${a.user.lastName}`.localeCompare(
-            `${b.user.firstName} ${b.user.lastName}`
-          );
+          comparison = `${a.user.firstName} ${a.user.lastName}`.localeCompare(`${b.user.firstName} ${b.user.lastName}`);
           break;
         case "applicationDate":
           comparison = new Date(a.applicationDate).getTime() - new Date(b.applicationDate).getTime();
