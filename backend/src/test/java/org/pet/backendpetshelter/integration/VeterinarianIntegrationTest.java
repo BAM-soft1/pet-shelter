@@ -98,9 +98,6 @@ public class VeterinarianIntegrationTest {
                 .andExpect(jsonPath("$.licenseNumber").value("VET123456"))
                 .andExpect(jsonPath("$.clinicName").value("BAM Pet Shelter"))
                 .andExpect(jsonPath("$.isActive").value(true));
-
-
-
     }
 
 

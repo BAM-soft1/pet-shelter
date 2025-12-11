@@ -102,11 +102,23 @@ public class VeterinarianService {
         if (licenseNumber == null || licenseNumber.isBlank()) {
             throw new IllegalArgumentException("License number cannot be null or empty.");
         }
+
+        if (licenseNumber.length() > 20) {
+            throw new IllegalArgumentException("License number cannot exceed 20 characters.");
+        }
     }
 
     private void validateClinicName(String clinicName) {
         if (clinicName == null || clinicName.isBlank()) {
             throw new IllegalArgumentException("Clinic name cannot be null or empty.");
+        }
+
+        if (clinicName.length() > 65) {
+            throw new IllegalArgumentException("Clinic name cannot exceed 65 characters.");
+        }
+
+        if (!clinicName.matches("^[a-zA-Z]+$")) {
+            throw new IllegalArgumentException("License number contains invalid characters.");
         }
     }
 
