@@ -14,6 +14,7 @@ import { getErrorMessage } from "@/services/fetchUtils";
 import { VaccinationService } from "@/api/vaccination";
 import VaccinationTypeDetailModal from "./dialogs/vaccinationTypeDetailModal";
 import VaccinationTypeFormModal from "./dialogs/vaccinationTypeFormModal";
+import VaccinationTypeDeleteModal from "./dialogs/vaccinationTypeDelete";
 
 type VaccinationTypeFormData = {
     vaccineName: string;
@@ -29,6 +30,7 @@ export default function VaccinationTypeOverview() {
 
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [selectedVaccinationType, setSelectedVaccinationType] = useState<VaccinationType | null>(null);
 
     const fetchVaccinationTypes = async () => {
@@ -63,6 +65,11 @@ export default function VaccinationTypeOverview() {
         setIsFormOpen(true);
     };
 
+    const handleDeleteClick = (type: VaccinationType) => {
+        setSelectedVaccinationType(type);
+        setIsDeleteOpen(true);
+    };
+
     const handleFormSubmit = async (data: VaccinationTypeFormData) => {
         try {
             if (selectedVaccinationType) {
@@ -76,6 +83,16 @@ export default function VaccinationTypeOverview() {
             alert("Error saving vaccination type: " + getErrorMessage(err));
         }
     }
+
+
+    const handleDelete = async (vaccinationTypeId: number) => {
+        try {
+            await VaccinationService.deleteVaccinationType(vaccinationTypeId);
+            fetchVaccinationTypes();
+        } catch (err) {
+            alert("Error deleting vaccination type: " + getErrorMessage(err));
+        }
+    };
 
     return (
         <div>
@@ -132,7 +149,11 @@ export default function VaccinationTypeOverview() {
                                             >
                                                 <PencilIcon className="h-5 w-5" />
                                             </button>
-                                            <button className="text-red-600 hover:text-red-800">
+                                            <button
+                                                onClick={() => handleDeleteClick(type)}
+                                                className="text-red-600 hover:text-red-800"
+                                                title="Delete vaccination type"
+                                            >
                                                 <TrashIcon className="h-5 w-5" />
                                             </button>
                                         </div>
@@ -144,7 +165,7 @@ export default function VaccinationTypeOverview() {
                 </Table>
             )}
 
-            <VaccinationTypeDetailModal
+<VaccinationTypeDetailModal
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}
                 vaccinationType={selectedVaccinationType}
@@ -156,6 +177,15 @@ export default function VaccinationTypeOverview() {
                 vaccinationType={selectedVaccinationType}
                 onSubmit={handleFormSubmit}
             />
+
+            {selectedVaccinationType && (
+                <VaccinationTypeDeleteModal
+                    isOpen={isDeleteOpen}
+                    onClose={() => setIsDeleteOpen(false)}
+                    vaccinationType={selectedVaccinationType}
+                    onDelete={handleDelete}
+                />
+            )}
         </div>
     );
 }
