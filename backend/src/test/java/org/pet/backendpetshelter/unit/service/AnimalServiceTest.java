@@ -20,6 +20,7 @@ import org.pet.backendpetshelter.Status;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,7 +60,7 @@ public class AnimalServiceTest {
         request.setSex("Male");
         request.setBirthDate(createPastDate(2020, 1, 1));
         request.setIntakeDate(createPastDate(2023, 1, 1));
-        request.setStatus(Status.APPROVED);
+        request.setStatus(Status.AVAILABLE);
         request.setPrice(499);
         request.setIsActive(true);
         request.setImageUrl("http://example.com/image.jpg");
@@ -108,6 +109,7 @@ public class AnimalServiceTest {
 
         // Happy path :D
 
+        // java
         @Test
         @DisplayName("Create Animal - Valid Data")
         void createAnimal_ValidData_Success() {
@@ -115,6 +117,12 @@ public class AnimalServiceTest {
             // Arrange
             AnimalDTORequest request = createValidRequest();
 
+            // mock species and breed existence/lookups
+            when(speciesRepository.existsById(anyLong())).thenReturn(true);
+            when(speciesRepository.findById(any(Long.class))).thenReturn(Optional.of(createValidSpecies()));
+
+            when(breedRepository.existsById(anyLong())).thenReturn(true);
+            when(breedRepository.findById(any(Long.class))).thenReturn(Optional.of(createValidBreed()));
 
             when(animalRepository.save(any(Animal.class))).thenAnswer(inv -> {
                 Animal a = inv.getArgument(0);
@@ -133,9 +141,8 @@ public class AnimalServiceTest {
             assertEquals(Status.AVAILABLE, response.getStatus());
             assertEquals(499, response.getPrice());
             verify(animalRepository).save(any(Animal.class));
-
-
         }
+
 
         // ==================== INVALID PARTITIONS PARTITION ====================
 

@@ -95,16 +95,25 @@ public class VeterinarianServiceTest {
 
     class CreateVeterinarianTests {
 
+        // Java
+        // java
         @Test
         @DisplayName("Create Veterinarian - Valid Data")
         void createVeterinarian_ValidData_Success() {
             VeterinarianDTORequest request = createValidRequest();
 
-
+            User user = new User();
+            user.setId(request.getUserId());
+            user.setFirstName("Ox");
+            user.setLastName("Woo");
+            user.setEmail("ox123@gmail.com");
+            user.setPassword("W1ldC4tWoo123");
+            user.setRole(Roles.VETERINARIAN);
+            user.setIsActive(true);
 
             when(userRepository.existsById(anyLong())).thenReturn(true);
-
-
+            // Use any(Long.class) to avoid generic/type inference issues
+            when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
             when(veterinarianRepository.save(any(Veterinarian.class))).thenAnswer(inv -> {
                 Veterinarian a = inv.getArgument(0);
@@ -120,9 +129,9 @@ public class VeterinarianServiceTest {
             assertEquals("Bam Pet Shelter", response.getClinicName());
             assertEquals(true, response.getIsActive());
             verify(veterinarianRepository).save(any(Veterinarian.class));
-
-
         }
+
+
 
         // ==================== INVALID PARTITIONS PARTITION ====================
 

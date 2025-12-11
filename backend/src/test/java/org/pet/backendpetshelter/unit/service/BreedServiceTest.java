@@ -15,6 +15,8 @@ import org.pet.backendpetshelter.Repository.BreedRepository;
 import org.pet.backendpetshelter.Repository.SpeciesRepository;
 import org.pet.backendpetshelter.Service.BreedService;
 
+import java.util.Optional;
+
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,6 +69,8 @@ public class BreedServiceTest {
     }
 
 
+
+
     // ==================== BLACKBOX TESTS ====================
 
     // ----------------------------- Create Breed -----------------------------\\
@@ -81,6 +85,8 @@ public class BreedServiceTest {
         void createBreed_ValidData_Success() {
             BreedDTORequest request = createValidRequest();
 
+            when(speciesRepository.existsById(anyLong())).thenReturn(true);
+            when(speciesRepository.findById(any(Long.class))).thenReturn(Optional.of(createValidSpecies()));
 
             when(breedRepository.save(any(Breed.class))).thenAnswer(inv -> {
                 Breed a = inv.getArgument(0);
@@ -88,14 +94,13 @@ public class BreedServiceTest {
                 return a;
             });
 
-
             BreedDTOResponse response = breedService.addBreed(request);
 
             assertNotNull(response);
             assertEquals("Breed name should match", "Alfred", response.getName());
             verify(breedRepository, times(1)).save(any(Breed.class));
-
         }
+
 
         // ==================== INVALID PARTITIONS PARTITION ====================
 
