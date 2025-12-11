@@ -9,7 +9,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Button } from "@/components/ui/button";
 import { getErrorMessage } from "@/services/fetchUtils";
 import { VaccinationService } from "@/api/vaccination";
 import VaccinationTypeDetailModal from "./dialogs/vaccinationTypeDetailModal";
@@ -96,13 +95,17 @@ export default function VaccinationTypeOverview() {
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-bold">Vaccination Types</h1>
-                <Button variant="default" onClick={handleAddClick}>
-                    <PlusIcon className="h-5 w-5 mr-2" />
-                    Add Vaccination Type
-                </Button>
-            </div>
+
+            <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-800">Vaccination Overview</h2>
+        <button
+          onClick={handleAddClick}
+          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
+        >
+          <PlusIcon className="h-5 w-5 mr-2" />
+          Add Vaccination Type
+        </button>
+      </div>
 
             {loading ? (
                 <p>Loading...</p>

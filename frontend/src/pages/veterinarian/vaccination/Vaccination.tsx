@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Button } from "@/components/ui/button";
 import { getErrorMessage } from "@/services/fetchUtils";
 import { VaccinationService } from "../../../api/vaccination";
 import VaccinationDetailModal from "./dialogs/VaccinationDetailModal";
@@ -107,13 +106,16 @@ export default function VaccinationOverview() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Vaccination Overview</h1>
-        <Button onClick={handleAddClick} className="flex items-center gap-2">
-          <PlusIcon className="h-5 w-5" />
-          Add Vaccination
-        </Button>
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-800">Vaccination Overview</h2>
+        <button
+          onClick={handleAddClick}
+          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
+        >
+          <PlusIcon className="h-5 w-5 mr-2" />
+          Add Record
+        </button>
       </div>
 
       {loading ? (
