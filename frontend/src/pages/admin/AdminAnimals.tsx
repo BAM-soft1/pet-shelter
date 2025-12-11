@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { Animal, Species, Breed, AnimalRequest } from "@/types/types";
 import { AnimalService } from "@/api/animals";
 import { SpeciesService, BreedService } from "@/api/species";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import PaginationControls from "@/components/ui/PaginationControls";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
 import calculateAge from "@/utils/calculateAge";
@@ -27,28 +28,35 @@ export default function AdminAnimals() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+
   // Modal states
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
 
-  useEffect(() => {
-    fetchAnimals();
-  }, []);
-
-  const fetchAnimals = async () => {
+  const fetchAnimals = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await AnimalService.getAnimals();
-      setAnimals(data);
+      const pageResponse = await AnimalService.getAnimals(currentPage, 8, "name", "asc");
+      setAnimals(pageResponse.content);
+      setTotalPages(pageResponse.totalPages);
+      setTotalElements(pageResponse.totalElements);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchAnimals();
+  }, [fetchAnimals]);
 
   const handleCreate = async (formData: AnimalFormData) => {
     if (!formData.speciesId) return;
@@ -63,7 +71,7 @@ export default function AdminAnimals() {
       species,
       breed,
       birthDate: formData.birthDate,
-      intakeDate: formData.intakeDate || new Date().toISOString().split('T')[0],
+      intakeDate: formData.intakeDate || new Date().toISOString().split("T")[0],
       status: formData.status,
       price: formData.price,
       imageUrl: formData.imageUrl,
@@ -215,6 +223,14 @@ export default function AdminAnimals() {
           </Table>
         </div>
       </div>
+
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        currentElements={animals.length}
+        onPageChange={setCurrentPage}
+      />
 
       {/* Modals */}
       <AnimalFormDialog

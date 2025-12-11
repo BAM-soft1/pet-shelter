@@ -9,6 +9,8 @@ import org.pet.backendpetshelter.Repository.AdoptionRepository;
 import org.pet.backendpetshelter.Repository.AdoptionApplicationRepository;
 import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.pet.backendpetshelter.Status;
@@ -34,10 +36,9 @@ public class AdoptionService {
         this.animalRepository = animalRepository;
     }
 
-    public List<AdoptionResponse> GetAllAdoptions() {
-        return adoptionRepository.findAll().stream()
-                .map(AdoptionResponse::new)
-                .collect(Collectors.toList());
+    public Page<AdoptionResponse> GetAllAdoptions(Pageable pageable) {
+        return adoptionRepository.findAll(pageable)
+                .map(AdoptionResponse::new);
     }
 
     public AdoptionResponse GetAdoptionById(Long id) {

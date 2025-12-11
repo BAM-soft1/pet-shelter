@@ -13,6 +13,8 @@ import org.pet.backendpetshelter.Repository.UserRepository;
 import org.pet.backendpetshelter.Status;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -32,10 +34,19 @@ public class AdoptionApplicationService
         this.adoptionApplicationRepository = adoptionApplicationRepository;
     }
 
-    public List<AdminAdoptionApplicationResponse> GetAllAdoptionApplications() {
-        return adoptionApplicationRepository.findAll().stream()
-                .map(AdminAdoptionApplicationResponse::new)
-                .toList();
+    public Page<AdminAdoptionApplicationResponse> GetAllAdoptionApplications(Pageable pageable) {
+        return adoptionApplicationRepository.findAll(pageable)
+                .map(AdminAdoptionApplicationResponse::new);
+    }
+    
+    /* Get All Adoption Applications with Filters */
+    public Page<AdminAdoptionApplicationResponse> GetAllAdoptionApplicationsWithFilters(
+            Status status,
+            String search,
+            Pageable pageable) {
+        
+        return adoptionApplicationRepository.findAllWithFilters(status, search, pageable)
+                .map(AdminAdoptionApplicationResponse::new);
     }
 
     public AdoptionApplicationResponse GetAdoptionApplicationById(Long id) {
@@ -45,8 +56,8 @@ public class AdoptionApplicationService
     }
 
     public List<AdoptionApplicationResponse> getAdoptionApplicationsForUser(Long userId) {
-        // Optional: verify user exists first
-        User user = userRepository.findById(userId)
+        // Verify user exists first
+        userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         return adoptionApplicationRepository.findByUserId(userId).stream()
