@@ -8,11 +8,12 @@ export default function MedicalRecordLayout() {
 
   useEffect(() => {
     if (location.pathname.includes("overview")) setActiveTab("overview");
+    if (location.pathname.includes("vaccinations")) setActiveTab("vaccinations");
+    if (location.pathname.includes("vaccinations-types")) setActiveTab("vaccination-types");
   }, [location]);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Veterinarian Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -33,7 +34,7 @@ export default function MedicalRecordLayout() {
         <div className="container mx-auto px-6">
           <nav className="flex gap-1">
             <Link to="/veterinarian/overview">
-              <button 
+              <button
                 className={`px-6 py-3 font-medium transition-colors border-b-2 ${
                   activeTab === "overview"
                     ? "text-indigo-600 border-indigo-600"
@@ -43,6 +44,29 @@ export default function MedicalRecordLayout() {
                 Medical Record Overview
               </button>
             </Link>
+            <Link to="/veterinarian/vaccinations">
+              <button
+                className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+                  activeTab === "vaccinations"
+                    ? "text-indigo-600 border-indigo-600"
+                    : "text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300"
+                }`}
+              >
+                Vaccination Overview
+              </button>
+            </Link>
+            
+            <Link to="/veterinarian/vaccinations-types">
+            <button
+              className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+                activeTab === "vaccination-types"
+                  ? "text-indigo-600 border-indigo-600"
+                  : "text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300"
+              }`}
+            >
+              Vaccination Types
+            </button>
+          </Link>
           </nav>
         </div>
       </div>

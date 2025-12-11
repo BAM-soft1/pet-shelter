@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
+@Profile({"mysql", "migrate-mongo", "migrate-neo4j", "test"})
 public interface UserRepository extends JpaRepository<User, Long> {
     User findById(long id);
     boolean existsByEmail(String email);

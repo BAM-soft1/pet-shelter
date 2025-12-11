@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
+@Profile({"mysql", "migrate-mongo", "migrate-neo4j", "test" })
 public interface AdoptionApplicationRepository extends JpaRepository<AdoptionApplication, Long> {
     AdoptionApplication findById(long id);
     List<AdoptionApplication> findByUserId(Long userId);

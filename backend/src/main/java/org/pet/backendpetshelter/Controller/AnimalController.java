@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/animal")
 @CrossOrigin
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class AnimalController {
 
     private final AnimalService animalService;

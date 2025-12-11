@@ -183,7 +183,7 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cost">Cost ($)</Label>
+            <Label htmlFor="cost">Medical Cost: ($)</Label>
             <Input type="number" id="cost" name="cost" value={formData.cost} onChange={handleChange} min={0} step={0.01} />
           </div>
 

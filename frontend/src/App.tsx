@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./pages/landing/Landing";
 import Animals from "./pages/animals/AnimalOverview";
 import AnimalDetailPage from "./pages/animals/AnimalDetailPage";
@@ -8,8 +8,10 @@ import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
 import DogFacts from "./pages/dogfacts/DogFacts";
-import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview";
-import MedicalRecordLayout from "./pages/medicalRecord/MedicalRecordLayout";
+import MedicalRecordOverview from "./pages/veterinarian/medicalRecord/MedicalRecordOverview";
+import VaccinationOverview from "./pages/veterinarian/vaccination/Vaccination";
+import VaccinationTypeOverview from "./pages/veterinarian/vaccinationType/VaccinationType";
+import VeterinarianLayout from "./pages/veterinarian/layout/VeterinarianLayout";
 import MyAdoptApplications from "./pages/adoptApplication/MyAdoptApplications";
 import AdminReviewApplication from "./pages/admin/AdminReviewApplication";
 
@@ -44,12 +46,15 @@ function App() {
           <Route
             path="/veterinarian"
             element={
-              <RequireAuth roles={["VETERINARIAN", "STAFF"]}>
-                <MedicalRecordLayout />
+              <RequireAuth roles={["VETERINARIAN", "ADMIN", "STAFF"]}>
+                <VeterinarianLayout />
               </RequireAuth>
             }
           >
+            <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<MedicalRecordOverview />} />
+            <Route path="vaccinations" element={<VaccinationOverview />} />
+            <Route path="vaccinations-types" element={<VaccinationTypeOverview />} />
           </Route>
 
           {/* Protected Admin Routes */}
@@ -66,6 +71,9 @@ function App() {
             <Route path="applications" element={<AdminApplications />} />
             <Route path="applications/:id" element={<AdminReviewApplication />} />
             <Route path="adoptions" element={<AdminAdoptions />} />
+            <Route path="veterinarian/overview" element={<MedicalRecordOverview />} />
+            <Route path="veterinarian/vaccinations" element={<VaccinationOverview />} />
+            <Route path="veterinarian/vaccination-types" element={<VaccinationTypeOverview />} />
           </Route>
         </Routes>
       </AuthProvider>

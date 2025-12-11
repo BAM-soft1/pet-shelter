@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 
 @Repository
-@Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
+@Profile({"mysql", "migrate-mongo", "migrate-neo4j", "test"})
 public interface AnimalProceduresRepository extends JpaRepository<Animal, Long> {
 
     /**

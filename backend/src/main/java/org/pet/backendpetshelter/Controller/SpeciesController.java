@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/species")
 @CrossOrigin
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class SpeciesController {
     private final SpeciesService speciesService;
 

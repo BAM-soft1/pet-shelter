@@ -3,7 +3,7 @@ import type { MedicalRecord } from "@/types/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
-import { MedicalRecordService } from "../../api/medicalRecord";
+import { MedicalRecordService } from "../../../api/medicalRecord";
 
 import MedicalRecordDetailModal from "./dialogs/MedicalRecordDetailModal";
 import MedicalRecordFormDialog from "./dialogs/MedicalRecordFormDialog";
@@ -169,7 +169,7 @@ export default function MedicalRecordOverview() {
               <TableHead>Date</TableHead>
               <TableHead>Diagnosis</TableHead>
               <TableHead>Treatment</TableHead>
-              <TableHead>Cost</TableHead>
+              <TableHead>Medical Price</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>

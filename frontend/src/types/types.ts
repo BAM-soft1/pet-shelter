@@ -1,4 +1,3 @@
-// Backend entity types
 type Species = {
   id: number;
   name: string;
@@ -9,6 +8,42 @@ type Breed = {
   species: Species;
   name: string;
 };
+
+
+export type VaccinationType = {
+  id: number;
+  vaccineName: string;
+  description: string;
+  durationMonths: number;
+  requiredForAdoption: boolean;
+};
+
+export type Vaccination = {
+  id: number;
+  animal: Animal;
+  user: User;
+  dateAdministered: string;
+  vaccinationType: VaccinationType;
+  nextDueDate: string;
+};
+
+
+export type VaccinationRequest = {
+  animalId: number | null
+  userId?: number | null;
+  dateAdministered: string;
+  vaccinationTypeId: number | null;
+  nextDueDate: string;
+}; 
+
+
+export type VaccinationTypeRequest = {
+  vaccineName: string;
+  description: string;
+  durationMonths: number;
+  requiredForAdoption: boolean;
+};
+
 
 type MedicalRecord = {
   id: number;
@@ -29,19 +64,18 @@ type MedicalRecordRequest = {
   cost: number;
 };
 
-// Animal type matching backend AnimalDTOResponse
 type Animal = {
   id: number;
   name: string;
   sex: string;
   species: Species;
   breed: Breed | null;
-  birthDate: string; // ISO date string
-  intakeDate: string; // ISO date string
+  birthDate: string; 
+  intakeDate: string; 
   status: string;
   price: number;
   isActive: boolean;
-  imageUrl?: string; // Optional field for frontend
+  imageUrl?: string; 
 };
 
 type AnimalRequest = {
@@ -49,8 +83,8 @@ type AnimalRequest = {
   sex: string;
   species: Species;
   breed: Breed | null;
-  birthDate: string; // ISO date string
-  intakeDate: string; // ISO date string
+  birthDate: string;
+  intakeDate: string; 
   status: string;
   price: number;
   imageUrl?: string;

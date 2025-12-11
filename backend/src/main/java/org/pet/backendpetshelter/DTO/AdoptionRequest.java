@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AdoptionRequest {
-    private AdoptionApplication adoptionApplication;
+    private Long adoptionApplicationId;
     private Date adoptionDate;
     private Boolean isActive;
 }

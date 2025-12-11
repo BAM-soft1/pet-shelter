@@ -1,6 +1,5 @@
 package org.pet.backendpetshelter.unit.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,8 @@ import org.pet.backendpetshelter.Entity.Species;
 import org.pet.backendpetshelter.Repository.BreedRepository;
 import org.pet.backendpetshelter.Repository.SpeciesRepository;
 import org.pet.backendpetshelter.Service.BreedService;
+
+import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,7 +44,7 @@ public class BreedServiceTest {
 
     private BreedDTORequest createValidRequest() {
         BreedDTORequest request = new BreedDTORequest();
-        request.setSpecies(createValidSpecies());
+        request.setSpeciesId(1L);
         request.setName("Alfred");
 
         return request;
@@ -61,12 +62,13 @@ public class BreedServiceTest {
     private Breed createValidBreed(BreedDTORequest request) {
         Breed breed = new Breed();
         breed.setId(1L);
-        breed.setSpecies(request.getSpecies());
+        breed.setSpecies(createValidSpecies());
         breed.setName(request.getName());
-
         return breed;
 
     }
+
+
 
 
     // ==================== BLACKBOX TESTS ====================
@@ -83,6 +85,8 @@ public class BreedServiceTest {
         void createBreed_ValidData_Success() {
             BreedDTORequest request = createValidRequest();
 
+            when(speciesRepository.existsById(anyLong())).thenReturn(true);
+            when(speciesRepository.findById(any(Long.class))).thenReturn(Optional.of(createValidSpecies()));
 
             when(breedRepository.save(any(Breed.class))).thenAnswer(inv -> {
                 Breed a = inv.getArgument(0);
@@ -90,14 +94,13 @@ public class BreedServiceTest {
                 return a;
             });
 
-
             BreedDTOResponse response = breedService.addBreed(request);
 
             assertNotNull(response);
             assertEquals("Breed name should match", "Alfred", response.getName());
-            assertEquals("Breed species should match", request.getSpecies().getId(), 1L);
-
+            verify(breedRepository, times(1)).save(any(Breed.class));
         }
+
 
         // ==================== INVALID PARTITIONS PARTITION ====================
 
@@ -132,7 +135,7 @@ public class BreedServiceTest {
         void createBreed_SpeciesIsNull_ThrowsException() {
             // Arrange
             BreedDTORequest request = createValidRequest();
-            request.setSpecies(null);
+            request.setSpeciesId(null);
             assertThrows(IllegalArgumentException.class, () -> breedService.addBreed(request));
             verify(breedRepository, never()).save(any(Breed.class));
         }

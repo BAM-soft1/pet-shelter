@@ -5,7 +5,6 @@ import org.pet.backendpetshelter.DTO.MedicalRecordDTORequest;
 import org.pet.backendpetshelter.DTO.MedicalRecordDTOResponse;
 import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Entity.MedicalRecord;
-import org.pet.backendpetshelter.Entity.User;
 import org.pet.backendpetshelter.Entity.Veterinarian;
 import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.pet.backendpetshelter.Repository.MedicalRecordRepository;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class MedicalRecordService {
 
     private final MedicalRecordRepository medicalRecordRepository;
@@ -57,11 +56,10 @@ public class MedicalRecordService {
 
     /* Add medical record */
     public MedicalRecordDTOResponse addMedicalRecord(MedicalRecordDTORequest request) {
-        // Hent Animal fra database
+        
         Animal animal = animalRepository.findById(request.getAnimalId())
                 .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
 
-        // Hent Veterinarian fra den indloggede bruger
         Veterinarian veterinarian = getAuthenticatedVeterinarian();
 
         MedicalRecord medicalRecord = new MedicalRecord();

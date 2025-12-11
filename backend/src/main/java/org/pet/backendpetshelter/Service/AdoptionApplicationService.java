@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class AdoptionApplicationService
 {
     private final AdoptionApplicationRepository adoptionApplicationRepository;

@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/veterinarian")
 @CrossOrigin
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class VeterinarianController {
 
     private final VeterinarianService veterinarianService;

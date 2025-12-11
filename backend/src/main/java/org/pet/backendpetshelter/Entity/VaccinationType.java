@@ -25,6 +25,3 @@ public class VaccinationType {
     private Boolean requiredForAdoption;
 
 }
-
-
-

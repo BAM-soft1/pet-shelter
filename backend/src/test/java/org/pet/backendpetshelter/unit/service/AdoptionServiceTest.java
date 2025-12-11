@@ -61,8 +61,8 @@ public class AdoptionServiceTest {
 
     private AdoptionRequest createValidRequest() {
         AdoptionRequest request = new AdoptionRequest();
-        request.setAdoptionApplication(createValidApplication());
-        request.setAdoptionDate(createPastDate(2023, 9, 15));
+        request.setAdoptionApplicationId(1L);
+        request.setAdoptionDate(createFutureDate());
         request.setIsActive(true);
         return request;
     }
@@ -145,13 +145,19 @@ public class AdoptionServiceTest {
     @DisplayName("Create Adoption Tests")
     class CreateAdoptionTests {
 
+        // java
         @Test
         @DisplayName("Create Adoption - Valid Request")
         void createAdoption_ValidRequest_Success() {
             // Arrange
             AdoptionRequest request = createValidRequest();
 
+            AdoptionApplication application = createValidApplication();
+            application.setAnimal(createValidAnimal());
+            application.setStatus(Status.PENDING);
 
+            when(adoptionApplicationRepository.findById(any(Long.class)))
+                    .thenReturn(Optional.of(application));
 
             when(adoptionRepository.save(any(Adoption.class))).thenAnswer(inv -> {
                 Adoption a = inv.getArgument(0);
@@ -170,21 +176,97 @@ public class AdoptionServiceTest {
 
 
 
+
         // ==================== INVALID PARTITIONS PARTITION ====================
 
         @Test
         @DisplayName("Create Adoption - Null Adoption Application")
         void createAdoption_NullAdoptionApplication_ThrowsException() {
             AdoptionRequest request = createValidRequest();
-            request.setAdoptionApplication(null);
+            request.setAdoptionApplicationId(null);
 
             try {
                 adoptionService.addAdoption(request);
             } catch (IllegalArgumentException e) {
-                assertEquals("Adoption Application cannot be null", e.getMessage());
+                assertEquals("Adoption Application ID cannot be null", e.getMessage());
             }
             verify(adoptionRepository,  org.mockito.Mockito.never()).save(any(Adoption.class));
         }
+
+
+        @Test
+        @DisplayName("Create Adoption - Animal Not Found In Application")
+        void createAdoption_AnimalNotFoundInApplication_ThrowsException() {
+            AdoptionRequest request = createValidRequest();
+            AdoptionApplication application = createValidApplication();
+            application.setAnimal(null);
+
+            when(adoptionApplicationRepository.findById(request.getAdoptionApplicationId()))
+                    .thenReturn(Optional.of(application));
+
+            try {
+                adoptionService.addAdoption(request);
+            } catch (RuntimeException e) {
+                assertEquals("Animal not found in application", e.getMessage());
+            }
+            verify(adoptionRepository, org.mockito.Mockito.never()).save(any(Adoption.class));
+
+        }
+
+        @Test
+        @DisplayName("Create Adoption - Animal Already Adopted")
+        void createAdoption_AnimalAlreadyAdopted_ThrowsException() {
+            AdoptionRequest request = createValidRequest();
+            AdoptionApplication application = createValidApplication();
+            Animal animal = createValidAnimal();
+            animal.setStatus(Status.ADOPTED);
+            application.setAnimal(animal);
+
+            when(adoptionApplicationRepository.findById(request.getAdoptionApplicationId()))
+                    .thenReturn(Optional.of(application));
+
+            try {
+                adoptionService.addAdoption(request);
+            } catch (RuntimeException e) {
+                assertEquals("Animal is already adopted", e.getMessage());
+            }
+            verify(adoptionRepository, org.mockito.Mockito.never()).save(any(Adoption.class));
+        }
+
+        @Test
+        @DisplayName("Create Adoption - Application Already Approved")
+        void createAdoption_ApplicationAlreadyApproved_ThrowsException() {
+            AdoptionRequest request = createValidRequest();
+            AdoptionApplication application = createValidApplication();
+            application.setStatus(Status.APPROVED);
+            Animal animal = createValidAnimal();
+            application.setAnimal(animal);
+            when(adoptionApplicationRepository.findById(request.getAdoptionApplicationId()))
+                    .thenReturn(Optional.of(application));
+
+            try {
+                adoptionService.addAdoption(request);
+            } catch (RuntimeException e) {
+                assertEquals("Application is already approved", e.getMessage());
+            }
+            verify(adoptionRepository, org.mockito.Mockito.never()).save(any(Adoption.class));
+        }
+
+
+        @Test
+        @DisplayName("Create Adoption - Null Adoption Date")
+        void createAdoption_NullAdoptionApplicationId_ThrowsException() {
+            AdoptionRequest request = createValidRequest();
+            request.setAdoptionApplicationId(null);
+            try {
+                adoptionService.addAdoption(request);
+            } catch (IllegalArgumentException e) {
+                assertEquals("Adoption Application ID cannot be null", e.getMessage());
+            }
+            verify(adoptionRepository, org.mockito.Mockito.never()).save(any(Adoption.class));
+        }
+
+
 
         @Test
         @DisplayName("Create Adoption - Null Adoption Date")
