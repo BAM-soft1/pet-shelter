@@ -4,9 +4,21 @@ import org.pet.backendpetshelter.DTO.VaccinationRequest;
 import org.pet.backendpetshelter.DTO.VaccinationResponse;
 import org.pet.backendpetshelter.Entity.Vaccination;
 import org.pet.backendpetshelter.Repository.VaccinationRepository;
+import org.pet.backendpetshelter.Entity.Animal;
+import org.pet.backendpetshelter.Entity.VaccinationType;
+import org.pet.backendpetshelter.Entity.Veterinarian;
+import org.pet.backendpetshelter.Repository.AnimalRepository;
+import org.pet.backendpetshelter.Repository.VaccinationTypeRepository;
+import org.pet.backendpetshelter.Repository.VeterinarianRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,13 +27,19 @@ import java.util.stream.Collectors;
 public class VaccinationService {
 
     private final VaccinationRepository vaccinationRepository;
+    private final AnimalRepository animalRepository;
+    private final VeterinarianRepository veterinarianRepository;
+    private final VaccinationTypeRepository vaccinationTypeRepository;
 
-
-    public VaccinationService(VaccinationRepository vaccinationRepository) {
+    public VaccinationService(VaccinationRepository vaccinationRepository,
+                              AnimalRepository animalRepository,
+                              VeterinarianRepository veterinarianRepository,
+                              VaccinationTypeRepository vaccinationTypeRepository) {
         this.vaccinationRepository = vaccinationRepository;
+        this.animalRepository = animalRepository;
+        this.veterinarianRepository = veterinarianRepository;
+        this.vaccinationTypeRepository = vaccinationTypeRepository;
     }
-
-
 
     public List<VaccinationResponse> GetAllVaccinations() {
         return vaccinationRepository.findAll().stream()
@@ -29,51 +47,77 @@ public class VaccinationService {
                 .collect(Collectors.toList());
     }
 
-    /* Get Specific Vaccination */
     public VaccinationResponse GetVaccinationById(Long id) {
         Vaccination vaccination = vaccinationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
         return new VaccinationResponse(vaccination);
     }
 
-
-    /* Add Vaccination */
     public VaccinationResponse addVaccination(VaccinationRequest request) {
+        Animal animal = animalRepository.findById(request.getAnimalId())
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
+
+        VaccinationType vaccinationType = vaccinationTypeRepository.findById(request.getVaccinationTypeId())
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination Type not found with id: " + request.getVaccinationTypeId()));
+
+        Veterinarian veterinarian = getAuthenticatedVeterinarian();
 
         Vaccination vaccination = new Vaccination();
-
-        vaccination.setAnimal(request.getAnimal());
-        vaccination.setVeterinarian(request.getVeterinarian());
-        vaccination.setDateAdministered(request.getDateAdministered());
-        vaccination.setVaccinationType(request.getVaccinationType());
-        vaccination.setNextDueDate(request.getNextDueDate());
+        vaccination.setAnimal(animal);
+        vaccination.setVeterinarian(veterinarian);
+        vaccination.setDateAdministered(parseDate(request.getDateAdministered()));
+        vaccination.setVaccinationType(vaccinationType);
+        vaccination.setNextDueDate(parseDate(request.getNextDueDate()));
 
         vaccinationRepository.save(vaccination);
         return new VaccinationResponse(vaccination);
     }
 
-
-    /* Update Vaccination */
     public VaccinationResponse updateVaccination(Long id, VaccinationRequest request) {
         Vaccination vaccination = vaccinationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
 
-        vaccination.setAnimal(request.getAnimal());
-        vaccination.setVeterinarian(request.getVeterinarian());
-        vaccination.setDateAdministered(request.getDateAdministered());
-        vaccination.setVaccinationType(request.getVaccinationType());
-        vaccination.setNextDueDate(request.getNextDueDate());
+        Animal animal = animalRepository.findById(request.getAnimalId())
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
+
+        VaccinationType vaccinationType = vaccinationTypeRepository.findById(request.getVaccinationTypeId())
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination Type not found with id: " + request.getVaccinationTypeId()));
+
+        vaccination.setAnimal(animal);
+        vaccination.setDateAdministered(parseDate(request.getDateAdministered()));
+        vaccination.setVaccinationType(vaccinationType);
+        vaccination.setNextDueDate(parseDate(request.getNextDueDate()));
 
         vaccinationRepository.save(vaccination);
         return new VaccinationResponse(vaccination);
     }
 
-    /* Delete Vaccination */
     public void deleteVaccination(Long id) {
         Vaccination vaccination = vaccinationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
         vaccinationRepository.delete(vaccination);
     }
 
+    private Veterinarian getAuthenticatedVeterinarian() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
+        Veterinarian vet = veterinarianRepository.findByUser_Email(email);
+        if (vet == null) {
+            throw new RuntimeException("Veterinarian not found for user: " + email);
+        }
+        return vet;
+    }
+
+    private Date parseDate(String dateString) {
+        if (dateString == null || dateString.isEmpty()) {
+            return null;
+        }
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            return format.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException("Invalid date format: " + dateString);
+        }
+    }
 }
