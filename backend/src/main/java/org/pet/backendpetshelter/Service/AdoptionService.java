@@ -7,10 +7,9 @@ import org.pet.backendpetshelter.Entity.Adoption;
 import org.pet.backendpetshelter.Entity.AdoptionApplication;
 import org.pet.backendpetshelter.Repository.AdoptionRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Profile("mysql")
@@ -24,10 +23,9 @@ public class AdoptionService {
 
 
 
-    public List<AdoptionResponse> GetAllAdoptions() {
-        return adoptionRepository.findAll().stream()
-                .map(AdoptionResponse::new)
-                .collect(Collectors.toList());
+    public Page<AdoptionResponse> GetAllAdoptions(Pageable pageable) {
+        return adoptionRepository.findAll(pageable)
+                .map(AdoptionResponse::new);
     }
 
 
