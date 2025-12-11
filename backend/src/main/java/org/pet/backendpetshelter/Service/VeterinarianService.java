@@ -106,6 +106,10 @@ public class VeterinarianService {
         if (licenseNumber.length() > 20) {
             throw new IllegalArgumentException("License number cannot exceed 20 characters.");
         }
+
+        if (!licenseNumber.matches("^[A-Za-z0-9]+$")) {
+            throw new IllegalArgumentException("License number contains invalid characters.");
+        }
     }
 
     private void validateClinicName(String clinicName) {

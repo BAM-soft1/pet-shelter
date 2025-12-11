@@ -62,7 +62,7 @@ public class AdoptionServiceTest {
     private AdoptionRequest createValidRequest() {
         AdoptionRequest request = new AdoptionRequest();
         request.setAdoptionApplicationId(1L);
-        request.setAdoptionDate(createPastDate(2023, 9, 15));
+        request.setAdoptionDate(createFutureDate());
         request.setIsActive(true);
         return request;
     }
@@ -145,13 +145,19 @@ public class AdoptionServiceTest {
     @DisplayName("Create Adoption Tests")
     class CreateAdoptionTests {
 
+        // java
         @Test
         @DisplayName("Create Adoption - Valid Request")
         void createAdoption_ValidRequest_Success() {
             // Arrange
             AdoptionRequest request = createValidRequest();
 
+            AdoptionApplication application = createValidApplication();
+            application.setAnimal(createValidAnimal());
+            application.setStatus(Status.PENDING);
 
+            when(adoptionApplicationRepository.findById(any(Long.class)))
+                    .thenReturn(Optional.of(application));
 
             when(adoptionRepository.save(any(Adoption.class))).thenAnswer(inv -> {
                 Adoption a = inv.getArgument(0);
@@ -160,7 +166,6 @@ public class AdoptionServiceTest {
             });
 
             // Act
-
             AdoptionResponse response = adoptionService.addAdoption(request);
 
             // Assert
@@ -168,6 +173,7 @@ public class AdoptionServiceTest {
             assertEquals(1L, response.getId());
             verify(adoptionRepository).save(any(Adoption.class));
         }
+
 
 
 
@@ -182,7 +188,7 @@ public class AdoptionServiceTest {
             try {
                 adoptionService.addAdoption(request);
             } catch (IllegalArgumentException e) {
-                assertEquals("Adoption Application cannot be null", e.getMessage());
+                assertEquals("Adoption Application ID cannot be null", e.getMessage());
             }
             verify(adoptionRepository,  org.mockito.Mockito.never()).save(any(Adoption.class));
         }
@@ -255,7 +261,7 @@ public class AdoptionServiceTest {
             try {
                 adoptionService.addAdoption(request);
             } catch (IllegalArgumentException e) {
-                assertEquals("Adoption Application cannot be null", e.getMessage());
+                assertEquals("Adoption Application ID cannot be null", e.getMessage());
             }
             verify(adoptionRepository, org.mockito.Mockito.never()).save(any(Adoption.class));
         }

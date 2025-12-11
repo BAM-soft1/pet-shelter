@@ -205,7 +205,7 @@ public class VeterinarianIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("License number contains invalid characters.")));
+                .andExpect(content().string(containsString("Clinic name contains invalid characters.")));
     }
 
 
