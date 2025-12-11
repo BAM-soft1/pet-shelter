@@ -4,10 +4,12 @@ package org.pet.backendpetshelter.Controller;
 import org.pet.backendpetshelter.DTO.AdoptionRequest;
 import org.pet.backendpetshelter.DTO.AdoptionResponse;
 import org.pet.backendpetshelter.Service.AdoptionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/adoption")
@@ -22,8 +24,16 @@ public class AdoptionController {
 
 
     @GetMapping
-    public List<AdoptionResponse> getAllAdoptions() {
-        return adoptionService.GetAllAdoptions();
+    public Page<AdoptionResponse> getAllAdoptions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "adoptionDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
+        
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        
+        return adoptionService.GetAllAdoptions(pageable);
     }
 
     @GetMapping("/{id}")

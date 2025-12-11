@@ -9,11 +9,11 @@ import org.pet.backendpetshelter.Entity.Breed;
 import org.pet.backendpetshelter.Entity.Species;
 import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Profile("mysql")
@@ -63,10 +63,24 @@ public class AnimalService {
     
     
     /* Get All Animals */
-    public List<AnimalDTOResponse> GetAllAnimals() {
-        return animalRepository.findAll().stream()
-                .map(AnimalDTOResponse::new)
-                .collect(Collectors.toList());
+    public Page<AnimalDTOResponse> GetAllAnimals(Pageable pageable) {
+        return animalRepository.findAll(pageable)
+                .map(AnimalDTOResponse::new);
+    }
+    
+    /* Get All Animals with Filters */
+    public Page<AnimalDTOResponse> GetAllAnimalsWithFilters(
+            String status, 
+            Boolean isActive, 
+            Boolean hasRequiredVaccinations,
+            String sex,
+            Integer minAge,
+            Integer maxAge,
+            String search,
+            Pageable pageable) {
+        
+        return animalRepository.findAllWithFilters(status, isActive, hasRequiredVaccinations, sex, minAge, maxAge, search, pageable)
+                .map(AnimalDTOResponse::new);
     }
 
 

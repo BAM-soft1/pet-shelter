@@ -6,6 +6,10 @@ import org.pet.backendpetshelter.DTO.AdoptionApplicationRequest;
 import org.pet.backendpetshelter.DTO.AdoptionApplicationResponse;
 import org.pet.backendpetshelter.Service.AdoptionApplicationService;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +28,28 @@ public class AdoptionApplicationController {
     }
 
     @GetMapping("/all")
-    public List<AdminAdoptionApplicationResponse> getAllAdoptionApplications() {
-        return adoptionApplicationService.GetAllAdoptionApplications();
+    public Page<AdminAdoptionApplicationResponse> getAllAdoptionApplications(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "applicationDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String search) {
+        
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        
+        // Convert string status to enum
+        org.pet.backendpetshelter.Status statusEnum = null;
+        if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("all")) {
+            try {
+                statusEnum = org.pet.backendpetshelter.Status.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Invalid status, leave as null
+            }
+        }
+        
+        return adoptionApplicationService.GetAllAdoptionApplicationsWithFilters(statusEnum, search, pageable);
     }
 
 

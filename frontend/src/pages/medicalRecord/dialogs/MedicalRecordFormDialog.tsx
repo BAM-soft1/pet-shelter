@@ -59,8 +59,16 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
   useEffect(() => {
     const fetchAnimals = async () => {
       try {
-        const animalsData = await AnimalService.getAnimals();
-        setAnimals(animalsData);
+        const pageResponse = await AnimalService.getAnimals(
+          0,
+          1000,
+          "name",
+          "asc",
+          undefined, // no status filter
+          true, // only active animals
+          false // animals WITHOUT required vaccinations
+        );
+        setAnimals(pageResponse.content);
       } catch (err) {
         console.error("Failed to fetch animals:", err);
       }

@@ -140,6 +140,36 @@ type DogFact = string;
 
 type Status = "AVAILABLE" | "ADOPTED" | "FOSTERED" | "DECEASED" | "PENDING" | "APPROVED" | "REJECTED";
 
+// Pagination types
+type PageResponse<T> = {
+  content: T[];
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+  numberOfElements: number;
+  first: boolean;
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  empty: boolean;
+};
+
 export type {
   Animal,
   AnimalRequest,
@@ -157,5 +187,5 @@ export type {
   MedicalRecord,
   MedicalRecordRequest,
   DogFact,
-
+  PageResponse,
 };
