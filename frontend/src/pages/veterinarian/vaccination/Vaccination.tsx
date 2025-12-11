@@ -8,12 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { EyeIcon, PencilIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { getErrorMessage } from "@/services/fetchUtils";
 import { VaccinationService } from "../../../api/vaccination";
 import VaccinationDetailModal from "./dialogs/VaccinationDetailModal";
 import VaccinationFormDialog from "./dialogs/VaccinationFormDialog";
+import  VaccinationDeleteForm  from "./dialogs/VaccinationDeleteModal";
 import { useAuth } from "@/context/AuthProvider";
 
 type VaccinationFormData = {
@@ -31,6 +32,7 @@ export default function VaccinationOverview() {
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedVaccination, setSelectedVaccination] = useState<Vaccination | null>(null);
 
   const fetchVaccinations = async () => {
@@ -65,6 +67,11 @@ export default function VaccinationOverview() {
     setIsFormOpen(true);
   };
 
+  const handleDeleteClick = (vaccination: Vaccination) => {
+    setSelectedVaccination(vaccination);
+    setIsDeleteOpen(true);
+  }
+
   const handleFormSubmit = async (formData: VaccinationFormData): Promise<void> => {
     try {
       const requestData: VaccinationRequest = {
@@ -87,6 +94,17 @@ export default function VaccinationOverview() {
       setIsFormOpen(false);
     }
   };
+
+  const handleDeleteConfirm = async (vaccinationId: number): Promise<void> => {
+    try {
+      await VaccinationService.deleteVaccination(vaccinationId);
+      await fetchVaccinations();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setIsDeleteOpen(false);
+    }
+  }
 
   return (
     <div>
@@ -140,12 +158,29 @@ export default function VaccinationOverview() {
                     >
                       <PencilIcon className="h-5 w-5" />
                     </button>
+
+                    <button
+                      onClick={() => handleDeleteClick(vaccination)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete vaccination"
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
                   </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+      )}
+
+{selectedVaccination && (
+        <VaccinationDeleteForm
+          vaccination={selectedVaccination}
+          isOpen={isDeleteOpen}
+          onClose={() => setIsDeleteOpen(false)}
+          onDelete={handleDeleteConfirm}
+        />
       )}
 
       <VaccinationDetailModal
