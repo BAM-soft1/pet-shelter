@@ -9,6 +9,7 @@ export default function MedicalRecordLayout() {
   useEffect(() => {
     if (location.pathname.includes("overview")) setActiveTab("overview");
     if (location.pathname.includes("vaccinations")) setActiveTab("vaccinations");
+    if (location.pathname.includes("vaccinations-types")) setActiveTab("vaccination-types");
   }, [location]);
 
   return (
@@ -54,6 +55,18 @@ export default function MedicalRecordLayout() {
                 Vaccination Overview
               </button>
             </Link>
+            
+            <Link to="/veterinarian/vaccinations-types">
+            <button
+              className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+                activeTab === "vaccination-types"
+                  ? "text-indigo-600 border-indigo-600"
+                  : "text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300"
+              }`}
+            >
+              Vaccination Types
+            </button>
+          </Link>
           </nav>
         </div>
       </div>

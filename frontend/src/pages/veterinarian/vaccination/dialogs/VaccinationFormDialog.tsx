@@ -56,7 +56,7 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
     const fetchData = async () => {
       try {
         const [types, animalsData] = await Promise.all([
-          VaccinationService.getVaccinationTypes(),
+          VaccinationService.getAllVaccinationTypes(),
           AnimalService.getAnimals(),
         ]);
         setVaccinationTypes(types);

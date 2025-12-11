@@ -9,7 +9,8 @@ import AdminAdoptions from "./pages/admin/AdminAdoptions";
 import DogFacts from "./pages/dogfacts/DogFacts";
 import MedicalRecordOverview from "./pages/veterinarian/medicalRecord/MedicalRecordOverview"
 import VaccinationOverview from "./pages/veterinarian/vaccination/Vaccination";
-import VeterinarianLayout from "./pages/veterinarian/medicalRecord/VeterinarianLayout";
+import VaccinationTypeOverview from "./pages/veterinarian/vaccinationType/VaccinationType";
+import VeterinarianLayout from "./pages/veterinarian/layout/VeterinarianLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -28,7 +29,6 @@ function App() {
           <Route path="/register" element={<Register />} />
 
 
-          {/* Protected Veterinarian Routes */}
           <Route
             path="/veterinarian"
             element={
@@ -40,6 +40,7 @@ function App() {
             <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<MedicalRecordOverview />} />
             <Route path="vaccinations" element={<VaccinationOverview />} />
+            <Route path="vaccinations-types" element={<VaccinationTypeOverview />} />
           </Route>
 
 
@@ -58,6 +59,7 @@ function App() {
             <Route path="adoptions" element={<AdminAdoptions />} />
             <Route path="veterinarian/overview" element={<MedicalRecordOverview />} />
             <Route path="veterinarian/vaccinations" element={<VaccinationOverview />} />
+            <Route path="veterinarian/vaccination-types" element={<VaccinationTypeOverview />} />
           </Route>
         </Routes>
       </AuthProvider>

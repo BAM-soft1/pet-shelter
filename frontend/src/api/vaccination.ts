@@ -33,7 +33,7 @@ export const VaccinationService = {
 
     // Vaccination Type
 
-    getVaccinationTypes: async (): Promise<VaccinationType[]> => {
+    getAllVaccinationTypes: async (): Promise<VaccinationType[]> => {
     const response = await axiosWithAuth.get(API_URL_VACCINATION_TYPES);
     return response.data;
   },
@@ -51,8 +51,5 @@ export const VaccinationService = {
   deleteVaccinationType: async (id: number): Promise<void> => {
     await axiosWithAuth.delete(`${API_URL_VACCINATION_TYPES}/delete/${id}`);
   },
-
-
-
 
 };  
