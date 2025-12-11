@@ -81,7 +81,7 @@ export default function AdminLayout() {
               </button>
             </Link>
 
-<Link to="/admin/veterinarian/vaccinations">
+            <Link to="/admin/veterinarian/vaccinations">
               <button
                 className={`px-6 py-3 font-medium transition-colors border-b-2 ${
                   activeTab === "veterinarian"
@@ -92,7 +92,6 @@ export default function AdminLayout() {
                 Vaccinations
               </button>
             </Link>
-
           </nav>
         </div>
       </div>

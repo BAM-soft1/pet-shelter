@@ -31,6 +31,16 @@ function App() {
           <Route path="/dog-facts" element={<DogFacts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/animal-detailed" element={<AnimalDetailPage />} />
+
+          <Route
+            path="/my-adopt-applications"
+            element={
+              <RequireAuth roles={["USER"]}>
+                <MyAdoptApplications />
+              </RequireAuth>
+            }
+          />
 
           {/* Protected Veterinarian Routes */}
           <Route
