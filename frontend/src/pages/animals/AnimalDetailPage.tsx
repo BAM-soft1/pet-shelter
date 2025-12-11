@@ -1,0 +1,178 @@
+import { useLocation, useNavigate } from "react-router-dom";
+import type { Animal } from "../../types/types";
+import MainLayout from "@/components/layout/MainLayout";
+import { Badge } from "@/components/ui/badge";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import calculateAge from "@/utils/calculateAge";
+import AdoptApplicationForm from "@/components/adopt-application-form";
+import { AdoptionApplicationService } from "@/api/adoptionApplication";
+import { useAuth } from "@/context/AuthProvider";
+import { useEffect, useState, useCallback } from "react";
+
+export default function AnimalDetailPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const animal = location.state?.animal as Animal | null;
+  const [userHasApplied, setUserHasApplied] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [checkingApplication, setCheckingApplication] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState(false);
+
+  const checkApplicationStatus = useCallback(async () => {
+    if (!auth?.user || !animal) {
+      setLoading(false);
+      return;
+    }
+
+    setCheckingApplication(true);
+    try {
+      const hasApplied = await AdoptionApplicationService.getHasUserAppliedForAnimal(auth.user.id, animal.id);
+      setUserHasApplied(hasApplied);
+    } catch (err) {
+      console.error("Failed to check application status", err);
+    } finally {
+      setCheckingApplication(false);
+      setLoading(false);
+    }
+  }, [auth?.user, animal]);
+
+  useEffect(() => {
+    checkApplicationStatus();
+  }, [checkApplicationStatus]);
+
+  if (!animal) {
+    return (
+      <MainLayout>
+        <div className="p-6">No animal data found</div>
+      </MainLayout>
+    );
+  }
+
+  const age = calculateAge(animal.birthDate);
+
+  return (
+    <MainLayout>
+      <div className="max-w-6xl mx-auto py-8 px-4">
+        <div className="mb-6 flex items-start gap-4">
+          <Button variant="outline" size="icon" onClick={() => navigate(-1)}>
+            ←
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-3xl font-semibold">{animal.name}</h1>
+            <p className="text-sm text-muted-foreground">
+              {animal.breed?.name || animal.species.name} • {age} {age === 1 ? "year" : "years"} old
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Image card */}
+          <Card className="h-full md:col-span-2 overflow-hidden">
+            <CardContent className="p-0">
+              <div className="relative aspect-4/3 overflow-hidden bg-muted flex items-center justify-center">
+                {animal.imageUrl ? (
+                  <img src={animal.imageUrl} alt={animal.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-primary/10 to-primary/5">
+                    <span className="text-6xl font-bold text-primary/60">{animal.species.name}</span>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Info card */}
+          <Card className="flex flex-col">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-2xl">{animal.name}</CardTitle>
+              <CardDescription className="text-base">
+                {animal.species.name} — {animal.breed?.name || "Mixed breed"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Sex</p>
+                    <Badge variant="secondary" className="capitalize">
+                      {animal.sex}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Status</p>
+                    <Badge
+                      variant={animal.status === "AVAILABLE" ? "default" : "outline"}
+                      className={`capitalize ${animal.status === "AVAILABLE" ? "bg-green-100 text-green-800 border-green-300" : ""}`}
+                    >
+                      {animal.status}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Birth Date</p>
+                    <p className="text-sm font-medium">{new Date(animal.birthDate).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Intake Date</p>
+                    <p className="text-sm font-medium">{new Date(animal.intakeDate).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 mt-4 border-t">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Adoption Fee</p>
+                <p className="text-3xl font-bold text-primary">${animal.price}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Adoption Application</CardTitle>
+              <CardDescription>
+                {userHasApplied ? `You've already applied for ${animal.name}` : `Fill out this short form to apply for ${animal.name}.`}
+              </CardDescription>
+            </CardHeader>
+
+            {loading || checkingApplication ? (
+              <CardContent>
+                <div className="flex items-center gap-2 p-4">
+                  <Spinner />
+                  <span>Loading...</span>
+                </div>
+              </CardContent>
+            ) : justSubmitted ? (
+              <CardContent>
+                <div className="p-4 rounded-md bg-green-50 text-green-800 border border-green-200">
+                  <p className="font-semibold mb-2">✓ Success!</p>
+                  <p className="mb-4">Your adoption application for {animal.name} has been submitted successfully. We'll review it soon!</p>
+                  <Button onClick={() => navigate("/my-adopt-applications")}>View Your Applications</Button>
+                </div>
+              </CardContent>
+            ) : userHasApplied ? (
+              <CardContent>
+                <div className="p-4 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
+                  <p className="mb-4">You've already submitted an application to adopt {animal.name}!</p>
+                  <Button onClick={() => navigate("/my-adopt-applications")}>View Your Applications</Button>
+                </div>
+              </CardContent>
+            ) : (
+              <AdoptApplicationForm
+                animal={animal}
+                user={auth?.user || null}
+                onSubmit={(app) => {
+                  console.log("submitted app", app);
+                  setJustSubmitted(true);
+                }}
+              />
+            )}
+          </Card>
+        </div>
+      </div>
+    </MainLayout>
+  );
+}

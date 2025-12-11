@@ -373,6 +373,7 @@ public class InitData implements CommandLineRunner {
         adoptionApplication1.setUser(user1);
         adoptionApplication1.setAnimal(animal3);
         adoptionApplication1.setApplicationDate(dateFormat.parse("2023-09-15"));
+        adoptionApplication1.setDescription("I have a big garden and lots of love to give.");
         adoptionApplication1.setStatus(Status.PENDING);
         adoptionApplication1.setReviewedByUser(null);
         adoptionApplication1.setIsActive(true);

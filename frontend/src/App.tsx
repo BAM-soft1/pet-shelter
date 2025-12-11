@@ -1,14 +1,18 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/landing/Landing";
 import Animals from "./pages/animals/AnimalOverview";
+import AnimalDetailPage from "./pages/animals/AnimalDetailPage";
 import About from "./pages/about/About";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminAnimals from "./pages/admin/AdminAnimals";
 import AdminApplications from "./pages/admin/AdminApplications";
 import AdminAdoptions from "./pages/admin/AdminAdoptions";
 import DogFacts from "./pages/dogfacts/DogFacts";
-import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview"
+import MedicalRecordOverview from "./pages/medicalRecord/MedicalRecordOverview";
 import MedicalRecordLayout from "./pages/medicalRecord/MedicalRecordLayout";
+import MyAdoptApplications from "./pages/adoptApplication/MyAdoptApplications";
+import AdminReviewApplication from "./pages/admin/AdminReviewApplication";
+
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AuthProvider from "./context/AuthProvider";
@@ -25,7 +29,16 @@ function App() {
           <Route path="/dog-facts" element={<DogFacts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/animal-detailed" element={<AnimalDetailPage />} />
 
+          <Route
+            path="/my-adopt-applications"
+            element={
+              <RequireAuth roles={["USER"]}>
+                <MyAdoptApplications />
+              </RequireAuth>
+            }
+          />
 
           {/* Protected Veterinarian Routes */}
           <Route
@@ -39,7 +52,6 @@ function App() {
             <Route path="overview" element={<MedicalRecordOverview />} />
           </Route>
 
-
           {/* Protected Admin Routes */}
           <Route
             path="/admin"
@@ -52,6 +64,7 @@ function App() {
             <Route index element={<AdminAnimals />} />
             <Route path="animals" element={<AdminAnimals />} />
             <Route path="applications" element={<AdminApplications />} />
+            <Route path="applications/:id" element={<AdminReviewApplication />} />
             <Route path="adoptions" element={<AdminAdoptions />} />
           </Route>
         </Routes>

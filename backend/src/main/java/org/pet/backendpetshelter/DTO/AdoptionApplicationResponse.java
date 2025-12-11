@@ -1,18 +1,16 @@
 package org.pet.backendpetshelter.DTO;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.pet.backendpetshelter.Entity.AdoptionApplication;
 import org.pet.backendpetshelter.Entity.Animal;
-import org.pet.backendpetshelter.Entity.User;
 import org.pet.backendpetshelter.Status;
 
 import java.util.Date;
 
 @Getter
 @Setter
-public class AdoptionApplicationRespons {
+public class AdoptionApplicationResponse {
     private Long id;
 
     // Applicant user – restricted
@@ -30,7 +28,7 @@ public class AdoptionApplicationRespons {
 
     private Boolean isActive;
 
-    public AdoptionApplicationRespons(AdoptionApplication application) {
+    public AdoptionApplicationResponse(AdoptionApplication application) {
         this.id = application.getId();
 
         if (application.getUser() != null) {
