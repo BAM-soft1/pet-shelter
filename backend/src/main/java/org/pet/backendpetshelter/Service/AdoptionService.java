@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.pet.backendpetshelter.Status;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Profile({"mysql", "test"})

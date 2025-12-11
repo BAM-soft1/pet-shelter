@@ -1,11 +1,7 @@
 package org.pet.backendpetshelter.Migration;
 
-import jakarta.persistence.*;
 import org.pet.backendpetshelter.Entity.AdoptionApplication;
-import org.pet.backendpetshelter.Entity.Animal;
-import org.pet.backendpetshelter.Entity.User;
 import org.pet.backendpetshelter.Mongo.Entity.AdoptionApplicationDocument;
-import org.pet.backendpetshelter.Status;
 import org.springframework.transaction.annotation.Transactional;
 import org.pet.backendpetshelter.Mongo.Repository.AdoptionApplicationMongoRepository;
 import org.pet.backendpetshelter.Repository.AdoptionApplicationRepository;
@@ -14,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 
 @Component
 @Profile("migrate-mongo")
