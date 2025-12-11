@@ -116,9 +116,8 @@ public class VeterinarianService {
         if (clinicName.length() > 65) {
             throw new IllegalArgumentException("Clinic name cannot exceed 65 characters.");
         }
-
-        if (!clinicName.matches("^[a-zA-Z]+$")) {
-            throw new IllegalArgumentException("License number contains invalid characters.");
+        if (!clinicName.matches("^[a-zA-Z0-9\\s,'-]+$")) {
+            throw new IllegalArgumentException("Clinic name contains invalid characters.");
         }
     }
 

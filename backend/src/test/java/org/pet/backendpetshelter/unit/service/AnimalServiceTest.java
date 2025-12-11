@@ -1,6 +1,5 @@
 package org.pet.backendpetshelter.unit.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -55,18 +54,17 @@ public class AnimalServiceTest {
     private AnimalDTORequest createValidRequest() {
         AnimalDTORequest request = new AnimalDTORequest();
         request.setName("Ox");
-        request.setSpecies(createValidSpecies());
-        request.setBreed(createValidBreed());
+        request.setSpeciesId(1L);
+        request.setBreedId(1L);
         request.setSex("Male");
         request.setBirthDate(createPastDate(2020, 1, 1));
         request.setIntakeDate(createPastDate(2023, 1, 1));
-        request.setStatus(Status.AVAILABLE);
+        request.setStatus(Status.APPROVED);
         request.setPrice(499);
         request.setIsActive(true);
         request.setImageUrl("http://example.com/image.jpg");
         return request;
     }
-
 
     private Species createValidSpecies() {
         Species species = new Species();
@@ -82,7 +80,6 @@ public class AnimalServiceTest {
         return breed;
     }
 
-
     private Date createPastDate(int year, int month, int day) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month - 1, day, 0, 0, 0);
@@ -94,23 +91,6 @@ public class AnimalServiceTest {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, 1);
         return cal.getTime();
-    }
-
-
-    private Animal createSavedAnimal(AnimalDTORequest request) {
-        Animal animal = new Animal();
-        animal.setId(1L);
-        animal.setName(request.getName());
-        animal.setSpecies(request.getSpecies());
-        animal.setBreed(request.getBreed());
-        animal.setSex(request.getSex());
-        animal.setBirthDate(request.getBirthDate());
-        animal.setIntakeDate(request.getIntakeDate());
-        animal.setStatus(request.getStatus());
-        animal.setPrice(request.getPrice());
-        animal.setIsActive(request.getIsActive());
-        animal.setImageUrl(request.getImageUrl());
-        return animal;
     }
 
 
@@ -203,7 +183,7 @@ public class AnimalServiceTest {
         void testCreateAnimalWithNullSpecies() {
             // Arrange
             AnimalDTORequest request = createValidRequest();
-            request.setSpecies(null);
+            request.setSpeciesId(null);
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -216,7 +196,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Species species = createValidSpecies();
             species.setId(null);
-            request.setSpecies(species);
+            request.setSpeciesId(species.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -229,7 +209,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Species species = createValidSpecies();
             species.setName(null);
-            request.setSpecies(species);
+            request.setSpeciesId(species.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -243,7 +223,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Species species = createValidSpecies();
             species.setName("");
-            request.setSpecies(species);
+            request.setSpeciesId(species.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -258,7 +238,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Species species = createValidSpecies();
             species.setName("   ");
-            request.setSpecies(species);
+            request.setSpeciesId(species.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -272,7 +252,7 @@ public class AnimalServiceTest {
         void testCreateAnimalWithNullBreed() {
             // Arrange
             AnimalDTORequest request = createValidRequest();
-            request.setBreed(null);
+            request.setBreedId(null);
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -285,7 +265,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Breed breed = createValidBreed();
             breed.setId(null);
-            request.setBreed(breed);
+            request.setBreedId(breed.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -298,7 +278,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Breed breed = createValidBreed();
             breed.setName(null);
-            request.setBreed(breed);
+            request.setBreedId(breed.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -312,7 +292,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Breed breed = createValidBreed();
             breed.setName("");
-            request.setBreed(breed);
+            request.setBreedId(breed.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
@@ -325,7 +305,7 @@ public class AnimalServiceTest {
             AnimalDTORequest request = createValidRequest();
             Breed breed = createValidBreed();
             breed.setName("   ");
-            request.setBreed(breed);
+            request.setBreedId(breed.getId());
 
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));

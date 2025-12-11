@@ -1,6 +1,6 @@
 package org.pet.backendpetshelter.integration;
 
-/*
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 @Transactional
 @DisplayName("Breed Integration Tests")
@@ -217,5 +217,3 @@ public class BreedIntegrationTest {
 
 
 }
-
- */

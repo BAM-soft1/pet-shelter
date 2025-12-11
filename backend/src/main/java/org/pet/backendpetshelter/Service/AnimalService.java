@@ -8,6 +8,9 @@ import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Entity.Breed;
 import org.pet.backendpetshelter.Entity.Species;
 import org.pet.backendpetshelter.Repository.AnimalRepository;
+import org.pet.backendpetshelter.Repository.BreedRepository;
+import org.pet.backendpetshelter.Repository.SpeciesRepository;
+import org.pet.backendpetshelter.Status;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -20,48 +23,15 @@ import java.util.stream.Collectors;
 public class AnimalService {
 
     private final AnimalRepository animalRepository;
+    private final BreedRepository breedRepository;
+    private final SpeciesRepository speciesRepository;
 
-    public AnimalService(AnimalRepository animalRepository) {
+    public AnimalService(AnimalRepository animalRepository, BreedRepository breedRepository, SpeciesRepository speciesRepository) {
         this.animalRepository = animalRepository;
+        this.breedRepository = breedRepository;
+        this.speciesRepository = speciesRepository;
     }
 
-    /*Add Animal */
-    public AnimalDTOResponse addAnimal(AnimalDTORequest request) {
-
-
-        // Validate input data
-
-        validateName(request.getName());
-        validateSpecies(request.getSpecies());
-        validateBreed(request.getBreed());
-        validateSex(request.getSex());
-        validateBirthDate(request.getBirthDate());
-        validateIntakeDate(request.getIntakeDate(),
-                request.getBirthDate());
-        validateStatus(String.valueOf(request.getStatus()));
-        validatePrice(request.getPrice());
-        validateImageUrl(request.getImageUrl());
-
-        Animal animal = new Animal();
-        animal.setName(request.getName());
-        animal.setSex(request.getSex());
-        animal.setSpecies(request.getSpecies());
-        animal.setBreed(request.getBreed());
-        animal.setBirthDate(request.getBirthDate());
-        animal.setIntakeDate(request.getIntakeDate());
-        animal.setStatus(request.getStatus());
-        animal.setPrice(request.getPrice());
-        animal.setIsActive(isStatusActive(String.valueOf(request.getStatus())));
-        animal.setImageUrl(request.getImageUrl());
-
-        animalRepository.save(animal);
-        return new AnimalDTOResponse(animal);
-
-    }
-
-
-    
-    
     /* Get All Animals */
     public List<AnimalDTOResponse> GetAllAnimals() {
         return animalRepository.findAll().stream()
@@ -78,6 +48,150 @@ public class AnimalService {
     }
 
 
+    /*Add Animal */
+    public AnimalDTOResponse addAnimal(AnimalDTORequest request) {
+
+        validateName(request.getName());
+        validateSpeciesId(request.getSpeciesId());
+        validateBreedId(request.getBreedId());
+        validateSex(request.getSex());
+        validateBirthDate(request.getBirthDate());
+        validateIntakeDate(request.getIntakeDate(), request.getBirthDate());
+        validateStatus(request.getStatus());
+        validatePrice(request.getPrice());
+        validateImageUrl(request.getImageUrl());
+
+        Species species = speciesRepository.findById(request.getSpeciesId())
+                .orElseThrow(() -> new EntityNotFoundException("Species not found"));
+
+        Breed breed = breedRepository.findById(request.getBreedId())
+                .orElseThrow(() -> new EntityNotFoundException("Breed not found"));
+
+        Animal animal = new Animal();
+        animal.setName(request.getName());
+        animal.setSex(request.getSex());
+        animal.setSpecies(species);
+        animal.setBreed(breed);
+        animal.setBirthDate(request.getBirthDate());
+        animal.setIntakeDate(request.getIntakeDate());
+        animal.setStatus(request.getStatus());
+        animal.setPrice(request.getPrice());
+        animal.setIsActive(request.getIsActive());
+        animal.setImageUrl(request.getImageUrl());
+
+        animalRepository.save(animal);
+
+        return new AnimalDTOResponse(animal);
+    }
+
+
+    // Validation Methods
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+
+        if (!name.matches("^[a-zA-Z]+$")) {
+            throw new IllegalArgumentException("Name must contain at least one non-alphabetic character");
+        }
+
+        if (name.length() < 2 || name.length() > 30) {
+            throw new IllegalArgumentException("Name must be between 2 and 30 characters long");
+        }
+    }
+
+
+    private void validateSpeciesId(Long speciesId) {
+        if (speciesId == null) {
+            throw new IllegalArgumentException("Species ID cannot be null");
+        }
+
+        if (speciesId <= 0) {
+            throw new IllegalArgumentException("Species ID must be a positive number");
+        }
+
+        if (!speciesRepository.existsById(speciesId)) {
+            throw new IllegalArgumentException("Species ID does not exist");
+        }
+    }
+
+
+    private void validateBreedId(Long breedId) {
+        if (breedId == null) {
+            throw new IllegalArgumentException("Breed ID cannot be null");
+        }
+
+        if (breedId <= 0) {
+            throw new IllegalArgumentException("Breed ID must be a positive number");
+        }
+
+        if (!breedRepository.existsById(breedId)) {
+            throw new IllegalArgumentException("Breed ID does not exist");
+        }
+    }
+
+    private void validateSex(String sex) {
+        if (sex == null || sex.isBlank()) {
+            throw new IllegalArgumentException("Sex cannot be null or empty");
+        }
+
+        if (!sex.equals("Male") && !sex.equals("Female")) {
+            throw new IllegalArgumentException("Sex must be either 'Male' or 'Female'");
+        }
+    }
+
+    private void validateBirthDate(Date birthDate) {
+        if (birthDate == null) {
+            throw new IllegalArgumentException("Birth date cannot be null");
+        }
+        Date today = new Date();
+        if (birthDate.after(today)) {
+            throw new IllegalArgumentException("Birthdate cannot be in the future");
+        }
+    }
+
+    private void validateIntakeDate(Date intakeDate, Date birthDate) {
+        if (intakeDate == null) {
+            throw new IllegalArgumentException("Intake date cannot be null");
+        }
+        Date today = new Date();
+        if (intakeDate.after(today)) {
+            throw new IllegalArgumentException("Intake date cannot be in the future");
+        }
+        if (birthDate != null && intakeDate.before(birthDate)) {
+            throw new IllegalArgumentException("Intake date cannot be before birth date");
+        }
+    }
+
+    private void validateStatus(Status status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+
+    }
+
+
+    private void validatePrice(int price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+
+        if (price > 30000) {
+            throw new IllegalArgumentException("Price cannot exceed 30000");
+        }
+    }
+
+
+    private void validateImageUrl(String imageUrl) {
+        if (imageUrl == null || imageUrl.isBlank()) {
+            throw new IllegalArgumentException("Image URL cannot be null or empty");
+        }
+
+        if (!imageUrl.matches("^(http|https)://.+")) {
+            throw new IllegalArgumentException("Invalid image URL format"); }
+    }
+
 
 
     /* Update Animal */
@@ -85,9 +199,15 @@ public class AnimalService {
         Animal animal = animalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
 
+        Breed breed = breedRepository.findById(request.getBreedId())
+                .orElseThrow(() -> new EntityNotFoundException("Breed not found"));
+
+        Species species = speciesRepository.findById(request.getSpeciesId())
+                .orElseThrow(() -> new EntityNotFoundException("Species not found"));
+
         animal.setName(request.getName());
-        animal.setSpecies(request.getSpecies());
-        animal.setBreed(request.getBreed());
+        animal.setSpecies(species);
+        animal.setBreed(breed);
         animal.setSex(request.getSex());
         animal.setBirthDate(request.getBirthDate());
         animal.setIntakeDate(request.getIntakeDate());
@@ -102,7 +222,7 @@ public class AnimalService {
 
 
     /* Delete Animal  */
-    public void deleteAnimal (Long id){
+    public void deleteAnimal(Long id) {
         if (!animalRepository.existsById(id)) {
             throw new EntityNotFoundException("Cannot delete. User not found with id: " + id);
         }
@@ -111,6 +231,7 @@ public class AnimalService {
 
     /**
      * Helper method to determine if an animal should be active based on status
+     *
      * @param status the status of the animal
      * @return true if the animal should be active, false otherwise
      */
@@ -120,125 +241,4 @@ public class AnimalService {
         return "available".equalsIgnoreCase(status) || "fostered".equalsIgnoreCase(status);
     }
 
-    // Validation Methods
-    
-    private void validateName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-
-        if (!name.matches("^[a-zA-Z]+$")) {
-            throw new IllegalArgumentException("Name must contain only alphabetic characters");
-        }
-
-        if (name.length() < 2 || name.length() > 30) {
-            throw new IllegalArgumentException("Name must be between 2 and 30 characters long");
-        }
-    }
-
-
-    private void validateSpecies(Species species) {
-        if (species == null) {
-            throw new IllegalArgumentException("Species cannot be null");
-        }
-    
-        if (species.getId() == null) {
-            throw new IllegalArgumentException("Species ID cannot be null");
-        }
-    
-        if (species.getName() == null) {
-            throw new IllegalArgumentException("Species name cannot be empty");
-        }
-    
-        if (species.getName() == null || species.getName().isBlank()) {
-            throw new IllegalArgumentException("Species name cannot be null or empty");
-        }
-    
-    
-    }
-    
-    private void validateBreed(Breed breed) {
-        if (breed == null) {
-            throw new IllegalArgumentException("Breed cannot be null");
-        }
-    
-        if (breed.getId() == null) {
-            throw new IllegalArgumentException("Breed ID cannot be null");
-        }
-    
-        if (breed.getName() == null) {
-            throw new IllegalArgumentException("Breed name cannot be null or empty");
-        }
-    
-        if (breed.getName() == null || breed.getName().isBlank()) {
-            throw new IllegalArgumentException("Breed name cannot be null or empty");
-        }
-    }
-    
-    private void validateSex(String sex) {
-        if (sex == null || sex.isBlank()) {
-            throw new IllegalArgumentException("Sex cannot be null or empty");
-        }
-    
-        String sexLower = sex.toLowerCase();
-        if (!sexLower.equals("male") && !sexLower.equals("female") && !sexLower.equals("unknown")) {
-            throw new IllegalArgumentException("Sex must be 'Male', 'Female', or 'Unknown'");
-        }
-    }
-    
-    private void validateBirthDate(Date birthDate) {
-        if (birthDate == null) {
-            throw new IllegalArgumentException("Birth date cannot be null");
-        }
-        Date today = new Date();
-        if (birthDate.after(today)) {
-            throw new IllegalArgumentException("Birth date cannot be in the future");
-        }
-    }
-    
-    private void validateIntakeDate(Date intakeDate, Date birthDate) {
-        if (intakeDate == null) {
-            throw new IllegalArgumentException("Intake date cannot be null");
-        }
-        Date today = new Date();
-        if (intakeDate.after(today)) {
-            throw new IllegalArgumentException("Intake date cannot be in the future");
-        }
-        if (birthDate != null && intakeDate.before(birthDate)) {
-            throw new IllegalArgumentException("Intake date cannot be before birth date");
-        }
-    }
-    
-    private void validateStatus(String status) {
-        if (status == null || status.isBlank()) {
-            throw new IllegalArgumentException("Status cannot be null or empty");
-        }
-    
-        String statusUpper = status.toUpperCase();
-        if (!statusUpper.equals("AVAILABLE") &&
-                !statusUpper.equals("ADOPTED") &&
-                !statusUpper.equals("FOSTERED") &&
-                !statusUpper.equals("DECEASED")) {
-            throw new IllegalArgumentException("Status must be Available, Adopted, Fostered, or Deceased");
-        }
-    }
-    
-    private void validatePrice(int price) {
-        if (price < 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
-        }
-    
-        if (price > 30000) {
-            throw new IllegalArgumentException("Price cannot exceed 30,000");
-        }
-    }
-    
-    private void validateImageUrl(String imageUrl) {
-        if (imageUrl == null || imageUrl.isBlank()) {
-            throw new IllegalArgumentException("Image URL cannot be null or empty");
-        }
-    
-        if (!imageUrl.matches("^(http|https)://.+")) {
-            throw new IllegalArgumentException("Invalid image URL format"); }
-    }
 }

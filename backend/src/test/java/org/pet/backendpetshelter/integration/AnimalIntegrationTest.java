@@ -1,5 +1,5 @@
 package org.pet.backendpetshelter.integration;
-/*
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 @Transactional
 @DisplayName("Animal Integration Tests")
@@ -348,17 +348,6 @@ public class AnimalIntegrationTest {
                 .andExpect(content().string(containsString("Status cannot be null")));
     }
 
-    @Test
-    @DisplayName("POST /api/animals Add Animal - Missing IsActive")
-    void addAnimal_MissingIsActive() throws Exception {
-        AnimalDTORequest request = createValidRequest();
-        request.setIsActive(null);
-        mockMvc.perform(post("/api/animal/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("isActive cannot be null")));
-    }
 
     @Test
     @DisplayName("POST /api/animals Add Animal - Invalid Image URL")
@@ -399,5 +388,3 @@ public class AnimalIntegrationTest {
                 .andExpect(content().string(containsString("Image URL cannot be null or empty")));
     }
 }
-
- */

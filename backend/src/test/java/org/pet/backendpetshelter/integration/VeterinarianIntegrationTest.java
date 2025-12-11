@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -95,8 +96,8 @@ public class VeterinarianIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.licenseNumber").value("VET123456"))
-                .andExpect(jsonPath("$.clinicName").value("BAM Pet Shelter"))
+                .andExpect(jsonPath("$.licenseNumber").value(request.getLicenseNumber()))
+                .andExpect(jsonPath("$.clinicName").value(request.getClinicName()))
                 .andExpect(jsonPath("$.isActive").value(true));
     }
 
@@ -198,13 +199,13 @@ public class VeterinarianIntegrationTest {
     @DisplayName("POST /api/veterinarian Add Veterinarian - Clinic Name Contains Invalid Characters")
     void addVeterinarian_FailClinicNameContainsInvalidCharacters() throws Exception {
         VeterinarianDTORequest request = createValidRequest();
-        request.setClinicName("BAM Pet Shelter!@#");
+        request.setClinicName("BAM Pet Shelter 123!");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/veterinarian/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Clinic name contains invalid characters.")));
+                .andExpect(content().string(containsString("License number contains invalid characters.")));
     }
 
 

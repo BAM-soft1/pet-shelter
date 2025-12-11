@@ -1,5 +1,5 @@
 package org.pet.backendpetshelter.integration;
-/*
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,8 @@ import static org.springframework.mock.http.server.reactive.MockServerHttpReques
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@AutoConfigureMockMvc(addFilters = false)
 @Transactional
 @DisplayName("Adoption Integration Tests")
 public class AdoptionIntegrationTest {
@@ -56,13 +57,16 @@ public class AdoptionIntegrationTest {
     @Autowired
     private AdoptionApplicationRepository adoptionApplicationRepository;
 
+    private AdoptionApplication adoptionApplication;
 
     @BeforeEach
     public void setup() {
         adoptionRepository.deleteAll();
-        userRepository.deleteAll();
-        animalRepository.deleteAll();
         adoptionApplicationRepository.deleteAll();
+        animalRepository.deleteAll();
+        breedRepository.deleteAll();
+        speciesRepository.deleteAll();
+        userRepository.deleteAll();
 
         User user = new User();
         user.setFirstName("Ox");
@@ -89,7 +93,7 @@ public class AdoptionIntegrationTest {
         animal.setSex("Male");
         animal.setBirthDate(Calendar.getInstance().getTime());
         animal.setIntakeDate(Calendar.getInstance().getTime());
-        animal.setStatus(Status.APPROVED);
+        animal.setStatus(Status.PENDING);
         animal.setPrice(499);
         animal.setIsActive(true);
         animalRepository.save(animal);
@@ -98,20 +102,23 @@ public class AdoptionIntegrationTest {
         app.setUser(user);
         app.setAnimal(animal);
         app.setApplicationDate(Calendar.getInstance().getTime());
-        app.setStatus(Status.APPROVED);
+        app.setStatus(Status.PENDING);
         app.setIsActive(true);
-        adoptionApplicationRepository.save(app);
+        this.adoptionApplication = adoptionApplicationRepository.save(app);
     }
 
     private AdoptionRequest createValidRequest() {
         AdoptionRequest request = new AdoptionRequest();
-        request.setUserId(userRepository.findAll().get(0).getId());
-        request.setAnimalId(animalRepository.findAll().get(0).getId());
-        request.setAdoptionApplicationId(adoptionApplicationRepository.findAll().get(0).getId());
-        request.setAdoptionDate(new Date());
+        request.setAdoptionApplicationId(adoptionApplication.getId());
+
+        Calendar futureDate = Calendar.getInstance();
+        futureDate.add(Calendar.DAY_OF_MONTH, 1);
+        request.setAdoptionDate(futureDate.getTime());
+
         request.setIsActive(true);
         return request;
     }
+
 
 
 
@@ -129,41 +136,12 @@ public class AdoptionIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.isActive").value(true))
-                .andExpect(jsonPath("$.userId").value(request.getUserId()))
-                .andExpect(jsonPath("$.animalId").value(request.getAnimalId()))
-                .andExpect(jsonPath("$.adoptionApplicationId").value(request.getAdoptionApplicationId()));
-
-
+                .andExpect(jsonPath("$.adoptionApplication.id").value(request.getAdoptionApplicationId()));
     }
 
 
 
-    @Test
-    @DisplayName("POST /api/adoptions - Add Adoption - Fail Null User ID")
-    public void testAddAdoption_FailNullUserId() throws Exception {
-        AdoptionRequest request = createValidRequest();
-        request.setUserId(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/adoption/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("User ID cannot be null")));
-    }
-
-
-    @Test
-    @DisplayName("POST /api/adoptions - Add Adoption - Fail Null Animal ID")
-    public void testAddAdoption_FailNullAnimalId() throws Exception {
-        AdoptionRequest request = createValidRequest();
-        request.setAnimalId(null);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/adoption/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Animal ID cannot be null")));
-    }
 
 
     @Test
@@ -177,8 +155,9 @@ public class AdoptionIntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("Adoption Application ID cannot be null")));
-
     }
+
+
 
 
     @Test
@@ -213,5 +192,3 @@ public class AdoptionIntegrationTest {
 
 
 }
-
- */

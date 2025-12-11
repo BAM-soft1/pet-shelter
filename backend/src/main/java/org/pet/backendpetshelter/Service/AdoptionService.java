@@ -48,16 +48,16 @@ public class AdoptionService {
 
     @Transactional
     public AdoptionResponse addAdoption(AdoptionRequest request) {
-        validateApplication(request.getAdoptionApplication());
+
         validateAdoptionDate(request.getAdoptionDate());
         validateIsActive(request.getIsActive());
+        validateApplication(request.getAdoptionApplicationId());
 
-        // Hent application fra database
-        AdoptionApplication application = applicationRepository
-                .findById(request.getAdoptionApplication().getId())
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+        AdoptionApplication application = applicationRepository.findById(request.getAdoptionApplicationId())
+                .orElseThrow(() -> new RuntimeException("Adoption Application not found with id: " + request.getAdoptionApplicationId()));
 
-        // Hent animal gennem application
+
+
         Animal animal = application.getAnimal();
         if (animal == null) {
             throw new RuntimeException("Animal not found in application");
@@ -71,19 +71,15 @@ public class AdoptionService {
             throw new RuntimeException("Application is already approved");
         }
 
-        // Opret adoption
         Adoption adoption = new Adoption();
         adoption.setApplication(application);
         adoption.setAdoptionDate(request.getAdoptionDate());
         adoption.setIsActive(true);
 
-        // Opdater animal status
         animal.setStatus(Status.ADOPTED);
 
-        // Opdater application status
         application.setStatus(Status.APPROVED);
 
-        // Gem alle ændringer (transaction sikrer rollback ved fejl)
         animalRepository.save(animal);
         applicationRepository.save(application);
         adoptionRepository.save(adoption);
@@ -91,15 +87,18 @@ public class AdoptionService {
         return new AdoptionResponse(adoption);
     }
 
-    private void validateApplication(AdoptionApplication application) {
-        if (application == null || application.getId() == null) {
-            throw new IllegalArgumentException("Adoption Application cannot be null");
-        }
+    private void validateApplication(Long applicationId) {
+        if (applicationId == null)
+            throw new IllegalArgumentException("Adoption Application ID cannot be null");
     }
 
     private void validateAdoptionDate(Date adoptionDate) {
         if (adoptionDate == null) {
             throw new IllegalArgumentException("Adoption date cannot be null");
+        }
+
+        if (adoptionDate.before(new Date())) {
+            throw new IllegalArgumentException("Adoption date cannot be in the past.");
         }
     }
 
@@ -107,13 +106,18 @@ public class AdoptionService {
         if (isActive == null) {
             throw new IllegalArgumentException("IsActive cannot be null");
         }
+
     }
 
     public AdoptionResponse updateAdoption(Long id, AdoptionRequest request) {
         Adoption adoption = adoptionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Adoption not found with id: " + id));
 
-        adoption.setApplication(request.getAdoptionApplication());
+        AdoptionApplication application = applicationRepository.findById(request.getAdoptionApplicationId())
+                .orElseThrow(() -> new RuntimeException("Adoption Application not found with id: " + request.getAdoptionApplicationId()));
+
+
+        adoption.setApplication(application);
         adoption.setAdoptionDate(request.getAdoptionDate());
         adoption.setIsActive(request.getIsActive());
 
