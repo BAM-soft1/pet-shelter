@@ -86,7 +86,7 @@ public class AnimalIntegrationTest {
     }
 
     private Date createPastDate(int year, int month, int day) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
         cal.set(year, month - 1, day, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
@@ -104,8 +104,8 @@ public class AnimalIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Buddy"))
                 .andExpect(jsonPath("$.sex").value("Male"))
-                .andExpect(jsonPath("$.birthDate").value(containsString("2019-12-31")))
-                .andExpect(jsonPath("$.intakeDate").value(containsString("2022-12-31")))
+                .andExpect(jsonPath("$.birthDate").value(containsString("2020-01-01")))
+                .andExpect(jsonPath("$.intakeDate").value(containsString("2023-01-01")))
                 .andExpect(jsonPath("$.status").value("APPROVED"))
                 .andExpect(jsonPath("$.price").value(499))
                 .andExpect(jsonPath("$.species.name").value("Dog"))
