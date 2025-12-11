@@ -2,37 +2,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import PaginationControls from "@/components/ui/PaginationControls";
+import SearchAndFilter from "@/components/ui/SearchAndFilter";
 import { AdoptionApplicationService } from "../../api/adoptionApplication";
 import type { AdoptionApplication } from "../../types/types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ApplicationFilters from "./helpers/ApplicationFilters";
-import ApplicationSortButtons from "./helpers/ApplicationSortButtons";
-import { useApplicationFilters } from "@/hooks/useApplicationFilters";
 
 export default function AdminApplications() {
   const [applications, setApplications] = useState<AdoptionApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const {
-    searchTerm,
-    setSearchTerm,
-    statusFilter,
-    setStatusFilter,
-    sortField,
-    sortDirection,
-    handleSort,
-    clearFilters,
-    filteredAndSortedApplications,
-  } = useApplicationFilters(applications);
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+
+  // Filter state
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const handleSearch = () => {
+    setSearchTerm(searchInput);
+    setCurrentPage(0);
+  };
 
   useEffect(() => {
     const fetchApplications = async () => {
       try {
         setLoading(true);
-        const applications = await AdoptionApplicationService.getAllApplications();
-        setApplications(applications);
+        const pageResponse = await AdoptionApplicationService.getAllApplications(currentPage, 8, "applicationDate", "desc", statusFilter, searchTerm);
+        setApplications(pageResponse.content);
+        setTotalPages(pageResponse.totalPages);
+        setTotalElements(pageResponse.totalElements);
       } catch (error) {
         console.error("Failed to fetch applications:", error);
       } finally {
@@ -40,14 +44,20 @@ export default function AdminApplications() {
       }
     };
     fetchApplications();
-  }, []);
+  }, [currentPage, statusFilter, searchTerm]);
+
+  const clearFilters = () => {
+    setSearchInput("");
+    setSearchTerm("");
+    setStatusFilter("all");
+    setCurrentPage(0);
+  };
 
   const handleReview = (application: AdoptionApplication) => {
     navigate(`/admin/applications/${application.id}`, {
       state: { application },
     });
   };
-
 
   if (loading) {
     return (
@@ -71,24 +81,43 @@ export default function AdminApplications() {
         </Badge>
       </div>
 
-      <ApplicationFilters
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        clearFilters={clearFilters}
-        totalCount={applications.length}
-        filteredCount={filteredAndSortedApplications.length}
+      <SearchAndFilter
+        searchValue={searchInput}
+        onSearchChange={setSearchInput}
+        searchPlaceholder="Search by animal, applicant name, or email..."
+        onClearFilters={clearFilters}
+        showFilters={false}
+        showSearchButton={true}
+        onSearchSubmit={handleSearch}
+        showCounts={true}
+        totalCount={totalElements}
+        filteredCount={applications.length}
       />
 
-      <ApplicationSortButtons sortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+      <div>
+        <label className="block text-sm font-medium mb-2">Status</label>
+        <div className="flex gap-2">
+          <Button variant={statusFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("all")}>
+            All
+          </Button>
+          <Button variant={statusFilter === "PENDING" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("PENDING")}>
+            Pending
+          </Button>
+          <Button variant={statusFilter === "APPROVED" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("APPROVED")}>
+            Approved
+          </Button>
+          <Button variant={statusFilter === "REJECTED" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("REJECTED")}>
+            Rejected
+          </Button>
+        </div>
+      </div>
 
       <Card>
         <CardHeader>
           <CardTitle>All Applications</CardTitle>
         </CardHeader>
         <CardContent>
-          {filteredAndSortedApplications.length === 0 ? (
+          {applications.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">No applications found.</p>
           ) : (
             <Table>
@@ -104,7 +133,7 @@ export default function AdminApplications() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredAndSortedApplications.map((application) => (
+                {applications.map((application) => (
                   <TableRow key={application.id}>
                     <TableCell className="font-medium">{application.id}</TableCell>
                     <TableCell>
@@ -127,12 +156,9 @@ export default function AdminApplications() {
                     <TableCell>
                       <Badge
                         variant={application.status === "REJECTED" ? "destructive" : "default"}
-                        className={application.status === "APPROVED" ? "bg-green-500 hover:bg-green-600" : ""}>
-                        {application.status === "PENDING"
-                          ? "Pending"
-                          : application.status === "APPROVED"
-                          ? "Approved"
-                          : "Rejected"}
+                        className={application.status === "APPROVED" ? "bg-green-500 hover:bg-green-600" : ""}
+                      >
+                        {application.status === "PENDING" ? "Pending" : application.status === "APPROVED" ? "Approved" : "Rejected"}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -156,6 +182,14 @@ export default function AdminApplications() {
           )}
         </CardContent>
       </Card>
+
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        currentElements={applications.length}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }
