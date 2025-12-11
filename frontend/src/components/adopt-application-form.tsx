@@ -85,20 +85,17 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
           <p>Your adoption application for {animal.name} has been submitted successfully. We'll review it soon!</p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <Label>Name</Label>
-            <Input value={`${user.firstName} ${user.lastName}`} readOnly />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <Label>Name</Label>
+              <Input value={`${user.firstName} ${user.lastName}`} readOnly />
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Email</Label>
-            <Input value={user.email} readOnly />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <Label>Phone</Label>
-            <Input value={user.phone ?? ""} readOnly />
+            <div className="flex flex-col gap-1">
+              <Label>Email</Label>
+              <Input value={user.email} readOnly />
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">
@@ -106,11 +103,14 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder={`Why would you like to adopt ${animal.name}?`}
+              placeholder={`Tell us why you would like to adopt ${animal.name} and about your experience with pets...`}
+              maxLength={2000}
+              className="min-h-[200px] resize-none"
             />
+            <p className="text-sm text-muted-foreground">{description.length}/2000 characters</p>
           </div>
 
-          <div className="md:col-span-2 flex flex-col gap-2 mt-2">
+          <div className="flex flex-col gap-2">
             {error && <div className="text-destructive text-sm">{error}</div>}
             <div className="flex gap-2">
               <Button type="submit" disabled={submitting}>
@@ -123,7 +123,7 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
                   "Submit Application"
                 )}
               </Button>
-              <Button variant="outline" onClick={() => setDescription("")}>
+              <Button type="button" variant="outline" onClick={() => setDescription("")}>
                 Reset
               </Button>
             </div>

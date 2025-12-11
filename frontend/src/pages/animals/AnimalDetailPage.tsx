@@ -66,25 +66,15 @@ export default function AnimalDetailPage() {
               {animal.breed?.name || animal.species.name} • {age} {age === 1 ? "year" : "years"} old
             </p>
           </div>
-          <Button
-            onClick={() =>
-              window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: "smooth",
-              })
-            }
-          >
-            Apply Now
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Image card */}
-          <Card className="h-full md:col-span-2">
-            <CardContent>
-              <div className="relative h-120 overflow-hidden rounded-md bg-muted flex items-center justify-center">
+          <Card className="h-full md:col-span-2 overflow-hidden">
+            <CardContent className="p-0">
+              <div className="relative aspect-4/3 overflow-hidden bg-muted flex items-center justify-center">
                 {animal.imageUrl ? (
-                  <img src={animal.imageUrl} alt={animal.name} className="w-full h-full object-cover object-center" />
+                  <img src={animal.imageUrl} alt={animal.name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-primary/10 to-primary/5">
                     <span className="text-6xl font-bold text-primary/60">{animal.species.name}</span>
@@ -95,43 +85,45 @@ export default function AnimalDetailPage() {
           </Card>
 
           {/* Info card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{animal.name}</CardTitle>
-              <CardDescription>
+          <Card className="flex flex-col">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-2xl">{animal.name}</CardTitle>
+              <CardDescription className="text-base">
                 {animal.species.name} — {animal.breed?.name || "Mixed breed"}
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Sex</p>
-                  <Badge variant="secondary" className="capitalize mt-1">
-                    {animal.sex}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Status</p>
-                  <Badge
-                    variant={animal.status === "AVAILABLE" ? "default" : "outline"}
-                    className={`capitalize mt-1 ${animal.status === "AVAILABLE" ? "bg-green-100 text-green-800 border-green-300" : ""}`}
-                  >
-                    {animal.status}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Birth Date</p>
-                  <p className="text-sm mt-1">{new Date(animal.birthDate).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Intake Date</p>
-                  <p className="text-sm mt-1">{new Date(animal.intakeDate).toLocaleDateString()}</p>
+            <CardContent className="flex-1 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Sex</p>
+                    <Badge variant="secondary" className="capitalize">
+                      {animal.sex}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Status</p>
+                    <Badge
+                      variant={animal.status === "AVAILABLE" ? "default" : "outline"}
+                      className={`capitalize ${animal.status === "AVAILABLE" ? "bg-green-100 text-green-800 border-green-300" : ""}`}
+                    >
+                      {animal.status}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Birth Date</p>
+                    <p className="text-sm font-medium">{new Date(animal.birthDate).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Intake Date</p>
+                    <p className="text-sm font-medium">{new Date(animal.intakeDate).toLocaleDateString()}</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="mb-4">
-                <p className="text-sm font-medium text-muted-foreground">Price</p>
-                <p className="text-2xl font-bold text-primary mt-1">${animal.price}</p>
+              <div className="pt-4 mt-4 border-t">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Adoption Fee</p>
+                <p className="text-3xl font-bold text-primary">${animal.price}</p>
               </div>
             </CardContent>
           </Card>
@@ -164,7 +156,7 @@ export default function AnimalDetailPage() {
             ) : userHasApplied ? (
               <CardContent>
                 <div className="p-4 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
-                  <p className="mb-4">✓ You've already submitted an application to adopt {animal.name}!</p>
+                  <p className="mb-4">You've already submitted an application to adopt {animal.name}!</p>
                   <Button onClick={() => navigate("/my-adopt-applications")}>View Your Applications</Button>
                 </div>
               </CardContent>
