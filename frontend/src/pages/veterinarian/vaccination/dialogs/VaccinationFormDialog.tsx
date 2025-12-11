@@ -55,14 +55,12 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [types, animalsData] = await Promise.all([
-          VaccinationService.getAllVaccinationTypes(),
-          AnimalService.getAnimals(),
-        ]);
+        const [types, animalsData] = await Promise.all([VaccinationService.getAllVaccinationTypes(), AnimalService.getAnimals()]);
         setVaccinationTypes(types);
-        setAnimals(animalsData);
+        setAnimals(animalsData.content);
       } catch (err) {
         console.error("Failed to fetch data", err);
+        setError("Failed to load animals and vaccination types.");
       }
     };
     if (isOpen) fetchData();
@@ -102,6 +100,7 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
       await onSubmit(formData);
       onClose();
     } catch (err) {
+      console.error("Failed to submit vaccination data", err);
       setError("Failed to submit vaccination data.");
     } finally {
       setIsSubmitting(false);
@@ -114,9 +113,7 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
         <DialogHeader>
           <DialogTitle>{vaccination ? "Edit Vaccination" : "Add Vaccination"}</DialogTitle>
           <DialogDescription>
-            {vaccination
-              ? "Update the details of the vaccination."
-              : "Fill in the details to add a new vaccination."}
+            {vaccination ? "Update the details of the vaccination." : "Fill in the details to add a new vaccination."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -130,7 +127,9 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
               className="w-full px-3 py-2 border rounded"
               required
             >
-              <option value="" disabled>Select an animal</option>
+              <option value="" disabled>
+                Select an animal
+              </option>
               {animals.map((animal) => (
                 <option key={animal.id} value={animal.id}>
                   {animal.name}
@@ -148,7 +147,9 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
               className="w-full px-3 py-2 border rounded"
               required
             >
-              <option value="" disabled>Select a type</option>
+              <option value="" disabled>
+                Select a type
+              </option>
               {vaccinationTypes.map((type) => (
                 <option key={type.id} value={type.id}>
                   {type.vaccineName} ({type.durationMonths} months)
@@ -158,25 +159,11 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
           </div>
           <div>
             <Label htmlFor="dateAdministered">Date Administered</Label>
-            <Input
-              type="date"
-              id="dateAdministered"
-              name="dateAdministered"
-              value={formData.dateAdministered}
-              onChange={handleChange}
-              required
-            />
+            <Input type="date" id="dateAdministered" name="dateAdministered" value={formData.dateAdministered} onChange={handleChange} required />
           </div>
           <div>
             <Label htmlFor="nextDueDate">Next Due Date</Label>
-            <Input
-              type="date"
-              id="nextDueDate"
-              name="nextDueDate"
-              value={formData.nextDueDate}
-              onChange={handleChange}
-              required
-            />
+            <Input type="date" id="nextDueDate" name="nextDueDate" value={formData.nextDueDate} onChange={handleChange} required />
             <p className="text-xs text-gray-500 mt-1">Auto-calculated based on vaccine type</p>
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}

@@ -103,6 +103,7 @@ public class AdoptionIntegrationTest {
         app.setAnimal(animal);
         app.setApplicationDate(Calendar.getInstance().getTime());
         app.setStatus(Status.PENDING);
+        app.setDescription("Test adoption application description");
         app.setIsActive(true);
         this.adoptionApplication = adoptionApplicationRepository.save(app);
     }

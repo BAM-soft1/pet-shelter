@@ -70,7 +70,7 @@ export default function VaccinationOverview() {
         VaccinationService.getAllVaccinationTypes(),
       ]);
       setVaccinations(vaccinationsData);
-      setAnimals(animalsData);
+      setAnimals(animalsData.content);
       setVaccinationTypes(typesData);
     } catch (err) {
       setError(getErrorMessage(err));
