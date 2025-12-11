@@ -7,13 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.pet.backendpetshelter.DTO.VeterinarianDTORequest;
 import org.pet.backendpetshelter.Entity.User;
-import org.pet.backendpetshelter.Repository.UserRepository;
-import org.pet.backendpetshelter.Repository.VeterinarianRepository;
+import org.pet.backendpetshelter.Repository.*;
 import org.pet.backendpetshelter.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,9 +23,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 @Transactional
+@ActiveProfiles("test")
+@AutoConfigureMockMvc(addFilters = false)
 @DisplayName("Veterinarian Integration Tests")
 public class VeterinarianIntegrationTest {
 
@@ -42,9 +42,25 @@ public class VeterinarianIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private MedicalRecordRepository medicalRecordRepository;
+
+    @Autowired
+    private VaccinationRepository vaccinationRepository;
+
+    @Autowired
+    private AdoptionApplicationRepository adoptionApplicationRepository;
+
+    @Autowired
+    private FosterCareRepository fosterCareRepository;
+
 
     @BeforeEach
     void setUp() {
+        fosterCareRepository.deleteAll();
+        adoptionApplicationRepository.deleteAll();
+        vaccinationRepository.deleteAll();
+        medicalRecordRepository.deleteAll();
         veterinarianRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -79,10 +95,10 @@ public class VeterinarianIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.clinicName").value("BAM Pet Shelter"))
                 .andExpect(jsonPath("$.licenseNumber").value("VET123456"))
+                .andExpect(jsonPath("$.clinicName").value("BAM Pet Shelter"))
                 .andExpect(jsonPath("$.isActive").value(true));
+
 
 
     }

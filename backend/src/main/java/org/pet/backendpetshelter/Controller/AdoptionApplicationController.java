@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/adoption-application")
 @CrossOrigin
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class AdoptionApplicationController {
 
     private final AdoptionApplicationService adoptionApplicationService;

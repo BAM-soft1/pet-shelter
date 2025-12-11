@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class MedicalRecordService {
 
     private final MedicalRecordRepository medicalRecordRepository;

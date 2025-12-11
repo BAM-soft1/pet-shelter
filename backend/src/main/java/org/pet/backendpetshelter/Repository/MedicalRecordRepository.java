@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
+@Profile({"mysql", "migrate-mongo", "migrate-neo4j", "test" })
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
     MedicalRecord findMedicalRecordById(Long id);
     List<MedicalRecord> findByAnimalId(Long animalId);

@@ -12,11 +12,14 @@ import org.pet.backendpetshelter.DTO.VeterinarianDTORequest;
 import org.pet.backendpetshelter.DTO.VeterinarianDTOResponse;
 import org.pet.backendpetshelter.Entity.User;
 import org.pet.backendpetshelter.Entity.Veterinarian;
-import org.pet.backendpetshelter.Repository.AnimalRepository;
 import org.pet.backendpetshelter.Repository.UserRepository;
 import org.pet.backendpetshelter.Repository.VeterinarianRepository;
+import org.pet.backendpetshelter.Roles;
 import org.pet.backendpetshelter.Service.VeterinarianService;
+import org.pet.backendpetshelter.Status;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,11 +33,9 @@ public class VeterinarianServiceTest {
     @Mock
     private VeterinarianRepository veterinarianRepository;
 
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
 
 
     @InjectMocks
@@ -49,7 +50,7 @@ public class VeterinarianServiceTest {
 
     private VeterinarianDTORequest createValidRequest(){
         VeterinarianDTORequest request = new VeterinarianDTORequest();
-        request.setUser(createValidUser());
+        request.setUserId(createValidUser());
         request.setLicenseNumber("VET123456");
         request.setClinicName("Bam Pet Shelter");
         request.setIsActive(true);
@@ -58,22 +59,23 @@ public class VeterinarianServiceTest {
     }
 
 
-    private User createValidUser(){
+    private Long createValidUser(){
         User user = new User();
         user.setId(1L);
         user.setFirstName("Ox");
-        user.setLastName("W00");
-        user.setEmail("ox@gmail.com");
+        user.setLastName("Woo");
+        user.setEmail("ox123@gmail.com");
         user.setPassword("W1ldC4tWoo123");
-        return user;
-
+        user.setRole(Roles.VETERINARIAN);
+        user.setIsActive(true);
+        return user.getId();
     }
 
 
     private Veterinarian createSavedVeterinarian(VeterinarianDTORequest request){
         Veterinarian veterinarian = new Veterinarian();
         veterinarian.setId(1L);
-        veterinarian.setUser(request.getUser());
+
         veterinarian.setLicenseNumber(request.getLicenseNumber());
         veterinarian.setClinicName(request.getClinicName());
         veterinarian.setIsActive(request.getIsActive());
@@ -97,6 +99,12 @@ public class VeterinarianServiceTest {
         @DisplayName("Create Veterinarian - Valid Data")
         void createVeterinarian_ValidData_Success() {
             VeterinarianDTORequest request = createValidRequest();
+
+
+
+            when(userRepository.existsById(anyLong())).thenReturn(true);
+
+
 
             when(veterinarianRepository.save(any(Veterinarian.class))).thenAnswer(inv -> {
                 Veterinarian a = inv.getArgument(0);
@@ -122,7 +130,7 @@ public class VeterinarianServiceTest {
         @DisplayName("User ID is null - Throws Exception")
         void createVeterinarian_UserIdIsNull_ThrowsException() {
             VeterinarianDTORequest request = createValidRequest();
-            request.getUser().setId(null);
+            request.setUserId(null);
 
             assertThrows(IllegalArgumentException.class, () -> veterinarianService.addVeterinian(request));
             verify(veterinarianRepository, never()).save(any(Veterinarian.class));
@@ -134,7 +142,7 @@ public class VeterinarianServiceTest {
         @DisplayName("User is null - Throws Exception")
         void createVeterinarian_UserIsNull_ThrowsException() {
             VeterinarianDTORequest request = createValidRequest();
-            request.setUser(null);
+            request.setUserId(null);
 
             assertThrows(IllegalArgumentException.class, () -> veterinarianService.addVeterinian(request));
             verify(veterinarianRepository, never()).save(any(Veterinarian.class));

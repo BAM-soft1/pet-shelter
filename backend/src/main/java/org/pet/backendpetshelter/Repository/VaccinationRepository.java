@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile({"mysql", "migrate-mongo", "migrate-neo4j"})
+@Profile({"mysql", "migrate-mongo", "migrate-neo4j", "test" })
 public interface VaccinationRepository extends JpaRepository<Vaccination, Long> {
     Vaccination findById(long id);
 }

@@ -1,11 +1,13 @@
 package org.pet.backendpetshelter.Service;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.pet.backendpetshelter.DTO.VeterinarianDTORequest;
 import org.pet.backendpetshelter.DTO.VeterinarianDTOResponse;
 import org.pet.backendpetshelter.Entity.User;
 import org.pet.backendpetshelter.Entity.Veterinarian;
+import org.pet.backendpetshelter.Repository.UserRepository;
 import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -14,14 +16,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class VeterinarianService {
 
 
     private final VeterinarianRepository veterinarianRepository;
+    private final UserRepository userRepository;
 
-    public VeterinarianService(VeterinarianRepository veterinarianRepository) {
+    public VeterinarianService(VeterinarianRepository veterinarianRepository, UserRepository userRepository) {
         this.veterinarianRepository = veterinarianRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -55,25 +59,28 @@ public class VeterinarianService {
 
 
     /**  * Add Veterinian
-     * @param veterinian the veterinian to be added
+     * @param veterinarian the veterinian to be added
      * @return VeterinianDTOResponse
      * This method adds a new veterinian to the repository and maps it to VeterinianDTOResponse.
      */
 
     /* Add Veterinian */
-    public VeterinarianDTOResponse addVeterinian(@Valid VeterinarianDTORequest veterinian) {
+    public VeterinarianDTOResponse addVeterinian(@Valid VeterinarianDTORequest veterinarian) {
 
 
-        validateUser(veterinian.getUser());
-        validateLicenseNumber(veterinian.getLicenseNumber());
-        validateClinicName(veterinian.getClinicName());
-        validateIsActive(veterinian.getIsActive());
+        validateUser(veterinarian.getUserId());
+        validateLicenseNumber(veterinarian.getLicenseNumber());
+        validateClinicName(veterinarian.getClinicName());
+        validateIsActive(veterinarian.getIsActive());
+
+        User user = userRepository.findById(veterinarian.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 
         Veterinarian newVeterinarian = new Veterinarian();
-        newVeterinarian.setUser(veterinian.getUser());
-        newVeterinarian.setLicenseNumber(veterinian.getLicenseNumber());
-        newVeterinarian.setClinicName(veterinian.getClinicName());
+        newVeterinarian.setUser(user);
+        newVeterinarian.setLicenseNumber(veterinarian.getLicenseNumber());
+        newVeterinarian.setClinicName(veterinarian.getClinicName());
         newVeterinarian.setIsActive(true);
         veterinarianRepository.save(newVeterinarian);
         return new VeterinarianDTOResponse(newVeterinarian);
@@ -81,12 +88,13 @@ public class VeterinarianService {
 
 
     // Validation Methods
-    private void validateUser(User user) {
+    private void validateUser(Long user) {
         if (user == null) {
-            throw new IllegalArgumentException("User cannot be null.");
-        }
-        if (user.getId() == null) {
             throw new IllegalArgumentException("User ID cannot be null.");
+        }
+
+        if (!userRepository.existsById(user)) {
+            throw new IllegalArgumentException("User with ID " + user + " does not exist.");
         }
     }
 
@@ -120,7 +128,7 @@ public class VeterinarianService {
     public VeterinarianDTOResponse updateVeterinian(Long id, VeterinarianDTORequest request) {
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Veterinian not found with id: " + id));
-        veterinarian.setUser(request.getUser());
+        validateUser(request.getUserId());
         veterinarian.setLicenseNumber(request.getLicenseNumber());
         veterinarian.setClinicName(request.getClinicName());
         veterinarian.setIsActive(request.getIsActive());

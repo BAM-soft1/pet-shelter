@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/medical-record")
 @CrossOrigin
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class MedicalRecordController {
 
 

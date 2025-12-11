@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/vaccination")
 @CrossOrigin
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class VaccinationController {
 
 

@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/foster-care")
 @CrossOrigin
-@Profile("mysql")
+@Profile({"mysql", "test"})
 public class FosterCareController {
 
     private final FosterCareService fosterCareService;
