@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Vaccination, VaccinationRequest } from "@/types/types";
+import type { Vaccination, VaccinationRequest, Animal, VaccinationType } from "@/types/types";
 import {
   Table,
   TableBody,
@@ -11,9 +11,13 @@ import {
 import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
 import { VaccinationService } from "../../../api/vaccination";
+import { AnimalService } from "../../../api/animals";
 import VaccinationDetailModal from "./dialogs/VaccinationDetailModal";
 import VaccinationFormDialog from "./dialogs/VaccinationFormDialog";
-import  VaccinationDeleteForm  from "./dialogs/VaccinationDeleteModal";
+import VaccinationDeleteForm from "./dialogs/VaccinationDeleteModal";
+import VaccinationFilters from "./helpers/VaccinationFiltersProps";
+import VaccinationSortButtons from "./helpers/VaccinationSortButtonsProps";
+import { useVaccinationFilters } from "./helpers/useVaccinationFilters";
 import { useAuth } from "@/context/AuthProvider";
 
 type VaccinationFormData = {
@@ -26,6 +30,8 @@ type VaccinationFormData = {
 export default function VaccinationOverview() {
   const auth = useAuth();
   const [vaccinations, setVaccinations] = useState<Vaccination[]>([]);
+  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [vaccinationTypes, setVaccinationTypes] = useState<VaccinationType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,12 +40,38 @@ export default function VaccinationOverview() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedVaccination, setSelectedVaccination] = useState<Vaccination | null>(null);
 
-  const fetchVaccinations = async () => {
+  const {
+    searchTerm,
+    setSearchTerm,
+    animalFilter,
+    setAnimalFilter,
+    vaccinationTypeFilter,
+    setVaccinationTypeFilter,
+    dateFrom,
+    setDateFrom,
+    dateTo,
+    setDateTo,
+    sortField,
+    sortDirection,
+    handleSort,
+    clearFilters,
+    filteredVaccinations,
+    totalCount,
+    filteredCount,
+  } = useVaccinationFilters(vaccinations);
+
+  const fetchData = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await VaccinationService.getAllVaccinations();
-      setVaccinations(data);
+      const [vaccinationsData, animalsData, typesData] = await Promise.all([
+        VaccinationService.getAllVaccinations(),
+        AnimalService.getAnimals(),
+        VaccinationService.getAllVaccinationTypes(),
+      ]);
+      setVaccinations(vaccinationsData);
+      setAnimals(animalsData);
+      setVaccinationTypes(typesData);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -48,7 +80,7 @@ export default function VaccinationOverview() {
   };
 
   useEffect(() => {
-    fetchVaccinations();
+    fetchData();
   }, []);
 
   const handleViewClick = (vaccination: Vaccination) => {
@@ -69,7 +101,7 @@ export default function VaccinationOverview() {
   const handleDeleteClick = (vaccination: Vaccination) => {
     setSelectedVaccination(vaccination);
     setIsDeleteOpen(true);
-  }
+  };
 
   const handleFormSubmit = async (formData: VaccinationFormData): Promise<void> => {
     try {
@@ -86,7 +118,7 @@ export default function VaccinationOverview() {
       } else {
         await VaccinationService.createVaccination(requestData);
       }
-      await fetchVaccinations();
+      await fetchData();
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -97,13 +129,13 @@ export default function VaccinationOverview() {
   const handleDeleteConfirm = async (vaccinationId: number): Promise<void> => {
     try {
       await VaccinationService.deleteVaccination(vaccinationId);
-      await fetchVaccinations();
+      await fetchData();
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
       setIsDeleteOpen(false);
     }
-  }
+  };
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -114,9 +146,33 @@ export default function VaccinationOverview() {
           className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
         >
           <PlusIcon className="h-5 w-5 mr-2" />
-          Add Record
+          Add Vaccination
         </button>
       </div>
+
+      <VaccinationFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        animalFilter={animalFilter}
+        setAnimalFilter={setAnimalFilter}
+        vaccinationTypeFilter={vaccinationTypeFilter}
+        setVaccinationTypeFilter={setVaccinationTypeFilter}
+        dateFrom={dateFrom}
+        setDateFrom={setDateFrom}
+        dateTo={dateTo}
+        setDateTo={setDateTo}
+        clearFilters={clearFilters}
+        totalCount={totalCount}
+        filteredCount={filteredCount}
+        animals={animals}
+        vaccinationTypes={vaccinationTypes}
+      />
+
+      <VaccinationSortButtons
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+      />
 
       {loading ? (
         <p>Loading...</p>
@@ -134,49 +190,56 @@ export default function VaccinationOverview() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {vaccinations.map((vaccination) => (
-              <TableRow key={vaccination.id} className="hover:bg-gray-50">
-                <TableCell>{vaccination.animal?.name ?? vaccination.animal?.id}</TableCell>
-                <TableCell>{vaccination.vaccinationType?.vaccineName}</TableCell>
-                <TableCell>
-                  {new Date(vaccination.dateAdministered).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  {new Date(vaccination.nextDueDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleViewClick(vaccination)}
-                      className="text-green-600 hover:text-green-800"
-                      title="View details"
-                    >
-                      <EyeIcon className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => handleEditClick(vaccination)}
-                      className="text-blue-600 hover:text-blue-800"
-                      title="Edit vaccination"
-                    >
-                      <PencilIcon className="h-5 w-5" />
-                    </button>
-
-                    <button
-                      onClick={() => handleDeleteClick(vaccination)}
-                      className="text-red-600 hover:text-red-800"
-                      title="Delete vaccination"
-                    >
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
-                  </div>
+            {filteredVaccinations.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No vaccinations found.
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredVaccinations.map((vaccination) => (
+                <TableRow key={vaccination.id} className="hover:bg-gray-50">
+                  <TableCell>{vaccination.animal?.name ?? vaccination.animal?.id}</TableCell>
+                  <TableCell>{vaccination.vaccinationType?.vaccineName}</TableCell>
+                  <TableCell>
+                    {new Date(vaccination.dateAdministered).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(vaccination.nextDueDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleViewClick(vaccination)}
+                        className="text-green-600 hover:text-green-800"
+                        title="View details"
+                      >
+                        <EyeIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleEditClick(vaccination)}
+                        className="text-blue-600 hover:text-blue-800"
+                        title="Edit vaccination"
+                      >
+                        <PencilIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(vaccination)}
+                        className="text-red-600 hover:text-red-800"
+                        title="Delete vaccination"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       )}
 
-{selectedVaccination && (
+      {selectedVaccination && (
         <VaccinationDeleteForm
           vaccination={selectedVaccination}
           isOpen={isDeleteOpen}
