@@ -81,7 +81,6 @@ export default function AdminReviewApplication() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button
@@ -109,7 +108,6 @@ export default function AdminReviewApplication() {
         {getStatusBadge(application.status)}
       </div>
 
-      {/* Main Application Card */}
       <Card>
         <CardHeader className="border-b">
           <div className="flex items-start justify-between gap-6">

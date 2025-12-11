@@ -1,12 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AdoptionApplicationService } from "../../api/adoptionApplication";
@@ -38,8 +31,7 @@ export default function AdminApplications() {
     const fetchApplications = async () => {
       try {
         setLoading(true);
-        const applications =
-          await AdoptionApplicationService.getAllApplications();
+        const applications = await AdoptionApplicationService.getAllApplications();
         setApplications(applications);
       } catch (error) {
         console.error("Failed to fetch applications:", error);
@@ -56,22 +48,6 @@ export default function AdminApplications() {
     });
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusMap: Record<
-      string,
-      {
-        variant: "default" | "secondary" | "destructive" | "outline";
-        label: string;
-      }
-    > = {
-      PENDING: { variant: "secondary", label: "Pending" },
-      APPROVED: { variant: "default", label: "Approved" },
-      REJECTED: { variant: "destructive", label: "Rejected" },
-    };
-
-    const config = statusMap[status] || { variant: "outline", label: status };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
-  };
 
   if (loading) {
     return (
@@ -79,9 +55,7 @@ export default function AdminApplications() {
         <h2 className="text-3xl font-bold">Adoption Applications</h2>
         <Card>
           <CardContent className="py-8">
-            <p className="text-muted-foreground text-center">
-              Loading applications...
-            </p>
+            <p className="text-muted-foreground text-center">Loading applications...</p>
           </CardContent>
         </Card>
       </div>
@@ -107,11 +81,7 @@ export default function AdminApplications() {
         filteredCount={filteredAndSortedApplications.length}
       />
 
-      <ApplicationSortButtons
-        sortField={sortField}
-        sortDirection={sortDirection}
-        onSort={handleSort}
-      />
+      <ApplicationSortButtons sortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
 
       <Card>
         <CardHeader>
@@ -119,9 +89,7 @@ export default function AdminApplications() {
         </CardHeader>
         <CardContent>
           {filteredAndSortedApplications.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              No applications found.
-            </p>
+            <p className="text-muted-foreground text-center py-8">No applications found.</p>
           ) : (
             <Table>
               <TableHeader>
@@ -138,18 +106,13 @@ export default function AdminApplications() {
               <TableBody>
                 {filteredAndSortedApplications.map((application) => (
                   <TableRow key={application.id}>
-                    <TableCell className="font-medium">
-                      {application.id}
-                    </TableCell>
+                    <TableCell className="font-medium">{application.id}</TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-medium">
-                          {application.animal.name}
-                        </span>
+                        <span className="font-medium">{application.animal.name}</span>
                         <span className="text-xs text-muted-foreground">
                           {application.animal.species.name}
-                          {application.animal.breed &&
-                            ` • ${application.animal.breed.name}`}
+                          {application.animal.breed && ` • ${application.animal.breed.name}`}
                         </span>
                       </div>
                     </TableCell>
@@ -161,12 +124,20 @@ export default function AdminApplications() {
                     <TableCell>
                       <span className="text-sm">{application.user.email}</span>
                     </TableCell>
-                    <TableCell>{getStatusBadge(application.status)}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={application.status === "REJECTED" ? "destructive" : "default"}
+                        className={application.status === "APPROVED" ? "bg-green-500 hover:bg-green-600" : ""}>
+                        {application.status === "PENDING"
+                          ? "Pending"
+                          : application.status === "APPROVED"
+                          ? "Approved"
+                          : "Rejected"}
+                      </Badge>
+                    </TableCell>
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
-                        {new Date(
-                          application.applicationDate
-                        ).toLocaleDateString("en-US", {
+                        {new Date(application.applicationDate).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "short",
                           day: "numeric",
@@ -174,11 +145,7 @@ export default function AdminApplications() {
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleReview(application)}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => handleReview(application)}>
                         Review
                       </Button>
                     </TableCell>
