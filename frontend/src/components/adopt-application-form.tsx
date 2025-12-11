@@ -26,7 +26,7 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
 
   const handleLoginRedirect = () => {
     // Send the user to login and return here after login
-    navigate("/login", { state: { from: location, animal } });
+    navigate("/login", { state: { from: location.pathname, animal } });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,7 +80,10 @@ export default function AdoptApplicationForm({ animal, user, onSubmit }: AdoptAp
   return (
     <CardContent>
       {submitted ? (
-        <div className="p-4 rounded-md bg-green-50 text-green-800">Thanks — your application was submitted.</div>
+        <div className="p-4 rounded-md bg-green-50 text-green-800 border border-green-200">
+          <p className="font-semibold mb-2">Success!</p>
+          <p>Your adoption application for {animal.name} has been submitted successfully. We'll review it soon!</p>
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">

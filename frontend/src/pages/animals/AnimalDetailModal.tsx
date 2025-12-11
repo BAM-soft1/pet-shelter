@@ -12,12 +12,13 @@ type AnimalDetailModalProps = {
 };
 
 export default function AnimalDetailModal({ animal, isOpen, onClose }: AnimalDetailModalProps) {
+  const navigate = useNavigate();
+  
   if (!animal) return null;
 
   const age = calculateAge(animal.birthDate);
-  const navigate = useNavigate();
 
-    const handleApplyForAdoption = () => {
+  const handleApplyForAdoption = () => {
     navigate("/animal-detailed", { state: { animal } });
   };
 

@@ -19,6 +19,7 @@ export default function AnimalDetailPage() {
   const [userHasApplied, setUserHasApplied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [checkingApplication, setCheckingApplication] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState(false);
 
   const checkApplicationStatus = useCallback(async () => {
     if (!auth?.user || !animal) {
@@ -55,11 +56,26 @@ export default function AnimalDetailPage() {
   return (
     <MainLayout>
       <div className="max-w-6xl mx-auto py-8 px-4">
-        <div className="mb-6">
-          <h1 className="text-3xl font-semibold">{animal.name}</h1>
-          <p className="text-sm text-muted-foreground">
-            {animal.breed?.name || animal.species.name} • {age} {age === 1 ? "year" : "years"} old
-          </p>
+        <div className="mb-6 flex items-start gap-4">
+          <Button variant="outline" size="icon" onClick={() => navigate(-1)}>
+            ←
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-3xl font-semibold">{animal.name}</h1>
+            <p className="text-sm text-muted-foreground">
+              {animal.breed?.name || animal.species.name} • {age} {age === 1 ? "year" : "years"} old
+            </p>
+          </div>
+          <Button
+            onClick={() =>
+              window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth",
+              })
+            }
+          >
+            Apply Now
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -117,22 +133,6 @@ export default function AnimalDetailPage() {
                 <p className="text-sm font-medium text-muted-foreground">Price</p>
                 <p className="text-2xl font-bold text-primary mt-1">${animal.price}</p>
               </div>
-
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(-1)}>
-                  Back
-                </Button>
-                <Button
-                  onClick={() =>
-                    window.scrollTo({
-                      top: document.body.scrollHeight,
-                      behavior: "smooth",
-                    })
-                  }
-                >
-                  Apply Now
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -153,6 +153,14 @@ export default function AnimalDetailPage() {
                   <span>Loading...</span>
                 </div>
               </CardContent>
+            ) : justSubmitted ? (
+              <CardContent>
+                <div className="p-4 rounded-md bg-green-50 text-green-800 border border-green-200">
+                  <p className="font-semibold mb-2">✓ Success!</p>
+                  <p className="mb-4">Your adoption application for {animal.name} has been submitted successfully. We'll review it soon!</p>
+                  <Button onClick={() => navigate("/my-adopt-applications")}>View Your Applications</Button>
+                </div>
+              </CardContent>
             ) : userHasApplied ? (
               <CardContent>
                 <div className="p-4 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
@@ -166,7 +174,7 @@ export default function AnimalDetailPage() {
                 user={auth?.user || null}
                 onSubmit={(app) => {
                   console.log("submitted app", app);
-                  setUserHasApplied(true);
+                  setJustSubmitted(true);
                 }}
               />
             )}
