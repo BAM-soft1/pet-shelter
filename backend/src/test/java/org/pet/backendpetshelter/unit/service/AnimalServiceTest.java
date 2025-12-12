@@ -47,8 +47,6 @@ public class AnimalServiceTest {
     private AnimalService animalService;
 
 
-    private AnimalDTORequest animalDTORequest;
-
     // ==================== TEST HELPERS ====================
 
 
