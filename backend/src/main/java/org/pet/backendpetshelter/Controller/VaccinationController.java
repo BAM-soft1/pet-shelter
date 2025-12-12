@@ -30,7 +30,7 @@ private final VaccinationService vaccinationService;
 
 
     @GetMapping("/{id}")
-    public VaccinationResponse getVaccinationById(Long id){
+    public VaccinationResponse getVaccinationById(@PathVariable Long id){
         return vaccinationService.GetVaccinationById(id);
     }
 

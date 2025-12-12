@@ -29,7 +29,7 @@ public class VaccinationTypeController {
     }
 
     @GetMapping("/{id}")
-    public VaccinationTypeResponse getVaccinationTypeById(Long id) {
+    public VaccinationTypeResponse getVaccinationTypeById(@PathVariable Long id) {
         return vaccinationTypeService.GetVaccinationTypeById(id);
     }
 
