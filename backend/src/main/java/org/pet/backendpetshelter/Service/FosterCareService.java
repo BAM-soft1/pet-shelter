@@ -1,5 +1,6 @@
 package org.pet.backendpetshelter.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.pet.backendpetshelter.DTO.FosterCareRespons;
 import org.pet.backendpetshelter.Entity.FosterCare;
 import org.pet.backendpetshelter.Repository.FosterCareRepository;
@@ -72,7 +73,7 @@ public class FosterCareService {
         if (repository.findById(id).isPresent()) {
             repository.deleteById(id);
         } else {
-            throw new RuntimeException("Foster Care not found with id: " + id);
+            throw new EntityNotFoundException("Foster Care not found with id: " + id);
         }
     }
 

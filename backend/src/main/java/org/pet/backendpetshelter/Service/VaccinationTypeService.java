@@ -1,6 +1,7 @@
 package org.pet.backendpetshelter.Service;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import org.pet.backendpetshelter.DTO.VaccinationTypeResponse;
 import org.pet.backendpetshelter.Entity.VaccinationType;
 import org.pet.backendpetshelter.Repository.VaccinationTypeRepository;
@@ -32,7 +33,7 @@ public class VaccinationTypeService {
     /* Get Specific Vaccination Type */
     public VaccinationTypeResponse GetVaccinationTypeById(Long id) {
         VaccinationType vaccinationType = vaccinationTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination Type not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination Type not found with id: " + id));
         return new VaccinationTypeResponse(vaccinationType);
     }
 
@@ -55,7 +56,7 @@ public class VaccinationTypeService {
     /* Update Vaccination Type */
     public VaccinationTypeResponse updateVaccinationType(Long id, VaccinationTypeResponse request) {
         VaccinationType vaccinationType = vaccinationTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination Type not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination Type not found with id: " + id));
 
         vaccinationType.setVaccineName(request.getVaccineName());
         vaccinationType.setDescription(request.getDescription());
@@ -69,7 +70,7 @@ public class VaccinationTypeService {
     /* Delete Vaccination Type */
     public void deleteVaccinationType(Long id) {
         VaccinationType vaccinationType = vaccinationTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination Type not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination Type not found with id: " + id));
         vaccinationTypeRepository.delete(vaccinationType);
     }
 

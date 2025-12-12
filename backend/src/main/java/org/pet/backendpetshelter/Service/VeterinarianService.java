@@ -162,7 +162,7 @@ public class VeterinarianService {
     /* Delete Veterinian */
     public void deleteVeterinian(Long id) {
         if (!veterinarianRepository.existsById(id)) {
-            throw new RuntimeException("Veterinian not found with id: " + id);
+            throw new EntityNotFoundException("Veterinian not found with id: " + id);
         } else {
             veterinarianRepository.deleteById(id);
         }

@@ -106,7 +106,7 @@ public class MedicalRecordService {
     
     Veterinarian vet = veterinarianRepository.findByUser_Email(email); 
     if (vet == null) {
-        throw new RuntimeException("Veterinarian not found for user: " + email);
+        throw new EntityNotFoundException("Veterinarian not found for user: " + email);
     }
     return vet;
 }

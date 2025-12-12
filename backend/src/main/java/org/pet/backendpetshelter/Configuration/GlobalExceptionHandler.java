@@ -39,8 +39,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> unauthorized(EntityNotFoundException ex, HttpServletRequest req) {
-        return build(HttpStatus.UNAUTHORIZED, "Unauthorized", "Invalid email or password", req.getRequestURI(), null);
+    public ResponseEntity<ErrorResponse> handleEntityNotFound(EntityNotFoundException ex, HttpServletRequest req) {
+        // Check message to determine if it's auth-related or resource-not-found
+        String message = ex.getMessage();
+        if (message != null && message.contains("Invalid credentials")) {
+            return build(HttpStatus.UNAUTHORIZED, "Unauthorized", "Invalid email or password", req.getRequestURI(), null);
+        } else if (message != null && message.contains("Invalid refresh token")) {
+            return build(HttpStatus.UNAUTHORIZED, "Unauthorized", message, req.getRequestURI(), null);
+        }
+        // Otherwise it's a 404
+        return build(HttpStatus.NOT_FOUND, "Not Found", message, req.getRequestURI(), null);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
