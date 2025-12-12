@@ -53,7 +53,7 @@ public class VeterinarianService {
     /* Get Specific Veterinian */
     public VeterinarianDTOResponse GetVeterinianById(Long id) {
         Veterinarian veterinarian = veterinarianRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Veterinian not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Veterinian not found with id: " + id));
         return new VeterinarianDTOResponse(veterinarian);
     }
 
@@ -142,7 +142,7 @@ public class VeterinarianService {
     /* Update Veterinian */
     public VeterinarianDTOResponse updateVeterinian(Long id, VeterinarianDTORequest request) {
         Veterinarian veterinarian = veterinarianRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Veterinian not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Veterinian not found with id: " + id));
         validateUser(request.getUserId());
         veterinarian.setLicenseNumber(request.getLicenseNumber());
         veterinarian.setClinicName(request.getClinicName());
