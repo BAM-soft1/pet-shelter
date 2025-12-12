@@ -36,7 +36,7 @@ export default function MedicalRecordDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 border-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 bg-linear-to-br from-slate-900 via-blue-900 to-slate-900 border-0">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-10 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
           <div className="absolute top-20 right-10 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-700" />
@@ -45,10 +45,10 @@ export default function MedicalRecordDetailModal({
 
         <div className="relative z-10 p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-red-500 via-red-500 to-blue-500 mb-4 shadow-lg shadow-purple-500/50 animate-pulse">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-linear-to-r from-red-500 via-red-500 to-blue-500 mb-4 shadow-lg shadow-purple-500/50 animate-pulse">
               <HeartSolid className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-400 via-blue-400 to-blue-400 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold bg-linear-to-r from-pink-400 via-blue-400 to-blue-400 bg-clip-text text-transparent mb-2">
               Medical Record
             </h1>
             <div className="flex items-center justify-center gap-4 text-gray-400">
@@ -84,7 +84,7 @@ export default function MedicalRecordDetailModal({
                   </div>
                 </div>
               ) : (
-                <div className="w-24 h-24 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+                <div className="w-24 h-24 rounded-2xl bg-linear-to-r from-emerald-400 to-cyan-400 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
                   {record.animal?.name?.charAt(0) || "?"}
                 </div>
               )}
@@ -122,7 +122,7 @@ export default function MedicalRecordDetailModal({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="group p-6 rounded-2xl bg-gradient-to-br from-rose-500/10 to-pink-500/10 border border-rose-500/20 hover:border-rose-500/50 hover:shadow-lg hover:shadow-rose-500/20 transition-all duration-300">
+            <div className="group p-6 rounded-2xl bg-linear-to-br from-rose-500/10 to-pink-500/10 border border-rose-500/20 hover:border-rose-500/50 hover:shadow-lg hover:shadow-rose-500/20 transition-all duration-300">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 rounded-xl bg-rose-500/20 group-hover:bg-rose-500/30 transition-colors">
                   <HeartIcon className="w-6 h-6 text-rose-400" />
@@ -134,7 +134,7 @@ export default function MedicalRecordDetailModal({
               <p className="text-white text-lg leading-relaxed">{record.diagnosis}</p>
             </div>
 
-            <div className="group p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
+            <div className="group p-6 rounded-2xl bg-linear-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 rounded-xl bg-blue-500/20 group-hover:bg-blue-500/30 transition-colors">
                   <BeakerIcon className="w-6 h-6 text-blue-400" />
@@ -147,7 +147,7 @@ export default function MedicalRecordDetailModal({
             </div>
           </div>
 
-          <div className="group p-6 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 border border-emerald-500/20 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/20 transition-all duration-300 mb-8">
+          <div className="group p-6 rounded-2xl bg-linear-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 border border-emerald-500/20 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/20 transition-all duration-300 mb-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-xl bg-emerald-500/20 group-hover:bg-emerald-500/30 transition-colors">
@@ -158,7 +158,7 @@ export default function MedicalRecordDetailModal({
                 </h3>
               </div>
               <div className="text-right">
-                <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                <p className="text-4xl font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
                   ${record.cost.toFixed(2)}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export default function MedicalRecordDetailModal({
           <DialogFooter>
             <Button
               onClick={onClose}
-              className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-purple-500 hover:via-pink-500 hover:to-indigo-500 border-0 rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02]"
+              className="w-full py-6 text-lg font-semibold bg-linear-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-purple-500 hover:via-pink-500 hover:to-indigo-500 border-0 rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02]"
             >
               Close Record
             </Button>
