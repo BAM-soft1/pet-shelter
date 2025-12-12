@@ -72,3 +72,27 @@ await expect.poll(() => page.locator("#nextDueDate").inputValue(), { timeout: 20
 await page.getByRole("button", { name: "Add Vaccination" }).click();
 await expect(page).toHaveURL("/veterinarian/vaccinations");
 });
+
+test("should edit vaccination", async ({page}) => {
+    await page.getByRole("link", { name: "Medical Records" }).click();
+    await expect(page).toHaveURL("/veterinarian/overview");
+    await expect(page.getByText("Medical Record Overview")).toBeVisible();
+    await page.getByRole("button", { name: "Vaccination Overview"}).click();
+  
+    await expect(page).toHaveURL("/veterinarian/vaccinations");
+    await page.getByRole("button", { name: "Edit" }).first().click();
+
+    const administered = "2026-01-01";
+    await page.locator("#dateAdministered").fill(administered);
+    
+        await page.getByRole("button", { name: "Update Vaccination" }).click();
+        await expect(page).toHaveURL("/veterinarian/vaccinations");
+    });
+    
+  test("should delete vaccination", async ({page}) => {
+    await page.getByRole("link", { name: "Medical Records" }).click();
+    await expect(page).toHaveURL("/veterinarian/overview");
+    await expect(page.getByText("Medical Record Overview")).toBeVisible();
+    await page.getByRole("button", { name: "Vaccination Overview"}).click();
+
+    await page.
