@@ -20,7 +20,6 @@ export const AnimalService = {
   ): Promise<PageResponse<Animal>> => {
     const params: Record<string, string | number | boolean> = { page, size, sortBy, sortDirection };
 
-    // Only add filter params if they're provided
     if (status !== undefined) params.status = status;
     if (isActive !== undefined) params.isActive = isActive;
     if (hasRequiredVaccinations !== undefined) params.hasRequiredVaccinations = hasRequiredVaccinations;
