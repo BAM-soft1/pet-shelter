@@ -35,6 +35,7 @@ test("Should Display home page after login", async ({ page }) => {
     await expect(page).toHaveURL("/veterinarian/overview");
     await expect(page.getByText("Medical Record Overview")).toBeVisible();
     await page.getByRole("button", { name: "Vaccination Overview"}).click();
+    await expect(page).toHaveURL("/veterinarian/vaccinations");
   });
 
 
