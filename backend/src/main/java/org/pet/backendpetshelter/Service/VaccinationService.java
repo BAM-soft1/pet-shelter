@@ -54,6 +54,14 @@ public class VaccinationService {
     }
 
     public VaccinationResponse addVaccination(VaccinationRequest request) {
+        // Validate required fields
+        if (request.getAnimalId() == null) {
+            throw new IllegalArgumentException("Animal ID is required");
+        }
+        if (request.getVaccinationTypeId() == null) {
+            throw new IllegalArgumentException("Vaccination Type ID is required");
+        }
+        
         Animal animal = animalRepository.findById(request.getAnimalId())
                 .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
 
