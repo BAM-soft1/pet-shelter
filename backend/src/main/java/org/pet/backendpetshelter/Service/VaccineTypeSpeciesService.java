@@ -42,7 +42,7 @@ public class VaccineTypeSpeciesService {
     /* Get Specific VaccineTypeSpecies */
     public VaccineTypeSpeciesResponse GetVaccineTypeSpeciesById(Long id) {
         VaccineTypeSpecies vaccineTypeSpecies = vaccineTypeSpeciesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VaccineTypeSpecies not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("VaccineTypeSpecies not found with id: " + id));
         return new VaccineTypeSpeciesResponse(vaccineTypeSpecies);
     }
 
@@ -65,7 +65,7 @@ public class VaccineTypeSpeciesService {
     /* Update VaccineTypeSpecies */
     public VaccineTypeSpeciesResponse updateVaccineTypeSpecies(Long id, VaccineTypeSpeciesRequest request) {
         VaccineTypeSpecies vaccineTypeSpecies = vaccineTypeSpeciesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VaccineTypeSpecies not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("VaccineTypeSpecies not found with id: " + id));
 
         Species species = speciesRepository.findById(request.getSpeciesId())
                 .orElseThrow(() -> new EntityNotFoundException("Species not found with id: " + request.getSpeciesId()));
@@ -83,7 +83,7 @@ public class VaccineTypeSpeciesService {
     /* Delete VaccineTypeSpecies */
     public void deleteVaccineTypeSpecies(Long id) {
         VaccineTypeSpecies vaccineTypeSpecies = vaccineTypeSpeciesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VaccineTypeSpecies not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("VaccineTypeSpecies not found with id: " + id));
         vaccineTypeSpeciesRepository.delete(vaccineTypeSpecies);
     }
 }

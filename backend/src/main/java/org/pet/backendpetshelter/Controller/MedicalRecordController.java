@@ -30,7 +30,7 @@ public class MedicalRecordController {
     }
 
     @GetMapping("/{id}")
-    public MedicalRecordDTOResponse getMedicalRecordById(Long id) {
+    public MedicalRecordDTOResponse getMedicalRecordById(@PathVariable Long id) {
         return medicalRecordService.getMedicalRecordById(id);
     }
 
