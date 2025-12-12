@@ -37,7 +37,7 @@ public class AdoptionController {
     }
 
     @GetMapping("/{id}")
-    public AdoptionResponse getAdoptionById(Long id) {
+    public AdoptionResponse getAdoptionById(@PathVariable Long id) {
         return adoptionService.GetAdoptionById(id);
     }
 

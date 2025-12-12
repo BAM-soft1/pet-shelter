@@ -57,7 +57,7 @@ public class AnimalService {
     /* Get Specific Animal */
     public AnimalDTOResponse GetAnimalById(Long id) {
         Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + id));
         return new AnimalDTOResponse(animal);
     }
 
@@ -211,7 +211,7 @@ public class AnimalService {
     /* Update Animal */
     public AnimalDTOResponse updateAnimal(Long id, AnimalDTORequest request) {
         Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + id));
 
         Breed breed = breedRepository.findById(request.getBreedId())
                 .orElseThrow(() -> new EntityNotFoundException("Breed not found"));

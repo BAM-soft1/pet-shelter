@@ -43,7 +43,7 @@ public class MedicalRecordService {
     public MedicalRecordDTOResponse getMedicalRecordById(Long id) {
 
         MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Medical Record not found with id: " + id));
         return new MedicalRecordDTOResponse(medicalRecord);
     }
 
@@ -56,6 +56,19 @@ public class MedicalRecordService {
 
     /* Add medical record */
     public MedicalRecordDTOResponse addMedicalRecord(MedicalRecordDTORequest request) {
+        // Validate required fields
+        if (request.getAnimalId() == null) {
+            throw new IllegalArgumentException("Animal ID is required");
+        }
+        if (request.getDate() == null) {
+            throw new IllegalArgumentException("Date is required");
+        }
+        if (request.getDiagnosis() == null || request.getDiagnosis().trim().isEmpty()) {
+            throw new IllegalArgumentException("Diagnosis is required");
+        }
+        if (request.getTreatment() == null || request.getTreatment().trim().isEmpty()) {
+            throw new IllegalArgumentException("Treatment is required");
+        }
         
         Animal animal = animalRepository.findById(request.getAnimalId())
                 .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
@@ -76,7 +89,7 @@ public class MedicalRecordService {
     /* Update medical record */
     public MedicalRecordDTOResponse updateMedicalRecord(Long id, MedicalRecordDTORequest request) {
         MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Medical Record not found with id: " + id));
 
         // Hent Animal fra database
         Animal animal = animalRepository.findById(request.getAnimalId())
@@ -106,7 +119,7 @@ public class MedicalRecordService {
     
     Veterinarian vet = veterinarianRepository.findByUser_Email(email); 
     if (vet == null) {
-        throw new RuntimeException("Veterinarian not found for user: " + email);
+        throw new EntityNotFoundException("Veterinarian not found for user: " + email);
     }
     return vet;
 }

@@ -114,7 +114,7 @@ public class BreedService {
      */
     public BreedDTOResponse getBreedById(Long id) {
         Breed breed = breedRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Breed not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Breed not found with id: " + id));
         return new BreedDTOResponse(breed);
     }
 
@@ -141,7 +141,7 @@ public class BreedService {
      */
     public BreedDTOResponse updateBreed(Long id, BreedDTORequest request) {
         Breed breed = breedRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Breed not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Breed not found with id: " + id));
 
         breed.setName(request.getName());
 

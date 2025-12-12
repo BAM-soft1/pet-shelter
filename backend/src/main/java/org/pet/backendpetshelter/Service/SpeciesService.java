@@ -30,7 +30,7 @@ public class SpeciesService {
 
     /* Get Specific Species */
     public SpeciesDTOResponse GetSpeciesById(Long id){
-        Species species = speciesRepository.findById(id).orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
+        Species species = speciesRepository.findById(id).orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Species not found with id: " + id));
         return new SpeciesDTOResponse(species);
     }
 
@@ -79,7 +79,11 @@ public class SpeciesService {
 
     /* Update Species */
     public SpeciesDTOResponse updateSpecies(Long id, SpeciesDTORequest request){
-        Species species = speciesRepository.findById(id).orElseThrow(() -> new RuntimeException("Species not found with id: " + id));
+        Species species = speciesRepository.findById(id).orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Species not found with id: " + id));
+        
+        // Validate name before updating
+        validateName(request.getName());
+        
         species.setName(request.getName());
         speciesRepository.save(species);
         return new SpeciesDTOResponse(species);
@@ -87,7 +91,7 @@ public class SpeciesService {
 
     /* Delete Species */
     public void deleteSpecies(Long id){
-        Species species = speciesRepository.findById(id).orElseThrow(() -> new RuntimeException("Species not found with id: " + id));
+        Species species = speciesRepository.findById(id).orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Species not found with id: " + id));
         speciesRepository.delete(species);
     }
 

@@ -49,7 +49,7 @@ public class VaccinationService {
 
     public VaccinationResponse GetVaccinationById(Long id) {
         Vaccination vaccination = vaccinationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination not found with id: " + id));
         return new VaccinationResponse(vaccination);
     }
 
@@ -75,7 +75,7 @@ public class VaccinationService {
 
     public VaccinationResponse updateVaccination(Long id, VaccinationRequest request) {
         Vaccination vaccination = vaccinationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination not found with id: " + id));
 
         Animal animal = animalRepository.findById(request.getAnimalId())
                 .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
@@ -94,7 +94,7 @@ public class VaccinationService {
 
     public void deleteVaccination(Long id) {
         Vaccination vaccination = vaccinationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination not found with id: " + id));
         vaccinationRepository.delete(vaccination);
     }
 
@@ -104,7 +104,7 @@ public class VaccinationService {
 
         Veterinarian vet = veterinarianRepository.findByUser_Email(email);
         if (vet == null) {
-            throw new RuntimeException("Veterinarian not found for user: " + email);
+            throw new EntityNotFoundException("Veterinarian not found for user: " + email);
         }
         return vet;
     }

@@ -28,7 +28,7 @@ public class FosterCareController {
     }
 
     @GetMapping("/{id}")
-    public FosterCareRespons getFosterCareById(Long id) {
+    public FosterCareRespons getFosterCareById(@PathVariable Long id) {
         return fosterCareService.GetFosterCareById(id);
     }
 

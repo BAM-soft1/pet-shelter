@@ -51,14 +51,14 @@ public class AdoptionApplicationService
 
     public AdoptionApplicationResponse GetAdoptionApplicationById(Long id) {
         AdoptionApplication application = adoptionApplicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Could not find application with id: " + id));
         return new AdoptionApplicationResponse(application);
     }
 
     public List<AdoptionApplicationResponse> getAdoptionApplicationsForUser(Long userId) {
         // Verify user exists first
         userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User not found with id: " + userId));
 
         return adoptionApplicationRepository.findByUserId(userId).stream()
                 .map(AdoptionApplicationResponse::new)
@@ -66,13 +66,24 @@ public class AdoptionApplicationService
     }
 
     public AdoptionApplicationResponse addAdoptionApplication(AdoptionApplicationRequest request) {
+        // Validate required fields
+        if (request.getUserId() == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+        if (request.getAnimalId() == null) {
+            throw new IllegalArgumentException("Animal ID is required");
+        }
+        if (request.getDescription() == null || request.getDescription().trim().isEmpty()) {
+            throw new IllegalArgumentException("Description is required");
+        }
+        
         // 1. Find user
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User not found with id: " + request.getUserId()));
 
         // 2. Find animal
         Animal animal = animalRepository.findById(request.getAnimalId())
-                .orElseThrow(() -> new RuntimeException("Animal not found with id: " + request.getAnimalId()));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
 
         // 3. Check if user has already applied for this animal (proactive check)
         if (adoptionApplicationRepository.existsByUserIdAndAnimalId(user.getId(), animal.getId())) {
@@ -107,18 +118,18 @@ public class AdoptionApplicationService
     /* Update Adoption Application */
     public AdoptionApplicationResponse updateAdoptionApplication(Long id, AdoptionApplicationRequest request) {
         AdoptionApplication application = adoptionApplicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Could not find application with id: " + id));
 
         // If you want to allow changing user/animal (usually not needed)
         if (request.getUserId() != null) {
             User user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User not found with id: " + request.getUserId()));
             application.setUser(user);
         }
 
         if (request.getAnimalId() != null) {
             Animal animal = animalRepository.findById(request.getAnimalId())
-                    .orElseThrow(() -> new RuntimeException("Animal not found with id: " + request.getAnimalId()));
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
             application.setAnimal(animal);
         }
 
@@ -134,7 +145,7 @@ public class AdoptionApplicationService
     /* Delete Adoption Application */
     public void deleteAdoptionApplication(Long id) {
         AdoptionApplication application = adoptionApplicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Could not find application with id: " + id));
         adoptionApplicationRepository.delete(application);
     }
 
@@ -144,10 +155,10 @@ public class AdoptionApplicationService
 
     public AdoptionApplicationResponse rejectAdoptionApplication(Long id, Long reviewedByUserId) {
         AdoptionApplication application = adoptionApplicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Could not find application with id: " + id));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Could not find application with id: " + id));
 
         User reviewer = userRepository.findById(reviewedByUserId)
-                .orElseThrow(() -> new RuntimeException("Reviewer user not found with id: " + reviewedByUserId));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Reviewer user not found with id: " + reviewedByUserId));
 
         application.setStatus(Status.REJECTED);
         application.setReviewedByUser(reviewer);

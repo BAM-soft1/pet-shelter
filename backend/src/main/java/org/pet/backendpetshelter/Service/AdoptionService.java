@@ -1,5 +1,6 @@
 package org.pet.backendpetshelter.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.pet.backendpetshelter.DTO.AdoptionRequest;
 import org.pet.backendpetshelter.DTO.AdoptionResponse;
 import org.pet.backendpetshelter.Entity.Adoption;
@@ -53,13 +54,13 @@ public class AdoptionService {
         validateApplication(request.getAdoptionApplicationId());
 
         AdoptionApplication application = applicationRepository.findById(request.getAdoptionApplicationId())
-                .orElseThrow(() -> new RuntimeException("Adoption Application not found with id: " + request.getAdoptionApplicationId()));
+                .orElseThrow(() -> new EntityNotFoundException("Adoption Application not found with id: " + request.getAdoptionApplicationId()));
 
 
 
         Animal animal = application.getAnimal();
         if (animal == null) {
-            throw new RuntimeException("Animal not found in application");
+            throw new EntityNotFoundException("Animal not found in application");
         }
 
         if (Status.ADOPTED.equals(animal.getStatus())) {
