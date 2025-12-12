@@ -56,3 +56,26 @@ test("Should register a new medical record", async ({ page }) => {
   await expect(page.getByText("Medical Record Overview")).toBeVisible();
 });
 
+test("Should edit a medical record", async ({ page }) => {
+  await page.getByRole("link", { name: "Medical Records" }).click();
+  await expect(page).toHaveURL("/veterinarian/overview");
+
+  await page.getByRole("button", { name: "Edit", exact: true }).first().click();
+
+  await page.getByLabel(/diagnosis/i).fill("Updated diagnosis");
+  await page.getByRole("button", { name: "Update" }).click();
+
+  await expect(page.getByText("Medical Record Overview")).toBeVisible();
+});
+
+test("Should delete a medical record", async ({ page }) => {
+  await page.getByRole("link", { name: "Medical Records" }).click();
+  await expect(page).toHaveURL("/veterinarian/overview");
+
+  await page.getByRole("button", { name: "Delete", exact: true }).first().click();
+
+  await page.getByRole("button", { name: "Delete Record" }).click();
+
+  await expect(page.getByText("Medical Record Overview")).toBeVisible();
+});
+
