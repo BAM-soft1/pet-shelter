@@ -39,6 +39,11 @@ public class VaccinationTypeService {
 
     /* Add Vaccination Type */
     public VaccinationTypeResponse addVaccinationType(VaccinationTypeResponse request) {
+        // Validate vaccination name
+        if (request.getVaccineName() == null || request.getVaccineName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Vaccination name is required");
+        }
+        
         VaccinationType vaccinationType = new VaccinationType();
 
         vaccinationType.setVaccineName(request.getVaccineName());
@@ -57,6 +62,11 @@ public class VaccinationTypeService {
     public VaccinationTypeResponse updateVaccinationType(Long id, VaccinationTypeResponse request) {
         VaccinationType vaccinationType = vaccinationTypeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Vaccination Type not found with id: " + id));
+
+        // Validate vaccination name
+        if (request.getVaccineName() == null || request.getVaccineName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Vaccination name is required");
+        }
 
         vaccinationType.setVaccineName(request.getVaccineName());
         vaccinationType.setDescription(request.getDescription());

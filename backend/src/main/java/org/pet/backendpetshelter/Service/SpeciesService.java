@@ -80,6 +80,10 @@ public class SpeciesService {
     /* Update Species */
     public SpeciesDTOResponse updateSpecies(Long id, SpeciesDTORequest request){
         Species species = speciesRepository.findById(id).orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Species not found with id: " + id));
+        
+        // Validate name before updating
+        validateName(request.getName());
+        
         species.setName(request.getName());
         speciesRepository.save(species);
         return new SpeciesDTOResponse(species);
