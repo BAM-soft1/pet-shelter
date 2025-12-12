@@ -62,5 +62,37 @@ test("Should Display home page after login", async ({ page }) => {
 
   });
 
+  test("Should edit a vaccination type", async ({ page }) => {
+    await page.getByRole("link", { name: "Medical Records" }).click();
+    await expect(page).toHaveURL("/veterinarian/overview");
+    await expect(page.getByText("Medical Record Overview")).toBeVisible();
+    await page.getByRole("link", { name: "Vaccination Types" }).click();
+
+    await expect(page).toHaveURL("/veterinarian/vaccinations-types");
+
+    await page.getByRole("button", { name: "Edit" }).first().click();
+
+    await expect(page).toHaveURL("/veterinarian/vaccinations-types");
+
+    await page.getByLabel(/name/i).fill("updated test");
+    await page.getByRole("button", { name: "Submit" }).click();
+
+    await expect(page).toHaveURL("/veterinarian/vaccinations-types");
+  });
+
+  test("Should delete a vaccination type", async ({page}) => {
+    await page.getByRole("link", { name: "Medical Records" }).click();
+    await expect(page).toHaveURL("/veterinarian/overview");
+    await expect(page.getByText("Medical Record Overview")).toBeVisible();
+    await page.getByRole("link", { name: "Vaccination Types" }).click();
+  
+    await expect(page).toHaveURL("/veterinarian/vaccinations-types");
+  
+    await page.getByRole("button", { name: "Delete" }).first().click();
+    
+    await page.getByRole("button", { name: "Delete" }).click();
+  
+    await expect(page).toHaveURL("/veterinarian/vaccinations-types");
+  });
   
 

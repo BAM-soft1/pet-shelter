@@ -85,7 +85,7 @@ test("should edit vaccination", async ({page}) => {
     const administered = "2026-01-01";
     await page.locator("#dateAdministered").fill(administered);
     
-        await page.getByRole("button", { name: "Update Vaccination" }).click();
+        await page.getByRole("button", { name: "Update" }).click();
         await expect(page).toHaveURL("/veterinarian/vaccinations");
     });
     
@@ -95,4 +95,9 @@ test("should edit vaccination", async ({page}) => {
     await expect(page.getByText("Medical Record Overview")).toBeVisible();
     await page.getByRole("button", { name: "Vaccination Overview"}).click();
 
-    await page.
+    await page.getByRole("button", { name: "Delete" }).first().click();
+    
+    await page.getByRole("button", { name: "Delete" }).click();
+
+    await expect(page).toHaveURL("/veterinarian/vaccinations");
+  });
