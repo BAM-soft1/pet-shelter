@@ -54,8 +54,6 @@ public class AdoptionServiceTest {
     private AdoptionService adoptionService;
 
 
-    private AdoptionRequest adoptionRequest;
-
 
     // ==================== TEST HELPERS ====================
 
@@ -121,13 +119,6 @@ public class AdoptionServiceTest {
         animal.setImageUrl("http://cuteDog.com/LabadrorDog.jpg");
         return animal;
 
-    }
-
-    private Date createPastDate(int year, int month, int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month - 1, day, 0, 0, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTime();
     }
 
     private Date createFutureDate() {

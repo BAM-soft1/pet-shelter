@@ -209,19 +209,6 @@ class AuthServiceTest {
             return request;
         }
 
-        private User createSavedUser(RegisterUserRequest request) {
-            User user = new User();
-            user.setId(1L);
-            user.setEmail(request.getEmail().toLowerCase());
-            user.setFirstName(request.getFirstName().trim());
-            user.setLastName(request.getLastName().trim());
-            user.setPhone(request.getPhone());
-            user.setPassword("$2a$10$hashedPassword");
-            user.setIsActive(true);
-            user.setRole(Roles.USER);
-            return user;
-        }
-
         private void mockSuccessfulRegistration(String email) {
             when(userRepository.existsByEmail(email)).thenReturn(false);
             when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$hashedPassword");
