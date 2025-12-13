@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import type { Animal, Species, Breed, AnimalRequest } from "@/types/types";
+import type { Animal, AnimalRequest } from "@/types/types";
 import { AnimalService } from "@/api/animals";
-import { SpeciesService, BreedService } from "@/api/species";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,6 +36,7 @@ export default function AdminAnimals() {
   const [totalElements, setTotalElements] = useState(0);
 
   // Search state
+  const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filter states
@@ -100,20 +100,17 @@ export default function AdminAnimals() {
   const handleCreate = async (formData: AnimalFormData) => {
     if (!formData.speciesId) return;
 
-    // Get species and breed objects
-    const species: Species = await SpeciesService.getSpeciesById(formData.speciesId);
-    const breed: Breed | null = formData.breedId ? await BreedService.getBreedById(formData.breedId) : null;
-
     const animalData: AnimalRequest = {
       name: formData.name,
       sex: formData.sex,
-      species,
-      breed,
+      speciesId: formData.speciesId,
+      breedId: formData.breedId,
       birthDate: formData.birthDate,
       intakeDate: formData.intakeDate || new Date().toISOString().split("T")[0],
       status: formData.status,
       price: formData.price,
       imageUrl: formData.imageUrl,
+      isActive: true,
     };
 
     await AnimalService.createAnimal(animalData);
@@ -123,17 +120,13 @@ export default function AdminAnimals() {
   const handleUpdate = async (formData: AnimalFormData) => {
     if (!selectedAnimal || !formData.speciesId) return;
 
-    // Get species and breed objects
-    const species: Species = await SpeciesService.getSpeciesById(formData.speciesId);
-    const breed: Breed | null = formData.breedId ? await BreedService.getBreedById(formData.breedId) : null;
-
-    const animalData: Partial<Animal> = {
+    const animalData: AnimalRequest = {
       name: formData.name,
       sex: formData.sex,
-      species,
-      breed,
+      speciesId: formData.speciesId,
+      breedId: formData.breedId,
       birthDate: formData.birthDate,
-      intakeDate: formData.intakeDate,
+      intakeDate: formData.intakeDate || new Date().toISOString().split("T")[0],
       status: formData.status,
       price: formData.price,
       imageUrl: formData.imageUrl,
@@ -147,6 +140,11 @@ export default function AdminAnimals() {
     if (!selectedAnimal) return;
     await AnimalService.deleteAnimal(selectedAnimal.id);
     await fetchAnimals();
+  };
+
+  const handleSearch = () => {
+    setSearchTerm(searchInput);
+    setCurrentPage(0);
   };
 
   const openEditDialog = (animal: Animal) => {
@@ -196,17 +194,18 @@ export default function AdminAnimals() {
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 space-y-4">
           <SearchAndFilter
-            searchValue={searchTerm}
-            onSearchChange={setSearchTerm}
+            searchValue={searchInput}
+            onSearchChange={setSearchInput}
             searchPlaceholder="Search animals by name, species, or breed..."
             onClearFilters={() => {
+              setSearchInput("");
               setSearchTerm("");
               setSexFilter("all");
               setAgeFilter("all");
               setVaccinationStatusFilter(undefined);
               setCurrentPage(0);
             }}
-            onSearchSubmit={() => setCurrentPage(0)}
+            onSearchSubmit={handleSearch}
             showSearchButton={true}
             showClearButton={true}
             totalCount={totalElements}

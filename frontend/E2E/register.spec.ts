@@ -62,11 +62,11 @@ test("should show validation error for invalid phone format", async ({ page }) =
   await page.getByLabel("First Name").fill("Test");
   await page.getByLabel("Last Name").fill("User");
   await page.getByLabel("Email").fill("phone@test.com");
-  await page.getByLabel("Phone (Optional)").fill("12345678");
+  await page.getByLabel("Phone (Optional)").fill("12345678!!!!!");
   await page.getByLabel("Password", { exact: true }).fill("Test1234!");
   await page.getByLabel("Confirm Password").fill("Test1234!");
 
   await page.getByRole("button", { name: "Create Account" }).click();
 
-  await expect(page.getByText("Invalid phone format. Must be +45 followed by 8 digits")).toBeVisible();
+  await expect(page.getByText("Invalid phone format. Must be 7-32 characters (numbers, +, -, (), spaces allowed)")).toBeVisible();
 });

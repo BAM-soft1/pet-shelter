@@ -16,13 +16,7 @@ type PaginationControlsProps = {
   className?: string;
 };
 
-export default function PaginationControls({
-  currentPage,
-  totalPages,
-  totalElements,
-  onPageChange,
-  className = "",
-}: PaginationControlsProps) {
+export default function PaginationControls({ currentPage, totalPages, totalElements, onPageChange, className = "" }: PaginationControlsProps) {
   if (totalPages <= 1) return null;
 
   return (
@@ -106,7 +100,8 @@ export default function PaginationControls({
       <div className="text-center mt-4 text-sm text-muted-foreground">
         {totalElements > 0 ? (
           <>
-            Showing {Math.min(currentPage * (totalElements / totalPages) + 1, totalElements)}-{Math.min((currentPage + 1) * (totalElements / totalPages), totalElements)} of {totalElements} items
+            Showing {Math.min(currentPage * Math.ceil(totalElements / totalPages) + 1, totalElements)}-
+            {Math.min((currentPage + 1) * Math.ceil(totalElements / totalPages), totalElements)} of {totalElements} items
           </>
         ) : (
           "No items to display"

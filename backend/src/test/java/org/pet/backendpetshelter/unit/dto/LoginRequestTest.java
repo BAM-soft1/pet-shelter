@@ -8,9 +8,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.pet.backendpetshelter.DTO.LoginRequest;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,8 +59,23 @@ class LoginRequestTest {
     @DisplayName("Email Validation Tests")
     class EmailValidationTests {
 
-        // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: BLANK EMAIL ====
+        // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: BLANK/EMPTY EMAIL ====
         
+        @ParameterizedTest
+        @ValueSource(strings = {"", "   "})
+        @DisplayName("Should fail validation when email is blank or empty")
+        void testEmailBlankOrEmpty(String email) {
+            LoginRequest request = createValidRequest();
+            request.setEmail(email);
+
+            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty(), "Email should fail validation: '" + email + "'");
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")),
+                    "Should have email violation");
+        }
+
         @Test
         @DisplayName("Should fail validation when email is null")
         void testEmailNull() {
@@ -65,76 +84,35 @@ class LoginRequestTest {
 
             Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
 
-            assertFalse(violations.isEmpty());
+            assertFalse(violations.isEmpty(), "Null email should fail validation");
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
-        }
-
-        @Test
-        @DisplayName("Should fail validation when email is empty")
-        void testEmailEmpty() {
-            LoginRequest request = createValidRequest();
-            request.setEmail("");
-
-            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
-        }
-
-        @Test
-        @DisplayName("Should fail validation when email is blank (whitespace only)")
-        void testEmailBlank() {
-            LoginRequest request = createValidRequest();
-            request.setEmail("   ");
-
-            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")),
+                    "Should have email violation");
         }
 
         // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: INVALID EMAIL FORMAT ====
         
-        @Test
-        @DisplayName("Should fail validation when email has invalid format (missing @)")
-        void testEmailInvalidFormatMissingAt() {
+        @ParameterizedTest
+        @MethodSource("provideInvalidEmails")
+        @DisplayName("Should fail validation for invalid email formats")
+        void testEmailInvalidFormat(String invalidEmail, String reason) {
             LoginRequest request = createValidRequest();
-            request.setEmail("userexample.com");
+            request.setEmail(invalidEmail);
 
             Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
 
-            assertFalse(violations.isEmpty());
+            assertFalse(violations.isEmpty(), "Email should fail validation (" + reason + "): " + invalidEmail);
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")),
+                    "Should have email violation for: " + reason);
         }
 
-        @Test
-        @DisplayName("Should fail validation when email has invalid format (missing domain)")
-        void testEmailInvalidFormatMissingDomain() {
-            LoginRequest request = createValidRequest();
-            request.setEmail("user@");
-
-            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
-        }
-
-        @Test
-        @DisplayName("Should fail validation when email has invalid format (no local part)")
-        void testEmailInvalidFormatNoLocalPart() {
-            LoginRequest request = createValidRequest();
-            request.setEmail("@example.com");
-
-            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+        static Stream<org.junit.jupiter.params.provider.Arguments> provideInvalidEmails() {
+            return Stream.of(
+                org.junit.jupiter.params.provider.Arguments.of("userexample.com", "missing @"),
+                org.junit.jupiter.params.provider.Arguments.of("user@", "missing domain"),
+                org.junit.jupiter.params.provider.Arguments.of("@example.com", "missing local part")
+            );
         }
     }
 
@@ -144,6 +122,21 @@ class LoginRequestTest {
 
         // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: BLANK PASSWORD ====
         
+        @ParameterizedTest
+        @ValueSource(strings = {"", "   "})
+        @DisplayName("Should fail validation when password is blank or empty")
+        void testPasswordBlankOrEmpty(String password) {
+            LoginRequest request = createValidRequest();
+            request.setPassword(password);
+
+            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty(), "Password should fail validation: '" + password + "'");
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("password")),
+                    "Should have password violation");
+        }
+
         @Test
         @DisplayName("Should fail validation when password is null")
         void testPasswordNull() {
@@ -152,56 +145,24 @@ class LoginRequestTest {
 
             Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
 
-            assertFalse(violations.isEmpty());
+            assertFalse(violations.isEmpty(), "Null password should fail validation");
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("password")));
-        }
-
-        @Test
-        @DisplayName("Should fail validation when password is empty")
-        void testPasswordEmpty() {
-            LoginRequest request = createValidRequest();
-            request.setPassword("");
-
-            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("password")));
-        }
-
-        @Test
-        @DisplayName("Should fail validation when password is blank (whitespace only)")
-        void testPasswordBlank() {
-            LoginRequest request = createValidRequest();
-            request.setPassword("   ");
-
-            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("password")));
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("password")),
+                    "Should have password violation");
         }
 
         // ==== EQUIVALENCE PARTITIONING - VALID PARTITION ====
         
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = {"a", "short", "NoSpecialChar", "VeryLongPasswordWithoutAnyConstraints123456789"})
         @DisplayName("Should pass validation with any non-blank password")
-        void testPasswordNonBlank() {
+        void testPasswordNonBlank(String validPassword) {
             LoginRequest request = createValidRequest();
-            
-            String[] validPasswords = {
-                "a",
-                "short",
-                "NoSpecialChar",
-                "VeryLongPasswordWithoutAnyConstraints123456789"
-            };
+            request.setPassword(validPassword);
 
-            for (String password : validPasswords) {
-                request.setPassword(password);
-                Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
-                assertTrue(violations.isEmpty(), "Password should be valid: " + password);
-            }
+            Set<ConstraintViolation<LoginRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty(), "Password should be valid: " + validPassword);
         }
     }
 }
