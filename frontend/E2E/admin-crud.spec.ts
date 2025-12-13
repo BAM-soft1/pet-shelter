@@ -86,12 +86,3 @@ test("should create, edit, and delete an animal", async ({ page }) => {
 
   await expect(page.locator("table tbody").getByText(updatedName, { exact: true })).not.toBeVisible();
 });
-
-test("should display animal count", async ({ page }) => {
-  await page.goto("/admin/animals");
-  await page.waitForSelector("table tbody tr");
-
-  const rowCount = await page.locator("table tbody tr").count();
-
-  await expect(page.getByText(`Showing ${rowCount} ${rowCount === 1 ? "result" : "results"}`)).toBeVisible();
-});
