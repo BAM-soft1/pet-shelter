@@ -12,7 +12,6 @@ type PaginationControlsProps = {
   currentPage: number;
   totalPages: number;
   totalElements: number;
-  currentElements: number;
   onPageChange: (page: number) => void;
   className?: string;
 };
@@ -21,7 +20,6 @@ export default function PaginationControls({
   currentPage,
   totalPages,
   totalElements,
-  currentElements,
   onPageChange,
   className = "",
 }: PaginationControlsProps) {
@@ -106,7 +104,13 @@ export default function PaginationControls({
 
       {/* Page info */}
       <div className="text-center mt-4 text-sm text-muted-foreground">
-        Showing {currentElements} of {totalElements} items
+        {totalElements > 0 ? (
+          <>
+            Showing {Math.min(currentPage * (totalElements / totalPages) + 1, totalElements)}-{Math.min((currentPage + 1) * (totalElements / totalPages), totalElements)} of {totalElements} items
+          </>
+        ) : (
+          "No items to display"
+        )}
       </div>
     </div>
   );

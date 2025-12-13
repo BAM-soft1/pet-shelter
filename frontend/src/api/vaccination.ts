@@ -1,15 +1,37 @@
 import axiosWithAuth from "../security/axios";
-import type { Vaccination, VaccinationType, VaccinationRequest, VaccinationTypeRequest } from "../types/types";
+import type { Vaccination, VaccinationType, VaccinationRequest, VaccinationTypeRequest, PageResponse } from "../types/types";
 import { API_URL } from "../settings";
 
 const API_URL_VACCINATIONS = `${API_URL}/vaccination`;
 const API_URL_VACCINATION_TYPES = `${API_URL}/vaccination-type`;
 
-
 export const VaccinationService = {
-  getAllVaccinations: async (): Promise<Vaccination[]> => {
-    const response = await axiosWithAuth.get(API_URL_VACCINATIONS);
+  getVaccinations: async (
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = "dateAdministered",
+    sortDirection: string = "desc",
+    animalStatus?: string,
+    search?: string
+  ): Promise<PageResponse<Vaccination>> => {
+    const response = await axiosWithAuth.get(API_URL_VACCINATIONS, {
+      params: {
+        page,
+        size,
+        sortBy,
+        sortDirection,
+        animalStatus: animalStatus || undefined,
+        search: search || undefined,
+      },
+    });
     return response.data;
+  },
+
+  getAllVaccinations: async (): Promise<Vaccination[]> => {
+    const response = await axiosWithAuth.get(API_URL_VACCINATIONS, {
+      params: { page: 0, size: 1000 },
+    });
+    return response.data.content;
   },
 
   getVaccinationById: async (id: number): Promise<Vaccination> => {
@@ -31,11 +53,34 @@ export const VaccinationService = {
     await axiosWithAuth.delete(`${API_URL_VACCINATIONS}/delete/${id}`);
   },
 
-    // Vaccination Type
+  // Vaccination Type
 
-    getAllVaccinationTypes: async (): Promise<VaccinationType[]> => {
-    const response = await axiosWithAuth.get(API_URL_VACCINATION_TYPES);
+  getVaccinationTypes: async (
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = "vaccineName",
+    sortDirection: string = "asc",
+    requiredForAdoption?: boolean,
+    search?: string
+  ): Promise<PageResponse<VaccinationType>> => {
+    const response = await axiosWithAuth.get(API_URL_VACCINATION_TYPES, {
+      params: {
+        page,
+        size,
+        sortBy,
+        sortDirection,
+        requiredForAdoption: requiredForAdoption !== undefined ? requiredForAdoption : undefined,
+        search: search || undefined,
+      },
+    });
     return response.data;
+  },
+
+  getAllVaccinationTypes: async (): Promise<VaccinationType[]> => {
+    const response = await axiosWithAuth.get(API_URL_VACCINATION_TYPES, {
+      params: { page: 0, size: 1000 },
+    });
+    return response.data.content;
   },
 
   createVaccinationType: async (vaccinationType: VaccinationTypeRequest): Promise<VaccinationType> => {
@@ -51,5 +96,4 @@ export const VaccinationService = {
   deleteVaccinationType: async (id: number): Promise<void> => {
     await axiosWithAuth.delete(`${API_URL_VACCINATION_TYPES}/delete/${id}`);
   },
-
-};  
+};
