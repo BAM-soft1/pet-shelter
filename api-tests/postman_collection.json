@@ -1870,9 +1870,7 @@
                   "",
                   "pm.test(\"Response is an array\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('object');",
-                  "    pm.expect(jsonData).to.have.property('content');",
-                  "    pm.expect(jsonData.content).to.be.an('array');",
+                  "    pm.expect(jsonData).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -3553,7 +3551,9 @@
                   "",
                   "pm.test(\"Response is an array\", function () {",
                   "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "    pm.expect(jsonData).to.have.property('content');",
+                  "    pm.expect(jsonData.content).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
