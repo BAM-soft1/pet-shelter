@@ -147,6 +147,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for services to stabilize..."
+          sleep 45
+
+          echo "Checking if backend is accessible..."
+          max_attempts=6
+          attempt=0
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -f -s "${{ secrets.PLAYWRIGHT_TEST_BASE_URL }}/api/animal" > /dev/null 2>&1; then
+              echo "Backend is accessible!"
+              break
+            fi
+            attempt=$((attempt + 1))
+            echo "Attempt $attempt/$max_attempts failed, waiting 10s..."
+            sleep 10
+          done
+
+          if [ $attempt -eq $max_attempts ]; then
+            echo "Warning: Backend accessibility check timed out, proceeding anyway..."
+          fi
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -168,6 +190,8 @@ jobs:
           PLAYWRIGHT_TEST_BASE_URL: ${{ secrets.PLAYWRIGHT_TEST_BASE_URL }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          VET_EMAIL: ${{ secrets.VET_EMAIL }}
+          VET_PASSWORD: ${{ secrets.VET_PASSWORD }}
         run: npx playwright test
 
       - name: Upload test results
