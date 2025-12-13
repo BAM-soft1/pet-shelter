@@ -55,7 +55,7 @@ export default function SearchAndFilter({
     <div className="space-y-4">
       <div className={`grid grid-cols-1 ${showFilters ? "md:grid-cols-3" : "md:grid-cols-1"} gap-4`}>
         <div className={showFilters ? "md:col-span-2" : ""}>
-          <label className="block text-sm font-medium mb-2">Search</label>
+          <span className="block text-sm font-medium mb-2">Search</span>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -78,7 +78,7 @@ export default function SearchAndFilter({
         </div>
         {showFilters && filterOptions && filterOptions.length > 0 && (
           <div>
-            <label className="block text-sm font-medium mb-2">{filterLabel}</label>
+            <span className="block text-sm font-medium mb-2">{filterLabel}</span>
             <div className="flex gap-2">
               {filterOptions.map((option) => (
                 <Button

@@ -65,6 +65,7 @@ export default function VaccinationTypeFormModal({ vaccinationType, isOpen, onCl
       onClose();
     } catch (err) {
       setError("Failed to submit form. Please try again.");
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -82,33 +83,15 @@ export default function VaccinationTypeFormModal({ vaccinationType, isOpen, onCl
         <div className="space-y-4 mt-4">
           <div>
             <Label htmlFor="vaccineName">Vaccine Name</Label>
-            <Input
-              id="vaccineName"
-              name="vaccineName"
-              value={formData.vaccineName}
-              onChange={handleChange}
-              required
-            />
+            <Input id="vaccineName" name="vaccineName" value={formData.vaccineName} onChange={handleChange} required />
           </div>
           <div>
             <Label htmlFor="description">Description</Label>
-            <Input
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-            />
+            <Input id="description" name="description" value={formData.description} onChange={handleChange} />
           </div>
           <div>
             <Label htmlFor="durationMonths">Duration (Months)</Label>
-            <Input
-              id="durationMonths"
-              name="durationMonths"
-              type="number"
-              value={formData.durationMonths}
-              onChange={handleChange}
-              required
-            />
+            <Input id="durationMonths" name="durationMonths" type="number" value={formData.durationMonths} onChange={handleChange} required />
           </div>
           <div className="flex items-center space-x-2">
             <input

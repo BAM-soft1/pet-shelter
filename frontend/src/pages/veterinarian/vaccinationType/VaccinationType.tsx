@@ -150,7 +150,7 @@ export default function VaccinationTypeOverview() {
       {/* Additional Filters */}
       <div className="flex gap-4 flex-wrap mb-6">
         <div>
-          <label className="block text-sm font-medium mb-2">Required for Adoption</label>
+          <span className="block text-sm font-medium mb-2">Required for Adoption</span>
           <div className="flex gap-2">
             <Button variant={requiredForAdoption === undefined ? "default" : "outline"} size="sm" onClick={() => setRequiredForAdoption(undefined)}>
               All

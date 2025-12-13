@@ -90,7 +90,7 @@ export default function AdminApplications() {
           />
 
           <div>
-            <label className="block text-sm font-medium mb-2">Status</label>
+            <span className="block text-sm font-medium mb-2">Status</span>
             <div className="flex gap-2">
               <Button variant={statusFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("all")}>
                 All

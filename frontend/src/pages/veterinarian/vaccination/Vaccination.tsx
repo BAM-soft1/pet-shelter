@@ -162,7 +162,7 @@ export default function VaccinationOverview() {
       {/* Additional Filters */}
       <div className="flex gap-4 flex-wrap mb-6">
         <div>
-          <label className="block text-sm font-medium mb-2">Animal Status</label>
+          <span className="block text-sm font-medium mb-2">Animal Status</span>
           <div className="flex gap-2">
             <Button variant={animalStatus === undefined ? "default" : "outline"} size="sm" onClick={() => setAnimalStatus(undefined)}>
               All

@@ -216,7 +216,7 @@ export default function AdminAnimals() {
 
           <div className="flex gap-4 flex-wrap">
             <div>
-              <label className="block text-sm font-medium mb-2">Sex</label>
+              <span className="block text-sm font-medium mb-2">Sex</span>
               <div className="flex gap-2">
                 <Button variant={sexFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setSexFilter("all")}>
                   All
@@ -231,7 +231,7 @@ export default function AdminAnimals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Age</label>
+              <span className="block text-sm font-medium mb-2">Age</span>
               <Select value={ageFilter} onValueChange={setAgeFilter}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="All ages" />
@@ -247,7 +247,7 @@ export default function AdminAnimals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Vaccination Status</label>
+              <span className="block text-sm font-medium mb-2">Vaccination Status</span>
               <div className="flex gap-2">
                 <Button
                   variant={vaccinationStatusFilter === undefined ? "default" : "outline"}
