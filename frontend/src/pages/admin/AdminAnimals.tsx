@@ -36,6 +36,7 @@ export default function AdminAnimals() {
   const [totalElements, setTotalElements] = useState(0);
 
   // Search state
+  const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filter states
@@ -141,6 +142,11 @@ export default function AdminAnimals() {
     await fetchAnimals();
   };
 
+  const handleSearch = () => {
+    setSearchTerm(searchInput);
+    setCurrentPage(0);
+  };
+
   const openEditDialog = (animal: Animal) => {
     setSelectedAnimal(animal);
     setIsEditOpen(true);
@@ -188,17 +194,18 @@ export default function AdminAnimals() {
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 space-y-4">
           <SearchAndFilter
-            searchValue={searchTerm}
-            onSearchChange={setSearchTerm}
+            searchValue={searchInput}
+            onSearchChange={setSearchInput}
             searchPlaceholder="Search animals by name, species, or breed..."
             onClearFilters={() => {
+              setSearchInput("");
               setSearchTerm("");
               setSexFilter("all");
               setAgeFilter("all");
               setVaccinationStatusFilter(undefined);
               setCurrentPage(0);
             }}
-            onSearchSubmit={() => setCurrentPage(0)}
+            onSearchSubmit={handleSearch}
             showSearchButton={true}
             showClearButton={true}
             totalCount={totalElements}
