@@ -63,10 +63,9 @@ export function SignupForm({ onSubmit, error, isLoading = false }: SignupFormPro
     }
 
     if (phone) {
-      // Danish phone format: +45 followed by 8 digits (with optional spaces/formatting)
-      const cleanedPhone = phone.replace(/[\s\-()]/g, "");
-      if (!/^\+45\d{8}$/.test(cleanedPhone)) {
-        setValidationError("Invalid phone format. Must be +45 followed by 8 digits");
+      // International phone format: 7-32 characters, allowing numbers, +, -, (), and spaces
+      if (!/^[0-9+\-() ]{7,32}$/.test(phone)) {
+        setValidationError("Invalid phone format. Must be 7-32 characters (numbers, +, -, (), spaces allowed)");
         return;
       }
     }

@@ -8,9 +8,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.pet.backendpetshelter.DTO.RegisterUserRequest;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,8 +73,23 @@ class RegisterUserRequestTest {
     @DisplayName("Email Validation Tests")
     class EmailValidationTests {
 
-        // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: BLANK EMAIL ====
+        // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: BLANK/NULL EMAIL ====
         
+        @ParameterizedTest
+        @ValueSource(strings = {"", "   "})
+        @DisplayName("Should fail validation when email is blank or empty")
+        void testEmailBlankOrEmpty(String email) {
+            RegisterUserRequest request = createValidRequest();
+            request.setEmail(email);
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty(), "Email should fail validation: '" + email + "'");
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")),
+                    "Should have email violation");
+        }
+
         @Test
         @DisplayName("Should fail validation when email is null")
         void testEmailNull() {
@@ -79,63 +98,35 @@ class RegisterUserRequestTest {
 
             Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
 
-            assertFalse(violations.isEmpty());
+            assertFalse(violations.isEmpty(), "Null email should fail validation");
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
-        }
-
-        @Test
-        @DisplayName("Should fail validation when email is empty")
-        void testEmailEmpty() {
-            RegisterUserRequest request = createValidRequest();
-            request.setEmail("");
-
-            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
-        }
-
-        @Test
-        @DisplayName("Should fail validation when email is blank (whitespace only)")
-        void testEmailBlank() {
-            RegisterUserRequest request = createValidRequest();
-            request.setEmail("   ");
-
-            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")),
+                    "Should have email violation");
         }
 
         // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: INVALID EMAIL FORMAT ====
         
-        @Test
-        @DisplayName("Should fail validation when email has invalid format (missing @)")
-        void testEmailInvalidFormatMissingAt() {
+        @ParameterizedTest
+        @MethodSource("provideInvalidEmails")
+        @DisplayName("Should fail validation for invalid email formats")
+        void testEmailInvalidFormat(String invalidEmail, String reason) {
             RegisterUserRequest request = createValidRequest();
-            request.setEmail("userexample.com");
+            request.setEmail(invalidEmail);
 
             Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
 
-            assertFalse(violations.isEmpty());
+            assertFalse(violations.isEmpty(), "Email should fail validation (" + reason + "): " + invalidEmail);
             assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")),
+                    "Should have email violation for: " + reason);
         }
 
-        @Test
-        @DisplayName("Should fail validation when email has invalid format (missing domain)")
-        void testEmailInvalidFormatMissingDomain() {
-            RegisterUserRequest request = createValidRequest();
-            request.setEmail("user@");
-
-            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
-
-            assertFalse(violations.isEmpty());
-            assertTrue(violations.stream()
-                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+        static Stream<org.junit.jupiter.params.provider.Arguments> provideInvalidEmails() {
+            return Stream.of(
+                org.junit.jupiter.params.provider.Arguments.of("userexample.com", "missing @"),
+                org.junit.jupiter.params.provider.Arguments.of("user@", "missing domain"),
+                org.junit.jupiter.params.provider.Arguments.of("@example.com", "missing local part")
+            );
         }
     }
 
@@ -191,6 +182,17 @@ class RegisterUserRequestTest {
         void testFirstNameAtMinLength() {
             RegisterUserRequest request = createValidRequest();
             request.setFirstName("Jo");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should pass validation when firstName is above min length (3 chars)")
+        void testFirstNameAboveMinLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setFirstName("Joe");
 
             Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
 
@@ -282,6 +284,17 @@ class RegisterUserRequestTest {
             assertTrue(violations.isEmpty());
         }
 
+        @Test
+        @DisplayName("Should pass validation when lastName is above min length (3 chars)")
+        void testLastNameAboveMinLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setLastName("Doe");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
         // ==== BOUNDARY VALUE ANALYSIS: MAX LENGTH (80) ====
         
         @Test
@@ -315,24 +328,16 @@ class RegisterUserRequestTest {
 
         // ==== EQUIVALENCE PARTITIONING - VALID PARTITION ====
         
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = {"+45 12345678", "12345678", "+1-234-567-8901", "(123) 456-7890", "123-456-7890"})
         @DisplayName("Should pass validation with valid phone formats")
-        void testValidPhoneFormats() {
+        void testValidPhoneFormats(String validPhone) {
             RegisterUserRequest request = createValidRequest();
-            
-            String[] validPhones = {
-                "+45 12345678",
-                "12345678",
-                "+1-234-567-8901",
-                "(123) 456-7890",
-                "123-456-7890"
-            };
+            request.setPhone(validPhone);
 
-            for (String phone : validPhones) {
-                request.setPhone(phone);
-                Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
-                assertTrue(violations.isEmpty(), "Phone should be valid: " + phone);
-            }
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty(), "Phone should be valid: " + validPhone);
         }
 
         // ==== BOUNDARY VALUE ANALYSIS: MIN LENGTH (7) ====
@@ -361,7 +366,29 @@ class RegisterUserRequestTest {
             assertTrue(violations.isEmpty());
         }
 
+        @Test
+        @DisplayName("Should pass validation when phone is above min length (8 chars)")
+        void testPhoneAboveMinLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setPhone("12345678");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
         // ==== BOUNDARY VALUE ANALYSIS: MAX LENGTH (32) ====
+        
+        @Test
+        @DisplayName("Should pass validation when phone is below max length (31 chars)")
+        void testPhoneBelowMaxLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setPhone("1".repeat(31));
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
         
         @Test
         @DisplayName("Should pass validation when phone is at max length (32 chars)")
@@ -389,23 +416,19 @@ class RegisterUserRequestTest {
 
         // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: INVALID PATTERN ====
         
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = {"12345abc", "phone123", "123@456", "123#456"})
         @DisplayName("Should fail validation when phone contains invalid characters")
-        void testPhoneInvalidCharacters() {
+        void testPhoneInvalidCharacters(String invalidPhone) {
             RegisterUserRequest request = createValidRequest();
-            
-            String[] invalidPhones = {
-                "12345abc",
-                "phone123",
-                "123@456",
-                "123#456"
-            };
+            request.setPhone(invalidPhone);
 
-            for (String phone : invalidPhones) {
-                request.setPhone(phone);
-                Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
-                assertFalse(violations.isEmpty(), "Phone should be invalid: " + phone);
-            }
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty(), "Phone should be invalid: " + invalidPhone);
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("phone")),
+                    "Should have phone violation");
         }
     }
 
@@ -467,6 +490,17 @@ class RegisterUserRequestTest {
             assertTrue(violations.isEmpty());
         }
 
+        @Test
+        @DisplayName("Should pass validation when password is above min length (8 chars)")
+        void testPasswordAboveMinLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setPassword("Pass@123");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
         // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: MISSING SPECIAL CHAR ====
         
         @Test
@@ -484,27 +518,169 @@ class RegisterUserRequestTest {
 
         // ==== EQUIVALENCE PARTITIONING - VALID PARTITION: VARIOUS SPECIAL CHARS ====
         
-        @Test
+        @ParameterizedTest
+        @ValueSource(strings = {"Pass!123", "Pass@123", "Pass#123", "Pass$123", "Pass%123", "Pass^123", "Pass&123", "Pass*123"})
         @DisplayName("Should pass validation with various special characters")
-        void testPasswordWithVariousSpecialCharacters() {
+        void testPasswordWithVariousSpecialCharacters(String validPassword) {
             RegisterUserRequest request = createValidRequest();
-            
-            String[] validPasswords = {
-                "Pass!123",
-                "Pass@123",
-                "Pass#123",
-                "Pass$123",
-                "Pass%123",
-                "Pass^123",
-                "Pass&123",
-                "Pass*123"
-            };
+            request.setPassword(validPassword);
 
-            for (String password : validPasswords) {
-                request.setPassword(password);
-                Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
-                assertTrue(violations.isEmpty(), "Password should be valid: " + password);
-            }
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty(), "Password should be valid: " + validPassword);
+        }
+
+        // ==== BOUNDARY VALUE ANALYSIS: MAX LENGTH (60) ====
+        
+        @Test
+        @DisplayName("Should pass validation when password is below max length (59 chars)")
+        void testPasswordBelowMaxLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setPassword("P@ssw0rd" + "X".repeat(51)); // 8 + 51 = 59 chars
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should pass validation when password is at max length (60 chars)")
+        void testPasswordAtMaxLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setPassword("P@ssw0rd" + "X".repeat(52)); // 8 + 52 = 60 chars
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should fail validation when password is above max length (61 chars)")
+        void testPasswordAboveMaxLength() {
+            RegisterUserRequest request = createValidRequest();
+            request.setPassword("P@ssw0rd" + "X".repeat(53)); // 8 + 53 = 61 chars
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty());
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("password")));
+        }
+
+        // ==== EQUIVALENCE PARTITIONING - INVALID PARTITION: MISSING UPPERCASE ====
+        
+        @Test
+        @DisplayName("Should fail validation when password lacks uppercase letter")
+        void testPasswordMissingUppercase() {
+            RegisterUserRequest request = createValidRequest();
+            request.setPassword("password123!");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty());
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("password")));
+        }
+    }
+
+    @Nested
+    @DisplayName("Email Boundary Tests")
+    class EmailBoundaryTests {
+
+        // ==== BOUNDARY VALUE ANALYSIS: MAX LENGTH (64) ====
+        
+        @Test
+        @DisplayName("Should pass validation when email is at max length (64 chars)")
+        void testEmailAtMaxLength() {
+            RegisterUserRequest request = createValidRequest();
+            // Create 64 char email - within @Email limits
+            String localPart = "a".repeat(52); // 52 + "@example.com" (12) = 64
+            request.setEmail(localPart + "@example.com");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should pass validation when email is below reasonable length (64 chars)")
+        void testEmailBelowMaxLength() {
+            RegisterUserRequest request = createValidRequest();
+            // Create 50 char email
+            String localPart = "a".repeat(38); // 38 + "@example.com" (12) = 50
+            request.setEmail(localPart + "@example.com");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertTrue(violations.isEmpty());
+        }
+
+        @Test
+        @DisplayName("Should fail validation when email is above max length (64 chars)")
+        void testEmailAboveMaxLength() {
+            RegisterUserRequest request = createValidRequest();
+            // Local part > 64 chars violates RFC 5321
+            String localPart = "a".repeat(65);
+            request.setEmail(localPart + "@example.com");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty());
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+        }
+
+        @Test
+        @DisplayName("Should fail validation when email is missing local part")
+        void testEmailMissingLocalPart() {
+            RegisterUserRequest request = createValidRequest();
+            request.setEmail("@example.com");
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty());
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+        }
+    }
+
+    @Nested
+    @DisplayName("FirstName Non-Alphabetic Tests")
+    class FirstNameNonAlphabeticTests {
+
+        @ParameterizedTest
+        @ValueSource(strings = {"John-Doe", "John123", "John@", "John_Doe", "John.Doe"})
+        @DisplayName("Should fail validation when firstName contains non-alphabetic characters")
+        void testFirstNameWithNonAlphabetic(String invalidName) {
+            RegisterUserRequest request = createValidRequest();
+            request.setFirstName(invalidName);
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty(), "FirstName should be invalid: " + invalidName);
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("firstName")),
+                    "Should have firstName violation");
+        }
+    }
+
+    @Nested
+    @DisplayName("LastName Non-Alphabetic Tests")
+    class LastNameNonAlphabeticTests {
+
+        @ParameterizedTest
+        @ValueSource(strings = {"Ro-Bot", "Smith123", "Smith@", "Smith_Jones", "Smith.Jr"})
+        @DisplayName("Should fail validation when lastName contains non-alphabetic characters")
+        void testLastNameWithNonAlphabetic(String invalidName) {
+            RegisterUserRequest request = createValidRequest();
+            request.setLastName(invalidName);
+
+            Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(request);
+
+            assertFalse(violations.isEmpty(), "LastName should be invalid: " + invalidName);
+            assertTrue(violations.stream()
+                    .anyMatch(v -> v.getPropertyPath().toString().equals("lastName")),
+                    "Should have lastName violation");
         }
     }
 }

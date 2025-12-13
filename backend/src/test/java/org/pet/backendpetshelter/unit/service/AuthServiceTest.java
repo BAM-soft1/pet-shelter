@@ -167,9 +167,9 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("Should return true when password is only special characters and 7 or more")
+        @DisplayName("Should return false when password is only special characters without uppercase")
         void testPasswordOnlySpecialsLongEnough() throws Exception {
-            assertTrue(invokeIsPasswordStrong("!@#$%^&"));
+            assertFalse(invokeIsPasswordStrong("!@#$%^&"));
         }
 
         @Test
@@ -278,7 +278,7 @@ class AuthServiceTest {
                     IllegalArgumentException.class,
                     () -> authService.register(request));
 
-            assertEquals("Password must be at least 7 characters and include a special character",
+            assertEquals("Password must be at least 7 characters and include a special character and an uppercase letter",
                     exception.getMessage());
         }
 
@@ -1081,7 +1081,7 @@ class AuthServiceTest {
                     IllegalArgumentException.class,
                     () -> authService.register(request));
 
-            assertEquals("Password must be at least 7 characters and include a special character",
+            assertEquals("Password must be at least 7 characters and include a special character and an uppercase letter",
                     exception.getMessage());
             verify(userRepository, never()).save(any(User.class));
         }

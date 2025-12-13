@@ -1166,7 +1166,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Buddy\",\n  \"speciesId\": 1,\n  \"breedId\": 1,\n  \"sex\": \"Male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/buddy.jpg\"\n}"
+              "raw": "{\n  \"name\": \"Buddy\",\n  \"speciesId\": 1,\n  \"breedId\": 1,\n  \"sex\": \"male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/buddy.jpg\"\n}"
             },
             "url": {
               "raw": "{{BASEURL}}/api/animal/add",
@@ -1249,7 +1249,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Buddy Updated\",\n  \"speciesId\": 1,\n  \"breedId\": 1,\n  \"sex\": \"Male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 300,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/buddy.jpg\"\n}"
+              "raw": "{\n  \"name\": \"Buddy Updated\",\n  \"speciesId\": 1,\n  \"breedId\": 1,\n  \"sex\": \"male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 300,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/buddy.jpg\"\n}"
             },
             "url": {
               "raw": "{{BASEURL}}/api/animal/update/{{TEST_ANIMAL_ID}}",
@@ -1431,7 +1431,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Invalid Animal\",\n  \"speciesId\": 99999,\n  \"breedId\": 1,\n  \"sex\": \"Male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/invalid.jpg\"\n}"
+              "raw": "{\n  \"name\": \"Invalid Animal\",\n  \"speciesId\": 99999,\n  \"breedId\": 1,\n  \"sex\": \"male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/invalid.jpg\"\n}"
             },
             "url": {
               "raw": "{{BASEURL}}/api/animal/add",
@@ -1475,7 +1475,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Invalid Animal\",\n  \"speciesId\": 1,\n  \"breedId\": 99999,\n  \"sex\": \"Male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/invalid.jpg\"\n}"
+              "raw": "{\n  \"name\": \"Invalid Animal\",\n  \"speciesId\": 1,\n  \"breedId\": 99999,\n  \"sex\": \"male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/invalid.jpg\"\n}"
             },
             "url": {
               "raw": "{{BASEURL}}/api/animal/add",
@@ -1556,7 +1556,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Non-existent Animal\",\n  \"speciesId\": 1,\n  \"breedId\": 1,\n  \"sex\": \"Male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/test.jpg\"\n}"
+              "raw": "{\n  \"name\": \"Non-existent Animal\",\n  \"speciesId\": 1,\n  \"breedId\": 1,\n  \"sex\": \"male\",\n  \"birthDate\": \"2020-01-15\",\n  \"intakeDate\": \"2023-05-20\",\n  \"status\": \"AVAILABLE\",\n  \"price\": 250,\n  \"isActive\": true,\n  \"imageUrl\": \"https://example.com/test.jpg\"\n}"
             },
             "url": {
               "raw": "{{BASEURL}}/api/animal/update/99999",

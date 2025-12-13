@@ -68,5 +68,5 @@ test("should show validation error for invalid phone format", async ({ page }) =
 
   await page.getByRole("button", { name: "Create Account" }).click();
 
-  await expect(page.getByText("Invalid phone format. Must be +45 followed by 8 digits")).toBeVisible();
+  await expect(page.getByText("Invalid phone format. Must be 7-32 characters (numbers, +, -, (), spaces allowed)")).toBeVisible();
 });

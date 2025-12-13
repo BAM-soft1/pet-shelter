@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import type { Animal, Species, Breed, AnimalRequest } from "@/types/types";
+import type { Animal, AnimalRequest } from "@/types/types";
 import { AnimalService } from "@/api/animals";
-import { SpeciesService, BreedService } from "@/api/species";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -100,20 +99,17 @@ export default function AdminAnimals() {
   const handleCreate = async (formData: AnimalFormData) => {
     if (!formData.speciesId) return;
 
-    // Get species and breed objects
-    const species: Species = await SpeciesService.getSpeciesById(formData.speciesId);
-    const breed: Breed | null = formData.breedId ? await BreedService.getBreedById(formData.breedId) : null;
-
     const animalData: AnimalRequest = {
       name: formData.name,
       sex: formData.sex,
-      species,
-      breed,
+      speciesId: formData.speciesId,
+      breedId: formData.breedId,
       birthDate: formData.birthDate,
       intakeDate: formData.intakeDate || new Date().toISOString().split("T")[0],
       status: formData.status,
       price: formData.price,
       imageUrl: formData.imageUrl,
+      isActive: true,
     };
 
     await AnimalService.createAnimal(animalData);
@@ -123,17 +119,13 @@ export default function AdminAnimals() {
   const handleUpdate = async (formData: AnimalFormData) => {
     if (!selectedAnimal || !formData.speciesId) return;
 
-    // Get species and breed objects
-    const species: Species = await SpeciesService.getSpeciesById(formData.speciesId);
-    const breed: Breed | null = formData.breedId ? await BreedService.getBreedById(formData.breedId) : null;
-
-    const animalData: Partial<Animal> = {
+    const animalData: AnimalRequest = {
       name: formData.name,
       sex: formData.sex,
-      species,
-      breed,
+      speciesId: formData.speciesId,
+      breedId: formData.breedId,
       birthDate: formData.birthDate,
-      intakeDate: formData.intakeDate,
+      intakeDate: formData.intakeDate || new Date().toISOString().split("T")[0],
       status: formData.status,
       price: formData.price,
       imageUrl: formData.imageUrl,
