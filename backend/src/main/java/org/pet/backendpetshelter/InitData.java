@@ -346,7 +346,7 @@ public class InitData implements CommandLineRunner {
         animal7.setStatus(Status.AVAILABLE);
         animal7.setPrice(200);
         animal7.setIsActive(true);
-        animal7.setImageUrl("https://images.unsplash.com/photo-1568572933382-74d440642117?w=800");
+        animal7.setImageUrl("https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800");
         animalRepository.save(animal7);
 
         // Animal 8: Snowball (Dutch Rabbit)
@@ -402,7 +402,7 @@ public class InitData implements CommandLineRunner {
         animal11.setStatus(Status.AVAILABLE);
         animal11.setPrice(275);
         animal11.setIsActive(true);
-        animal11.setImageUrl("https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800");
+        animal11.setImageUrl("https://plus.unsplash.com/premium_photo-1722859221349-26353eae4744?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YnVsbGRvZ3xlbnwwfHwwfHx8MA%3D%3D");
         animalRepository.save(animal11);
 
         // Animal 12: Daisy (Golden Retriever)
@@ -416,7 +416,7 @@ public class InitData implements CommandLineRunner {
         animal12.setStatus(Status.AVAILABLE);
         animal12.setPrice(325);
         animal12.setIsActive(true);
-        animal12.setImageUrl("https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=800");
+        animal12.setImageUrl("https://images.unsplash.com/photo-1611250282006-4484dd3fba6b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Z29sZGVuJTIwcmV0cmlldmVyfGVufDB8fDB8fHww");
         animalRepository.save(animal12);
 
         // Animal 13: Shadow (Persian Cat)
@@ -458,7 +458,7 @@ public class InitData implements CommandLineRunner {
         animal15.setStatus(Status.AVAILABLE);
         animal15.setPrice(290);
         animal15.setIsActive(true);
-        animal15.setImageUrl("https://images.unsplash.com/photo-1552053831-71594a27632d?w=800");
+        animal15.setImageUrl("https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800");
         animalRepository.save(animal15);
 
         // Animal 16: Thumper (Dutch Rabbit)
@@ -500,7 +500,7 @@ public class InitData implements CommandLineRunner {
         animal18.setStatus(Status.AVAILABLE);
         animal18.setPrice(340);
         animal18.setIsActive(true);
-        animal18.setImageUrl("https://images.unsplash.com/photo-1612536979211-00c9eef2e9cc?w=800");
+        animal18.setImageUrl("https://images.unsplash.com/photo-1552053831-71594a27632d?w=800");
         animalRepository.save(animal18);
 
         // Animal 19: Oliver (Cat - mixed breed)
@@ -528,7 +528,7 @@ public class InitData implements CommandLineRunner {
         animal20.setStatus(Status.AVAILABLE);
         animal20.setPrice(310);
         animal20.setIsActive(true);
-        animal20.setImageUrl("https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800");
+        animal20.setImageUrl("https://images.unsplash.com/photo-1537204696486-967f1b7198c8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFicmFkb3J8ZW58MHx8MHx8fDA%3D");
         animalRepository.save(animal20);
 
         // Animal 21: Zeus (German Shepherd)
@@ -542,7 +542,7 @@ public class InitData implements CommandLineRunner {
         animal21.setStatus(Status.AVAILABLE);
         animal21.setPrice(380);
         animal21.setIsActive(true);
-        animal21.setImageUrl("https://images.unsplash.com/photo-1568572933382-74d440642117?w=800");
+        animal21.setImageUrl("https://images.unsplash.com/photo-1568393691622-c7ba131d63b4?w=800");
         animalRepository.save(animal21);
 
         // Animal 22: Sophie (Beagle)
@@ -556,7 +556,7 @@ public class InitData implements CommandLineRunner {
         animal22.setStatus(Status.AVAILABLE);
         animal22.setPrice(260);
         animal22.setIsActive(true);
-        animal22.setImageUrl("https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=800");
+        animal22.setImageUrl("https://plus.unsplash.com/premium_photo-1663127048434-84db6f90f08d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmVhZ2xlfGVufDB8fDB8fHww");
         animalRepository.save(animal22);
 
         // Animal 23: Teddy (Poodle)
@@ -570,7 +570,7 @@ public class InitData implements CommandLineRunner {
         animal23.setStatus(Status.AVAILABLE);
         animal23.setPrice(320);
         animal23.setIsActive(true);
-        animal23.setImageUrl("https://images.unsplash.com/photo-1544717302-de2939b7ef71?w=800");
+        animal23.setImageUrl("https://images.unsplash.com/photo-1581562324420-eff2f5aaa4b5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9vZGxlfGVufDB8fDB8fHww");
         animalRepository.save(animal23);
 
         // Animal 24: Simba (Maine Coon)
@@ -640,7 +640,7 @@ public class InitData implements CommandLineRunner {
         animal28.setStatus(Status.AVAILABLE);
         animal28.setPrice(180);
         animal28.setIsActive(true);
-        animal28.setImageUrl("https://images.unsplash.com/photo-1535241749838-299277b6305f?w=800");
+        animal28.setImageUrl("https://images.unsplash.com/photo-1615087240969-eeff2fa558f2?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
         animalRepository.save(animal28);
 
         // Animal 29: Shelly (Red-Eared Slider Turtle)
@@ -668,7 +668,7 @@ public class InitData implements CommandLineRunner {
         animal30.setStatus(Status.AVAILABLE);
         animal30.setPrice(450);
         animal30.setIsActive(true);
-        animal30.setImageUrl("https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=800");
+        animal30.setImageUrl("https://images.unsplash.com/photo-1616902509409-a624c4f31a56?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bWFjYXd8ZW58MHx8MHx8fDA%3D");
         animalRepository.save(animal30);
 
         // Animal 31: Sunny (Cockatiel)
@@ -682,7 +682,7 @@ public class InitData implements CommandLineRunner {
         animal31.setStatus(Status.AVAILABLE);
         animal31.setPrice(120);
         animal31.setIsActive(true);
-        animal31.setImageUrl("https://images.unsplash.com/photo-1571667774695-4afcd8e8c3ba?w=800");
+        animal31.setImageUrl("https://images.unsplash.com/photo-1444464666168-49d633b86797?w=800");
         animalRepository.save(animal31);
 
         // Animal 32: Clover (Holland Lop Rabbit)
@@ -696,7 +696,7 @@ public class InitData implements CommandLineRunner {
         animal32.setStatus(Status.AVAILABLE);
         animal32.setPrice(105);
         animal32.setIsActive(true);
-        animal32.setImageUrl("https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=800");
+        animal32.setImageUrl("https://images.unsplash.com/photo-1535241749838-299277b6305f?w=800");
         animalRepository.save(animal32);
 
         // Animal 33: Cooper (Beagle)
@@ -724,7 +724,7 @@ public class InitData implements CommandLineRunner {
         animal34.setStatus(Status.AVAILABLE);
         animal34.setPrice(265);
         animal34.setIsActive(true);
-        animal34.setImageUrl("https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800");
+        animal34.setImageUrl("https://images.unsplash.com/photo-1511044568932-338cba0ad803?w=800");
         animalRepository.save(animal34);
 
         // Animal 35: Ginger (American Guinea Pig)
@@ -738,7 +738,7 @@ public class InitData implements CommandLineRunner {
         animal35.setStatus(Status.AVAILABLE);
         animal35.setPrice(40);
         animal35.setIsActive(true);
-        animal35.setImageUrl("https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=800");
+        animal35.setImageUrl("https://images.unsplash.com/photo-1533152162573-93ad94eb20f6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
         animalRepository.save(animal35);
 
 
