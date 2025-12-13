@@ -4,10 +4,12 @@ package org.pet.backendpetshelter.Controller;
 import org.pet.backendpetshelter.DTO.VaccinationTypeResponse;
 import org.pet.backendpetshelter.Service.VaccinationTypeService;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/vaccination-type")
@@ -24,8 +26,23 @@ public class VaccinationTypeController {
 
 
     @GetMapping
-    public List<VaccinationTypeResponse> getAllVaccinationTypes() {
-        return vaccinationTypeService.GetAllVaccinationTypes();
+    public Page<VaccinationTypeResponse> getVaccinationTypes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "vaccineName") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection,
+            @RequestParam(required = false) Boolean requiredForAdoption,
+            @RequestParam(required = false) String search
+    ) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        
+        // If any filters are provided, use filtered query
+        if (requiredForAdoption != null || search != null) {
+            return vaccinationTypeService.GetAllVaccinationTypesWithFilters(requiredForAdoption, search, pageable);
+        }
+        
+        return vaccinationTypeService.GetAllVaccinationTypes(pageable);
     }
 
     @GetMapping("/{id}")

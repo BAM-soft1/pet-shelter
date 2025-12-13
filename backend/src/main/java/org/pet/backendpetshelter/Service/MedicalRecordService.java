@@ -12,6 +12,8 @@ import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,11 +34,22 @@ public class MedicalRecordService {
         this.veterinarianRepository = veterinarianRepository;
     }
 
-    /* Get all medical records */
-    public List<MedicalRecordDTOResponse> getAllMedicalRecords() {
-        return medicalRecordRepository.findAll().stream()
-                .map(MedicalRecordDTOResponse::new)
-                .toList();
+    /* Get All Medical Records */
+    public Page<MedicalRecordDTOResponse> GetAllMedicalRecords(Pageable pageable) {
+        return medicalRecordRepository.findAll(pageable)
+                .map(MedicalRecordDTOResponse::new);
+    }
+    
+    /* Get All Medical Records with Filters */
+    public Page<MedicalRecordDTOResponse> GetAllMedicalRecordsWithFilters(
+            String animalStatus,
+            java.util.Date startDate,
+            java.util.Date endDate,
+            String search,
+            Pageable pageable) {
+        
+        return medicalRecordRepository.findAllWithFilters(animalStatus, startDate, endDate, search, pageable)
+                .map(MedicalRecordDTOResponse::new);
     }
 
     /* Get specific medical record */

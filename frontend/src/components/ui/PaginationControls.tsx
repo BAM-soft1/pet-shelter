@@ -12,7 +12,6 @@ type PaginationControlsProps = {
   currentPage: number;
   totalPages: number;
   totalElements: number;
-  currentElements: number;
   onPageChange: (page: number) => void;
   className?: string;
 };

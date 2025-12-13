@@ -55,7 +55,18 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [types, animalsData] = await Promise.all([VaccinationService.getAllVaccinationTypes(), AnimalService.getAnimals()]);
+        const [types, animalsData] = await Promise.all([
+          VaccinationService.getAllVaccinationTypes(),
+          AnimalService.getAnimals(
+            0,
+            1000,
+            "name",
+            "asc",
+            undefined,
+            true,
+            false // only animals WITHOUT required vaccinations
+          ),
+        ]);
         setVaccinationTypes(types);
         setAnimals(animalsData.content);
       } catch (err) {

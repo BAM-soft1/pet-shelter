@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,13 +60,8 @@ export default function AdminApplications() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold">Adoption Applications</h2>
-        <Card>
-          <CardContent className="py-8">
-            <p className="text-muted-foreground text-center">Loading applications...</p>
-          </CardContent>
-        </Card>
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">Loading applications...</p>
       </div>
     );
   }
@@ -75,48 +69,46 @@ export default function AdminApplications() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold">Adoption Applications</h2>
-        <Badge variant="outline" className="text-base px-3 py-1">
-          {applications.length} Total
-        </Badge>
-      </div>
-
-      <SearchAndFilter
-        searchValue={searchInput}
-        onSearchChange={setSearchInput}
-        searchPlaceholder="Search by animal, applicant name, or email..."
-        onClearFilters={clearFilters}
-        showFilters={false}
-        showSearchButton={true}
-        onSearchSubmit={handleSearch}
-        showCounts={true}
-        totalCount={totalElements}
-        filteredCount={applications.length}
-      />
-
-      <div>
-        <label className="block text-sm font-medium mb-2">Status</label>
-        <div className="flex gap-2">
-          <Button variant={statusFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("all")}>
-            All
-          </Button>
-          <Button variant={statusFilter === "PENDING" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("PENDING")}>
-            Pending
-          </Button>
-          <Button variant={statusFilter === "APPROVED" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("APPROVED")}>
-            Approved
-          </Button>
-          <Button variant={statusFilter === "REJECTED" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("REJECTED")}>
-            Rejected
-          </Button>
+        <div>
+          <h2 className="text-3xl font-bold text-gray-800">Adoption Applications</h2>
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>All Applications</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 space-y-4">
+          <SearchAndFilter
+            searchValue={searchInput}
+            onSearchChange={setSearchInput}
+            searchPlaceholder="Search by animal, applicant name, or email..."
+            onClearFilters={clearFilters}
+            showFilters={false}
+            showSearchButton={true}
+            onSearchSubmit={handleSearch}
+            showCounts={true}
+            totalCount={totalElements}
+            filteredCount={applications.length}
+          />
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Status</label>
+            <div className="flex gap-2">
+              <Button variant={statusFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("all")}>
+                All
+              </Button>
+              <Button variant={statusFilter === "PENDING" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("PENDING")}>
+                Pending
+              </Button>
+              <Button variant={statusFilter === "APPROVED" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("APPROVED")}>
+                Approved
+              </Button>
+              <Button variant={statusFilter === "REJECTED" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("REJECTED")}>
+                Rejected
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6">
           {applications.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">No applications found.</p>
           ) : (
@@ -180,16 +172,10 @@ export default function AdminApplications() {
               </TableBody>
             </Table>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <PaginationControls
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalElements={totalElements}
-        currentElements={applications.length}
-        onPageChange={setCurrentPage}
-      />
+      <PaginationControls currentPage={currentPage} totalPages={totalPages} totalElements={totalElements} onPageChange={setCurrentPage} />
     </div>
   );
 }

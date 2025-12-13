@@ -232,7 +232,6 @@ export default function AnimalOverview() {
           currentPage={currentPage}
           totalPages={totalPages}
           totalElements={totalElements}
-          currentElements={animals.length}
           onPageChange={setCurrentPage}
         />
 

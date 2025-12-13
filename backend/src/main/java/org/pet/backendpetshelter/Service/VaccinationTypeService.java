@@ -6,10 +6,9 @@ import org.pet.backendpetshelter.DTO.VaccinationTypeResponse;
 import org.pet.backendpetshelter.Entity.VaccinationType;
 import org.pet.backendpetshelter.Repository.VaccinationTypeRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Profile({"mysql", "test"})
@@ -23,10 +22,19 @@ public class VaccinationTypeService {
 
 
     /* Get All Vaccination Types */
-    public List<VaccinationTypeResponse> GetAllVaccinationTypes() {
-        return vaccinationTypeRepository.findAll().stream()
-                .map(VaccinationTypeResponse::new)
-                .collect(Collectors.toList());
+    public Page<VaccinationTypeResponse> GetAllVaccinationTypes(Pageable pageable) {
+        return vaccinationTypeRepository.findAll(pageable)
+                .map(VaccinationTypeResponse::new);
+    }
+    
+    /* Get All Vaccination Types with Filters */
+    public Page<VaccinationTypeResponse> GetAllVaccinationTypesWithFilters(
+            Boolean requiredForAdoption,
+            String search,
+            Pageable pageable) {
+        
+        return vaccinationTypeRepository.findAllWithFilters(requiredForAdoption, search, pageable)
+                .map(VaccinationTypeResponse::new);
     }
 
 
