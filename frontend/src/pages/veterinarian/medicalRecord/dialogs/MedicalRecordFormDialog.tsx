@@ -66,7 +66,7 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
           "asc",
           undefined, // no status filter
           true, // only active animals
-          false // animals WITHOUT required vaccinations
+          undefined // all animals regardless of vaccination status
         );
         setAnimals(pageResponse.content);
       } catch (err) {

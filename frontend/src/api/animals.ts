@@ -2,7 +2,7 @@ import axiosWithAuth from "../security/axios";
 import type { Animal, AnimalRequest, PageResponse } from "../types/types";
 import { API_URL } from "../settings";
 
-const API_URL_ANIMALS = `${API_URL}/animal`; // Note: backend uses /api/animal
+const API_URL_ANIMALS = `${API_URL}/animal`;
 
 export const AnimalService = {
   getAnimals: async (
@@ -50,5 +50,12 @@ export const AnimalService = {
 
   deleteAnimal: async (id: number): Promise<void> => {
     await axiosWithAuth.delete(`${API_URL_ANIMALS}/delete/${id}`);
+  },
+
+  getAllAnimals: async (): Promise<Animal[]> => {
+    const response = await axiosWithAuth.get(API_URL_ANIMALS, {
+      params: { page: 0, size: 9999, sortBy: "name", sortDirection: "asc" },
+    });
+    return response.data.content;
   },
 };

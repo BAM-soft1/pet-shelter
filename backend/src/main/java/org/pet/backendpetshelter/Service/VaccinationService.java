@@ -12,6 +12,8 @@ import org.pet.backendpetshelter.Repository.VaccinationTypeRepository;
 import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Profile({"mysql", "test"})
@@ -41,10 +41,20 @@ public class VaccinationService {
         this.vaccinationTypeRepository = vaccinationTypeRepository;
     }
 
-    public List<VaccinationResponse> GetAllVaccinations() {
-        return vaccinationRepository.findAll().stream()
-                .map(VaccinationResponse::new)
-                .collect(Collectors.toList());
+    /* Get All Vaccinations */
+    public Page<VaccinationResponse> GetAllVaccinations(Pageable pageable) {
+        return vaccinationRepository.findAll(pageable)
+                .map(VaccinationResponse::new);
+    }
+    
+    /* Get All Vaccinations with Filters */
+    public Page<VaccinationResponse> GetAllVaccinationsWithFilters(
+            String animalStatus,
+            String search,
+            Pageable pageable) {
+        
+        return vaccinationRepository.findAllWithFilters(animalStatus, search, pageable)
+                .map(VaccinationResponse::new);
     }
 
     public VaccinationResponse GetVaccinationById(Long id) {

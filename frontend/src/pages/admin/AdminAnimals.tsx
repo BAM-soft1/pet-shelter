@@ -4,7 +4,10 @@ import { AnimalService } from "@/api/animals";
 import { SpeciesService, BreedService } from "@/api/species";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PaginationControls from "@/components/ui/PaginationControls";
+import SearchAndFilter from "@/components/ui/SearchAndFilter";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
 import calculateAge from "@/utils/calculateAge";
@@ -33,17 +36,53 @@ export default function AdminAnimals() {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
+  // Search state
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter states
+  const [sexFilter, setSexFilter] = useState<string>("all");
+  const [ageFilter, setAgeFilter] = useState<string>("all");
+  const [vaccinationStatusFilter, setVaccinationStatusFilter] = useState<boolean | undefined>(undefined);
+
   // Modal states
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
 
+  const getAgeRange = (filter: string): { minAge?: number; maxAge?: number } => {
+    switch (filter) {
+      case "puppy":
+        return { minAge: 0, maxAge: 2 };
+      case "young":
+        return { minAge: 2, maxAge: 7 };
+      case "adult":
+        return { minAge: 7, maxAge: 12 };
+      case "senior":
+        return { minAge: 12 };
+      default:
+        return {};
+    }
+  };
+
   const fetchAnimals = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const pageResponse = await AnimalService.getAnimals(currentPage, 8, "name", "asc");
+      const ageRange = getAgeRange(ageFilter);
+      const pageResponse = await AnimalService.getAnimals(
+        currentPage,
+        8,
+        "name",
+        "asc",
+        undefined,
+        undefined,
+        vaccinationStatusFilter,
+        sexFilter !== "all" ? sexFilter : undefined,
+        ageRange.minAge,
+        ageRange.maxAge,
+        searchTerm
+      );
       setAnimals(pageResponse.content);
       setTotalPages(pageResponse.totalPages);
       setTotalElements(pageResponse.totalElements);
@@ -52,7 +91,7 @@ export default function AdminAnimals() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage]);
+  }, [currentPage, searchTerm, sexFilter, ageFilter, vaccinationStatusFilter]);
 
   useEffect(() => {
     fetchAnimals();
@@ -155,8 +194,82 @@ export default function AdminAnimals() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-xl font-bold text-gray-800">All Animals ({animals.length})</h3>
+        <div className="px-6 py-4 border-b border-gray-200 space-y-4">
+          <SearchAndFilter
+            searchValue={searchTerm}
+            onSearchChange={setSearchTerm}
+            searchPlaceholder="Search animals by name, species, or breed..."
+            onClearFilters={() => {
+              setSearchTerm("");
+              setSexFilter("all");
+              setAgeFilter("all");
+              setVaccinationStatusFilter(undefined);
+              setCurrentPage(0);
+            }}
+            onSearchSubmit={() => setCurrentPage(0)}
+            showSearchButton={true}
+            showClearButton={true}
+            totalCount={totalElements}
+            filteredCount={totalElements}
+            showCounts={true}
+            showFilters={false}
+          />
+
+          <div className="flex gap-4 flex-wrap">
+            <div>
+              <label className="block text-sm font-medium mb-2">Sex</label>
+              <div className="flex gap-2">
+                <Button variant={sexFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setSexFilter("all")}>
+                  All
+                </Button>
+                <Button variant={sexFilter === "male" ? "default" : "outline"} size="sm" onClick={() => setSexFilter("male")}>
+                  Male
+                </Button>
+                <Button variant={sexFilter === "female" ? "default" : "outline"} size="sm" onClick={() => setSexFilter("female")}>
+                  Female
+                </Button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Age</label>
+              <Select value={ageFilter} onValueChange={setAgeFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="All ages" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All ages</SelectItem>
+                  <SelectItem value="puppy">Puppy/Kitten (0-2)</SelectItem>
+                  <SelectItem value="young">Young (2-7)</SelectItem>
+                  <SelectItem value="adult">Adult (7-12)</SelectItem>
+                  <SelectItem value="senior">Senior (12+)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Vaccination Status</label>
+              <div className="flex gap-2">
+                <Button
+                  variant={vaccinationStatusFilter === undefined ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setVaccinationStatusFilter(undefined)}
+                >
+                  All
+                </Button>
+                <Button variant={vaccinationStatusFilter === true ? "default" : "outline"} size="sm" onClick={() => setVaccinationStatusFilter(true)}>
+                  Fully Vaccinated
+                </Button>
+                <Button
+                  variant={vaccinationStatusFilter === false ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setVaccinationStatusFilter(false)}
+                >
+                  Needs Vaccinations
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="p-6">
           <Table>
@@ -224,13 +337,7 @@ export default function AdminAnimals() {
         </div>
       </div>
 
-      <PaginationControls
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalElements={totalElements}
-        currentElements={animals.length}
-        onPageChange={setCurrentPage}
-      />
+      <PaginationControls currentPage={currentPage} totalPages={totalPages} totalElements={totalElements} onPageChange={setCurrentPage} />
 
       {/* Modals */}
       <AnimalFormDialog

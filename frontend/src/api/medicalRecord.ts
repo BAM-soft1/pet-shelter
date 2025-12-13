@@ -1,11 +1,36 @@
 import axiosWithAuth from "../security/axios";
-import type { MedicalRecord, MedicalRecordRequest } from "../types/types";
+import type { MedicalRecord, MedicalRecordRequest, PageResponse } from "../types/types";
 import { API_URL } from "../settings";
 
 const API_URL_MEDICAL_RECORDS = `${API_URL}/medical-record`;
 
 export const MedicalRecordService = {
-    getAllMedicalRecords: async (): Promise<MedicalRecord[]> => {
+  getMedicalRecords: async (
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = "date",
+    sortDirection: string = "desc",
+    animalStatus?: string,
+    startDate?: string,
+    endDate?: string,
+    search?: string
+  ): Promise<PageResponse<MedicalRecord>> => {
+    const response = await axiosWithAuth.get(API_URL_MEDICAL_RECORDS, {
+      params: {
+        page,
+        size,
+        sortBy,
+        sortDirection,
+        animalStatus: animalStatus || undefined,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        search: search || undefined,
+      },
+    });
+    return response.data;
+  },
+
+  getAllMedicalRecords: async (): Promise<MedicalRecord[]> => {
     const response = await axiosWithAuth.get(API_URL_MEDICAL_RECORDS);
     return response.data;
   },
