@@ -37,8 +37,6 @@ public class BreedServiceTest {
     private BreedService breedService;
 
 
-    private BreedDTORequest breedDTORequest;
-
     // ==================== TEST HELPERS ====================
 
 
@@ -57,18 +55,6 @@ public class BreedServiceTest {
         species.setName("Dog");
         return species;
     }
-
-
-    private Breed createValidBreed(BreedDTORequest request) {
-        Breed breed = new Breed();
-        breed.setId(1L);
-        breed.setSpecies(createValidSpecies());
-        breed.setName(request.getName());
-        return breed;
-
-    }
-
-
 
 
     // ==================== BLACKBOX TESTS ====================

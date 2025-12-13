@@ -16,6 +16,7 @@ type AnimalFormData = {
   imageUrl: string;
   speciesId: number | null;
   breedId: number | null;
+  isActive?: boolean;
 };
 
 type AnimalFormDialogProps = {
@@ -137,6 +138,7 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
         imageUrl: formData.imageUrl,
         speciesId: formData.speciesId,
         breedId: formData.breedId,
+        isActive: true,
       };
 
       await onSubmit(animalData);

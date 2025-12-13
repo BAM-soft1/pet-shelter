@@ -167,9 +167,9 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("Should return true when password is only special characters and 7 or more")
+        @DisplayName("Should return false when password is only special characters without uppercase")
         void testPasswordOnlySpecialsLongEnough() throws Exception {
-            assertTrue(invokeIsPasswordStrong("!@#$%^&"));
+            assertFalse(invokeIsPasswordStrong("!@#$%^&"));
         }
 
         @Test
@@ -207,19 +207,6 @@ class AuthServiceTest {
             request.setPhone("12345678");
             request.setPassword("Pass123!");
             return request;
-        }
-
-        private User createSavedUser(RegisterUserRequest request) {
-            User user = new User();
-            user.setId(1L);
-            user.setEmail(request.getEmail().toLowerCase());
-            user.setFirstName(request.getFirstName().trim());
-            user.setLastName(request.getLastName().trim());
-            user.setPhone(request.getPhone());
-            user.setPassword("$2a$10$hashedPassword");
-            user.setIsActive(true);
-            user.setRole(Roles.USER);
-            return user;
         }
 
         private void mockSuccessfulRegistration(String email) {
@@ -291,7 +278,7 @@ class AuthServiceTest {
                     IllegalArgumentException.class,
                     () -> authService.register(request));
 
-            assertEquals("Password must be at least 7 characters and include a special character",
+            assertEquals("Password must be at least 7 characters and include a special character and an uppercase letter",
                     exception.getMessage());
         }
 
@@ -1094,7 +1081,7 @@ class AuthServiceTest {
                     IllegalArgumentException.class,
                     () -> authService.register(request));
 
-            assertEquals("Password must be at least 7 characters and include a special character",
+            assertEquals("Password must be at least 7 characters and include a special character and an uppercase letter",
                     exception.getMessage());
             verify(userRepository, never()).save(any(User.class));
         }

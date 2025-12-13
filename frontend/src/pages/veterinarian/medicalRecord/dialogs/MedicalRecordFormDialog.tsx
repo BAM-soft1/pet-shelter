@@ -66,7 +66,7 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
           "asc",
           undefined, // no status filter
           true, // only active animals
-          false // animals WITHOUT required vaccinations
+          undefined // all animals regardless of vaccination status
         );
         setAnimals(pageResponse.content);
       } catch (err) {
@@ -129,7 +129,7 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
             <Label htmlFor="animalId">Patient</Label>
             <div className="flex gap-3 items-center">
               {selectedAnimal?.imageUrl && (
-                <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-indigo-200 flex-shrink-0">
+                <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-indigo-200 shrink-0">
                   <img src={selectedAnimal.imageUrl} alt={selectedAnimal.name} className="w-full h-full object-cover" />
                 </div>
               )}

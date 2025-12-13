@@ -81,13 +81,14 @@ type Animal = {
 type AnimalRequest = {
   name: string;
   sex: string;
-  species: Species;
-  breed: Breed | null;
+  speciesId: number;
+  breedId: number | null;
   birthDate: string;
   intakeDate: string; 
   status: string;
   price: number;
   imageUrl?: string;
+  isActive?: boolean;
 };
 
 type User = {

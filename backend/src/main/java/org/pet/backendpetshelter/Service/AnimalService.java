@@ -57,7 +57,7 @@ public class AnimalService {
     /* Get Specific Animal */
     public AnimalDTOResponse GetAnimalById(Long id) {
         Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + id));
         return new AnimalDTOResponse(animal);
     }
 
@@ -73,6 +73,7 @@ public class AnimalService {
         validateIntakeDate(request.getIntakeDate(), request.getBirthDate());
         validateStatus(request.getStatus());
         validatePrice(request.getPrice());
+        validateIsActive(request.getIsActive());
         validateImageUrl(request.getImageUrl());
 
         Species species = speciesRepository.findById(request.getSpeciesId())
@@ -90,7 +91,7 @@ public class AnimalService {
         animal.setIntakeDate(request.getIntakeDate());
         animal.setStatus(request.getStatus());
         animal.setPrice(request.getPrice());
-        animal.setIsActive(request.getIsActive());
+        animal.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
         animal.setImageUrl(request.getImageUrl());
 
         animalRepository.save(animal);
@@ -107,7 +108,7 @@ public class AnimalService {
         }
 
         if (!name.matches("^[a-zA-Z]+$")) {
-            throw new IllegalArgumentException("Name must contain at least one non-alphabetic character");
+            throw new IllegalArgumentException("Name must contain only alphabetic characters");
         }
 
         if (name.length() < 2 || name.length() > 30) {
@@ -150,8 +151,8 @@ public class AnimalService {
             throw new IllegalArgumentException("Sex cannot be null or empty");
         }
 
-        if (!sex.equals("Male") && !sex.equals("Female")) {
-            throw new IllegalArgumentException("Sex must be either 'Male' or 'Female'");
+        if (!sex.equals("male") && !sex.equals("female")) {
+            throw new IllegalArgumentException("Sex must be either 'male' or 'female'");
         }
     }
 
@@ -191,8 +192,14 @@ public class AnimalService {
             throw new IllegalArgumentException("Price cannot be negative");
         }
 
-        if (price > 30000) {
-            throw new IllegalArgumentException("Price cannot exceed 30000");
+        if (price > 99999) {
+            throw new IllegalArgumentException("Price cannot exceed 99999");
+        }
+    }
+
+    private void validateIsActive(Boolean isActive) {
+        if (isActive == null) {
+            throw new IllegalArgumentException("isActive cannot be null");
         }
     }
 
@@ -211,7 +218,7 @@ public class AnimalService {
     /* Update Animal */
     public AnimalDTOResponse updateAnimal(Long id, AnimalDTORequest request) {
         Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + id));
 
         Breed breed = breedRepository.findById(request.getBreedId())
                 .orElseThrow(() -> new EntityNotFoundException("Breed not found"));

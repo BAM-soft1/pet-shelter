@@ -75,7 +75,7 @@ public class AnimalIntegrationTest {
         request.setName("Buddy");
         request.setSpeciesId(species.getId());
         request.setBreedId(breed.getId());
-        request.setSex("Male");
+        request.setSex("male");
         request.setBirthDate(createPastDate(2020, 1, 1));
         request.setIntakeDate(createPastDate(2023, 1, 1));
         request.setStatus(Status.APPROVED);
@@ -103,7 +103,7 @@ public class AnimalIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Buddy"))
-                .andExpect(jsonPath("$.sex").value("Male"))
+                .andExpect(jsonPath("$.sex").value("male"))
                 .andExpect(jsonPath("$.birthDate").value(containsString("2020-01-01")))
                 .andExpect(jsonPath("$.intakeDate").value(containsString("2023-01-01")))
                 .andExpect(jsonPath("$.status").value("APPROVED"))
@@ -137,7 +137,7 @@ public class AnimalIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Name must contain at least one non-alphabetic character")));
+                .andExpect(content().string(containsString("Name must contain only alphabetic characters")));
     }
 
     @Test
@@ -174,7 +174,7 @@ public class AnimalIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Sex must be either 'Male' or 'Female'")));
+                .andExpect(content().string(containsString("Sex must be either 'male' or 'female'")));
     }
 
 
@@ -327,12 +327,12 @@ public class AnimalIntegrationTest {
     @DisplayName("POST /api/animals Add Animal - Price Exceeds Maximum")
     void addAnimal_PriceExceedsMaximum() throws Exception {
         AnimalDTORequest request = createValidRequest();
-        request.setPrice(30001);
+        request.setPrice(100001);
         mockMvc.perform(post("/api/animal/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Price cannot exceed 30000")));
+                .andExpect(content().string(containsString("Price cannot exceed 99999")));
     }
 
 
@@ -386,5 +386,86 @@ public class AnimalIntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("Image URL cannot be null or empty")));
+    }
+
+
+    // ==== BOUNDARY VALUE ANALYSIS: NAME LENGTH (1 char) ====
+
+    @Test
+    @DisplayName("POST /api/animals Add Animal - Name exactly 1 character (below min)")
+    void addAnimal_NameOneCharacter() throws Exception {
+        AnimalDTORequest request = createValidRequest();
+        request.setName("A");
+        mockMvc.perform(post("/api/animal/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("Name must be between 2 and 30 characters long")));
+    }
+
+
+    // ==== BOUNDARY VALUE ANALYSIS: PRICE BOUNDARIES ====
+
+    @Test
+    @DisplayName("POST /api/animals Add Animal - Price at min boundary (0)")
+    void addAnimal_PriceZero() throws Exception {
+        AnimalDTORequest request = createValidRequest();
+        request.setPrice(0);
+        mockMvc.perform(post("/api/animal/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.price").value(0));
+    }
+
+    @Test
+    @DisplayName("POST /api/animals Add Animal - Price just above min boundary (1)")
+    void addAnimal_PriceOne() throws Exception {
+        AnimalDTORequest request = createValidRequest();
+        request.setPrice(1);
+        mockMvc.perform(post("/api/animal/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.price").value(1));
+    }
+
+    @Test
+    @DisplayName("POST /api/animals Add Animal - Price at max boundary (99999)")
+    void addAnimal_PriceAtMaxBoundary() throws Exception {
+        AnimalDTORequest request = createValidRequest();
+        request.setPrice(99999);
+        mockMvc.perform(post("/api/animal/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.price").value(99999));
+    }
+
+    @Test
+    @DisplayName("POST /api/animals Add Animal - Price above max boundary (100000)")
+    void addAnimal_PriceAboveMaxBoundary() throws Exception {
+        AnimalDTORequest request = createValidRequest();
+        request.setPrice(100000);
+        mockMvc.perform(post("/api/animal/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("Price cannot exceed")));
+    }
+
+
+    // ==== EQUIVALENCE PARTITIONING: IS_ACTIVE NULL TEST ====
+
+    @Test
+    @DisplayName("POST /api/animals Add Animal - isActive is null")
+    void addAnimal_IsActiveNull() throws Exception {
+        AnimalDTORequest request = createValidRequest();
+        request.setIsActive(null);
+        mockMvc.perform(post("/api/animal/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("isActive cannot be null")));
     }
 }

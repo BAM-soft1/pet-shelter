@@ -4,10 +4,12 @@ import org.pet.backendpetshelter.DTO.VaccinationRequest;
 import org.pet.backendpetshelter.DTO.VaccinationResponse;
 import org.pet.backendpetshelter.Service.VaccinationService;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/vaccination")
@@ -24,13 +26,33 @@ private final VaccinationService vaccinationService;
 
 
     @GetMapping
-    public List<VaccinationResponse> getAllVaccinations(){
-        return vaccinationService.GetAllVaccinations();
+    public Page<VaccinationResponse> getVaccinations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "dateAdministered") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(required = false) String animalStatus,
+            @RequestParam(required = false) String search
+    ) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        
+        // If any filters are provided, use filtered query (native query requires database column names)
+        if (animalStatus != null || search != null) {
+            // Map Java field names to database column names for native queries
+            String dbSortBy = sortBy.equals("dateAdministered") ? "date_administered" : 
+                             sortBy.equals("nextDueDate") ? "next_due_date" : sortBy;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(direction, dbSortBy));
+            return vaccinationService.GetAllVaccinationsWithFilters(animalStatus, search, pageable);
+        }
+        
+        // For non-filtered query, use Java field names (JPA will handle mapping)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        return vaccinationService.GetAllVaccinations(pageable);
     }
 
 
     @GetMapping("/{id}")
-    public VaccinationResponse getVaccinationById(Long id){
+    public VaccinationResponse getVaccinationById(@PathVariable Long id){
         return vaccinationService.GetVaccinationById(id);
     }
 

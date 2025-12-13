@@ -12,6 +12,8 @@ import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,18 +34,29 @@ public class MedicalRecordService {
         this.veterinarianRepository = veterinarianRepository;
     }
 
-    /* Get all medical records */
-    public List<MedicalRecordDTOResponse> getAllMedicalRecords() {
-        return medicalRecordRepository.findAll().stream()
-                .map(MedicalRecordDTOResponse::new)
-                .toList();
+    /* Get All Medical Records */
+    public Page<MedicalRecordDTOResponse> GetAllMedicalRecords(Pageable pageable) {
+        return medicalRecordRepository.findAll(pageable)
+                .map(MedicalRecordDTOResponse::new);
+    }
+    
+    /* Get All Medical Records with Filters */
+    public Page<MedicalRecordDTOResponse> GetAllMedicalRecordsWithFilters(
+            String animalStatus,
+            java.util.Date startDate,
+            java.util.Date endDate,
+            String search,
+            Pageable pageable) {
+        
+        return medicalRecordRepository.findAllWithFilters(animalStatus, startDate, endDate, search, pageable)
+                .map(MedicalRecordDTOResponse::new);
     }
 
     /* Get specific medical record */
     public MedicalRecordDTOResponse getMedicalRecordById(Long id) {
 
         MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Medical Record not found with id: " + id));
         return new MedicalRecordDTOResponse(medicalRecord);
     }
 
@@ -56,6 +69,19 @@ public class MedicalRecordService {
 
     /* Add medical record */
     public MedicalRecordDTOResponse addMedicalRecord(MedicalRecordDTORequest request) {
+        // Validate required fields
+        if (request.getAnimalId() == null) {
+            throw new IllegalArgumentException("Animal ID is required");
+        }
+        if (request.getDate() == null) {
+            throw new IllegalArgumentException("Date is required");
+        }
+        if (request.getDiagnosis() == null || request.getDiagnosis().trim().isEmpty()) {
+            throw new IllegalArgumentException("Diagnosis is required");
+        }
+        if (request.getTreatment() == null || request.getTreatment().trim().isEmpty()) {
+            throw new IllegalArgumentException("Treatment is required");
+        }
         
         Animal animal = animalRepository.findById(request.getAnimalId())
                 .orElseThrow(() -> new EntityNotFoundException("Animal not found with id: " + request.getAnimalId()));
@@ -76,7 +102,7 @@ public class MedicalRecordService {
     /* Update medical record */
     public MedicalRecordDTOResponse updateMedicalRecord(Long id, MedicalRecordDTORequest request) {
         MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Medical Record not found with id: " + id));
 
         // Hent Animal fra database
         Animal animal = animalRepository.findById(request.getAnimalId())
@@ -106,7 +132,7 @@ public class MedicalRecordService {
     
     Veterinarian vet = veterinarianRepository.findByUser_Email(email); 
     if (vet == null) {
-        throw new RuntimeException("Veterinarian not found for user: " + email);
+        throw new EntityNotFoundException("Veterinarian not found for user: " + email);
     }
     return vet;
 }

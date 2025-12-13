@@ -53,7 +53,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/veterinarian/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/foster-care/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/medical-record/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/medical-record/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/adoption/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/vaccination/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/vaccination-type/**").permitAll()
@@ -75,10 +74,42 @@ public class SecurityConfig {
                         // Public docs
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
 
-                        // Example domain routes (adjust to your API)
+                        // Animal management - ADMIN and STAFF can modify
+                        .requestMatchers(HttpMethod.POST, "/api/animal/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/api/animal/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/api/animal/**").hasAnyAuthority("ADMIN", "STAFF")
+                        
+                        // Species and Breed management - ADMIN and STAFF
+                        .requestMatchers(HttpMethod.POST, "/api/species/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/api/species/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/api/species/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.POST, "/api/breed/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/api/breed/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/api/breed/**").hasAnyAuthority("ADMIN", "STAFF")
+
+                        // Adoption management - ADMIN and STAFF
+                        .requestMatchers(HttpMethod.POST, "/api/adoption/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/api/adoption/**").hasAnyAuthority("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/api/adoption/**").hasAnyAuthority("ADMIN", "STAFF")
+
+                        // Medical Records - ADMIN and VETERINARIAN
+                        .requestMatchers(HttpMethod.POST, "/api/medical-record/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/api/medical-record/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/medical-record/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+
+                        // Vaccination management - ADMIN and VETERINARIAN
+                        .requestMatchers(HttpMethod.POST, "/api/vaccination/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/api/vaccination/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/vaccination/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+
+                        // Vaccination Type management - ADMIN and VETERINARIAN
+                        .requestMatchers(HttpMethod.POST, "/api/vaccination-type/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/api/vaccination-type/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/vaccination-type/**").hasAnyAuthority("ADMIN", "VETERINARIAN")
+
+                        // User management
                         .requestMatchers(HttpMethod.GET, "/api/user/**")
                         .hasAnyAuthority("ADMIN", "STAFF", "USER", "VETERINARIAN", "ADOPTER", "FOSTER")
-                        // ... flere matchers efter dit behov ...
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter,

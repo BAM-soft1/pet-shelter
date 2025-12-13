@@ -57,7 +57,7 @@ public class AuthService {
         }
 
         if (!isPasswordStrong(req.getPassword())) {
-            throw new IllegalArgumentException("Password must be at least 7 characters and include a special character");
+            throw new IllegalArgumentException("Password must be at least 7 characters and include a special character and an uppercase letter");
         }
 
         User u = new User();
@@ -163,7 +163,11 @@ public class AuthService {
 
     private boolean isPasswordStrong(String pwd) {
         if (pwd == null || pwd.length() < 7) return false;
-        return pwd.matches(".*[!@#$%^&*()_+=\\-{}:;\"'<>,.?/|\\[\\]\\\\].*");
+        // Check for special character
+        if (!pwd.matches(".*[!@#$%^&*()_+=\\-{}:;\"'<>,.?/|\\[\\]\\\\].*")) return false;
+        // Check for uppercase letter
+        if (!pwd.matches(".*[A-Z].*")) return false;
+        return true;
     }
 
     private UserResponse toUserResponse(User u) {

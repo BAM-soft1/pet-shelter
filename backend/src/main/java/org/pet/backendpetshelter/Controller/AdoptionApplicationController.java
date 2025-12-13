@@ -54,7 +54,7 @@ public class AdoptionApplicationController {
 
 
     @GetMapping("/{id}")
-    public AdoptionApplicationResponse getAdoptionApplicationById(Long id) {
+    public AdoptionApplicationResponse getAdoptionApplicationById(@PathVariable Long id) {
         return adoptionApplicationService.GetAdoptionApplicationById(id);
     }
 

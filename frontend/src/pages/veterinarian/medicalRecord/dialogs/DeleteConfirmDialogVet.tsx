@@ -45,7 +45,7 @@ export default function DeleteConfirmDialogVet({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+            <div className="shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
               <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
             </div>
             <div>
@@ -61,7 +61,7 @@ export default function DeleteConfirmDialogVet({
           <div className="bg-red-50 border border-red-100 p-4 rounded-lg">
             <div className="flex gap-4">
               {record.animal?.imageUrl && (
-                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0">
                   <img
                     src={record.animal.imageUrl}
                     alt={record.animal.name}

@@ -15,17 +15,20 @@ public class RegisterUserRequest {
     private String email;
 
     @NotBlank @Size(min = 2, max = 80)
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "First name must contain only letters")
     private String firstName;
 
     @NotBlank @Size(min = 2, max = 80)
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only letters")
     private String lastName;
 
     @Pattern(regexp = "^[0-9+\\-() ]{7,32}$", message = "Invalid phone format")
     private String phone;
 
-    @NotBlank @Size(min = 7, message = "Password must be at least 7 characters")
+    @NotBlank @Size(min = 7, max = 60, message = "Password must be between 7 and 60 characters")
     @Pattern(regexp = ".*[!@#$%^&*()_+=\\-{}:;\"'<>,.?/|\\[\\]\\\\].*",
             message = "Password must include at least one special character")
+    @Pattern(regexp = ".*[A-Z].*", message = "Password must include at least one uppercase letter")
     private String password;
 
     // Ignoreres ved register (vi sætter USER) – kun admin kan ændre senere

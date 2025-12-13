@@ -2,8 +2,6 @@ package org.pet.backendpetshelter.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.pet.backendpetshelter.Entity.Breed;
-import org.pet.backendpetshelter.Entity.Species;
 import org.pet.backendpetshelter.Status;
 
 import java.util.Date;

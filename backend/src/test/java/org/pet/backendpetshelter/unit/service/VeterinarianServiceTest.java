@@ -16,8 +16,6 @@ import org.pet.backendpetshelter.Repository.UserRepository;
 import org.pet.backendpetshelter.Repository.VeterinarianRepository;
 import org.pet.backendpetshelter.Roles;
 import org.pet.backendpetshelter.Service.VeterinarianService;
-import org.pet.backendpetshelter.Status;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -43,8 +41,6 @@ public class VeterinarianServiceTest {
 
 
 
-    private VeterinarianDTORequest veterinarianDTORequest;
-
     // ==================== TEST HELPERS ====================
 
 
@@ -69,17 +65,6 @@ public class VeterinarianServiceTest {
         user.setRole(Roles.VETERINARIAN);
         user.setIsActive(true);
         return user.getId();
-    }
-
-
-    private Veterinarian createSavedVeterinarian(VeterinarianDTORequest request){
-        Veterinarian veterinarian = new Veterinarian();
-        veterinarian.setId(1L);
-
-        veterinarian.setLicenseNumber(request.getLicenseNumber());
-        veterinarian.setClinicName(request.getClinicName());
-        veterinarian.setIsActive(request.getIsActive());
-        return veterinarian;
     }
 
 

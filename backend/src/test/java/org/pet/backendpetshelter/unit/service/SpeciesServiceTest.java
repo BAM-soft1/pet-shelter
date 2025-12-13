@@ -5,13 +5,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.pet.backendpetshelter.DTO.SpeciesDTORequest;
 import org.pet.backendpetshelter.DTO.SpeciesDTOResponse;
-import org.pet.backendpetshelter.Entity.Animal;
 import org.pet.backendpetshelter.Entity.Species;
 import org.pet.backendpetshelter.Repository.SpeciesRepository;
 import org.pet.backendpetshelter.Service.SpeciesService;
@@ -38,14 +36,6 @@ private SpeciesDTORequest createValidRequest() {
     request.setName("Cat");
 
     return request;
-}
-
-private Species createSavedSpecies(SpeciesDTORequest request) {
-    Species species = new Species();
-    species.setId(1L);
-    species.setName(request.getName());
-
-    return species;
 }
 
 

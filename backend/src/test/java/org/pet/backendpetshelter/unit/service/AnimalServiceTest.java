@@ -47,8 +47,6 @@ public class AnimalServiceTest {
     private AnimalService animalService;
 
 
-    private AnimalDTORequest animalDTORequest;
-
     // ==================== TEST HELPERS ====================
 
 
@@ -57,7 +55,7 @@ public class AnimalServiceTest {
         request.setName("Ox");
         request.setSpeciesId(1L);
         request.setBreedId(1L);
-        request.setSex("Male");
+        request.setSex("male");
         request.setBirthDate(createPastDate(2020, 1, 1));
         request.setIntakeDate(createPastDate(2023, 1, 1));
         request.setStatus(Status.AVAILABLE);
@@ -137,7 +135,7 @@ public class AnimalServiceTest {
             assertNotNull(response);
             assertEquals(1L, response.getId());
             assertEquals("Ox", response.getName());
-            assertEquals("Male", response.getSex());
+            assertEquals("male", response.getSex());
             assertEquals(Status.AVAILABLE, response.getStatus());
             assertEquals(499, response.getPrice());
             verify(animalRepository).save(any(Animal.class));

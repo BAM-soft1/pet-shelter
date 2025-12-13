@@ -42,8 +42,8 @@ test("should create, edit, and delete an animal", async ({ page }) => {
     .toString(36)
     .substring(2, 8)
     .replace(/[^a-z]/g, "a");
-  const animalName = `TestPet${randomString}`;
-  const updatedName = `UpdatedPet${randomString}`;
+  const animalName = `AAAAATestPet${randomString}`;
+  const updatedName = `AAAAAAUpdatedPet${randomString}`;
   const birthDate = new Date();
   birthDate.setFullYear(birthDate.getFullYear() - 2);
   const intakeDate = new Date();
@@ -93,5 +93,5 @@ test("should display animal count", async ({ page }) => {
 
   const rowCount = await page.locator("table tbody tr").count();
 
-  await expect(page.getByText(`All Animals (${rowCount})`)).toBeVisible();
+  await expect(page.getByText(`Showing ${rowCount} ${rowCount === 1 ? "result" : "results"}`)).toBeVisible();
 });
