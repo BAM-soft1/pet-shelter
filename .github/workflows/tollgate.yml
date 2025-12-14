@@ -30,7 +30,7 @@ jobs:
         working-directory: ./backend
         continue-on-error: true
         run: |
-          ./mvnw clean test -Dtest="org/pet/backendpetshelter/unit/**/*Test.java,org/pet/backendpetshelter/BackendPetShelterApplicationTests.java" jacoco:report
+          ./mvnw clean test -Dtest='!**/*Integration*' jacoco:report
 
       - name: Upload test results
         if: always()
