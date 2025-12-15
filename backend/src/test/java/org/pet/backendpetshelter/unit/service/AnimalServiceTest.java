@@ -1,5 +1,7 @@
 package org.pet.backendpetshelter.unit.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -101,6 +103,11 @@ public class AnimalServiceTest {
     @Nested
     @DisplayName("Create Animal Tests")
     class CreateAnimalTests {
+        @BeforeEach
+        void setUp() {
+            lenient().when(speciesRepository.existsById(anyLong())).thenReturn(true);
+            lenient().when(breedRepository.existsById(anyLong())).thenReturn(true);
+        }
 
         // ==================== VALID PARTITION ====================
 
@@ -216,7 +223,7 @@ public class AnimalServiceTest {
             species.setName(null);
             request.setSpeciesId(species.getId());
 
-            assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
+            assertThrows(EntityNotFoundException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
 
@@ -230,7 +237,7 @@ public class AnimalServiceTest {
             species.setName("");
             request.setSpeciesId(species.getId());
 
-            assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
+            assertThrows(EntityNotFoundException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
 
@@ -245,7 +252,7 @@ public class AnimalServiceTest {
             species.setName("   ");
             request.setSpeciesId(species.getId());
 
-            assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
+            assertThrows(EntityNotFoundException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
 
@@ -285,7 +292,7 @@ public class AnimalServiceTest {
             breed.setName(null);
             request.setBreedId(breed.getId());
 
-            assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
+            assertThrows(EntityNotFoundException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
 
@@ -299,7 +306,7 @@ public class AnimalServiceTest {
             breed.setName("");
             request.setBreedId(breed.getId());
 
-            assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
+            assertThrows(EntityNotFoundException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
 
@@ -312,7 +319,7 @@ public class AnimalServiceTest {
             breed.setName("   ");
             request.setBreedId(breed.getId());
 
-            assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
+            assertThrows(EntityNotFoundException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
 
@@ -461,7 +468,7 @@ public class AnimalServiceTest {
         void testCreateAnimalWithExcessivePrice() {
             // Arrange
             AnimalDTORequest request = createValidRequest();
-            request.setPrice(50000);
+            request.setPrice(100000);
             assertThrows(IllegalArgumentException.class, () -> animalService.addAnimal(request));
             verify(animalRepository, never()).save(any(Animal.class));
         }
