@@ -162,7 +162,7 @@ public class AuthService {
     }
 
     private boolean isPasswordStrong(String pwd) {
-        if (pwd == null || pwd.length() < 7) return false;
+        if (pwd == null || pwd.length() < 20) return false;
         // Check for special character
         if (!pwd.matches(".*[!@#$%^&*()_+=\\-{}:;\"'<>,.?/|\\[\\]\\\\].*")) return false;
         // Check for uppercase letter
