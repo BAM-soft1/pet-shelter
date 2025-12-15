@@ -117,7 +117,6 @@ public class AnimalServiceTest {
 
             // mock species and breed existence/lookups
             when(speciesRepository.existsById(anyLong())).thenReturn(true);
-            when(speciesRepository.findById(any(Long.class))).thenReturn(Optional.of(createValidSpecies()));
 
             when(breedRepository.existsById(anyLong())).thenReturn(true);
             when(breedRepository.findById(any(Long.class))).thenReturn(Optional.of(createValidBreed()));
