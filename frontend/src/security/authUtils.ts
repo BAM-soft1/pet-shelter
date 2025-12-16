@@ -48,4 +48,14 @@ export const authProvider = {
     });
     return response.data;
   },
+
+  async refreshToken(): Promise<LoginResponse> {
+    const response = await authAxios.post<AuthResponse>("/refresh");
+    const authData = response.data;
+
+    return {
+      token: authData.accessToken,
+      expiresInSeconds: authData.expiresInSeconds,
+    };
+  },
 };
