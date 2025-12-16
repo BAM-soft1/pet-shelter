@@ -2,7 +2,7 @@ import axios from "axios";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { API_URL } from "../settings";
 import getToken from "./authToken";
-import { authProvider } from "./authUtils";
+import { authService } from "./authUtils";
 
 const axiosWithAuth = axios.create({
   baseURL: API_URL,
@@ -71,7 +71,7 @@ axiosWithAuth.interceptors.response.use(
 
       try {
         // Try to refresh the token
-        const { token: newAccessToken, expiresInSeconds } = await authProvider.refreshToken();
+        const { token: newAccessToken, expiresInSeconds } = await authService.refreshToken();
 
         // Store new token
         localStorage.setItem("token", newAccessToken);

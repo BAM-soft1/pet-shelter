@@ -15,7 +15,7 @@ export interface LoginResponse {
   expiresInSeconds: number;
 }
 
-export const authProvider = {
+export const authService = {
   async signIn(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await authAxios.post<AuthResponse>("/login", credentials);
     const authData = response.data;

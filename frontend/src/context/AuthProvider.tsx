@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import { authProvider } from "../security/authUtils";
+import { authService } from "../security/authUtils";
 import type { LoginRequest, RegisterRequest, AuthUser } from "../types/types";
 import getToken from "../security/authToken";
 
@@ -24,7 +24,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<string | null>(user ? `${user.firstName} ${user.lastName}` : null);
 
   const signIn = async (credentials: LoginRequest) => {
-    const response = await authProvider.signIn(credentials);
+    const response = await authService.signIn(credentials);
 
     // Store token and expiry time
     localStorage.setItem("token", response.token);
@@ -32,7 +32,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("tokenExpiresAt", expiresAt.toString());
 
     // Fetch full user details
-    const userDetails = await authProvider.getCurrentUser(response.token);
+    const userDetails = await authService.getCurrentUser(response.token);
 
     // Store user info
     setUser(userDetails);
@@ -42,7 +42,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (userData: RegisterRequest) => {
     // Register the user
-    await authProvider.register(userData);
+    await authService.register(userData);
 
     // Auto-login after registration
     await signIn({ email: userData.email, password: userData.password });
@@ -52,7 +52,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const token = getToken();
       if (token) {
-        await authProvider.logout(token);
+        await authService.logout(token);
       }
       console.log("User logged out successfully");
     } catch (error) {
@@ -83,7 +83,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (token && storedUser) {
       try {
         // Verify token by fetching current user
-        authProvider
+        authService
           .getCurrentUser(token)
           .then((freshUser: AuthUser) => {
             setUser(freshUser);
