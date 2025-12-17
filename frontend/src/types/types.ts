@@ -130,15 +130,12 @@ type AdoptionApplicationResponse = {
 };
 
 type Adoption = {
-  adoption_id: number;
-  animal_name: string;
-  species: string;
-  breed: string | null;
-  adopter_name: string;
-  adopter_email: string;
-  adopter_phone: string | null;
-  adoption_date: string;
-  days_since_adoption: number;
+  id: number;
+  user: User;
+  animal: Animal;
+  adoptionApplication: AdoptionApplication;
+  adoptionDate: string;
+  isActive: boolean;
 };
 
 // Auth Types

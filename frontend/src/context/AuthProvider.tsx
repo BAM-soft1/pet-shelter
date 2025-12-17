@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import { authProvider } from "../security/authUtils";
+import { authService } from "../security/authUtils";
 import type { LoginRequest, RegisterRequest, AuthUser } from "../types/types";
-import getToken from "../security/authToken";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -16,8 +15,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-let logoutTimer: ReturnType<typeof setTimeout> | null = null;
-
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => {
     const storedUser = localStorage.getItem("user");
@@ -25,60 +22,31 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   });
   const [username, setUsername] = useState<string | null>(user ? `${user.firstName} ${user.lastName}` : null);
 
-  const scheduleLogout = (_token: string, expiresInSeconds: number) => {
-    if (logoutTimer) {
-      clearTimeout(logoutTimer);
-    }
-
-    // Schedule logout 30 seconds before token expires to be safe
-    const timeout = (expiresInSeconds - 30) * 1000;
-
-    logoutTimer = setTimeout(
-      () => {
-        signOut();
-      },
-      timeout > 0 ? timeout : 0
-    );
-  };
-
   const signIn = async (credentials: LoginRequest) => {
-    const response = await authProvider.signIn(credentials);
+    // Tokens are set as HttpOnly cookies by the backend
+    await authService.signIn(credentials);
 
-    // Store token and expiry time
-    localStorage.setItem("token", response.token);
-    const expiresAt = Date.now() + response.expiresInSeconds * 1000; // Calculate absolute expiry timestamp
-    localStorage.setItem("tokenExpiresAt", expiresAt.toString());
+    // Fetch full user details (access token cookie is automatically sent)
+    const userDetails = await authService.getCurrentUser();
 
-    // Fetch full user details
-    const userDetails = await authProvider.getCurrentUser(response.token);
-
-    // Store user info
+    // Store user info (non-sensitive display data)
     setUser(userDetails);
     setUsername(`${userDetails.firstName} ${userDetails.lastName}`);
     localStorage.setItem("user", JSON.stringify(userDetails));
-
-    // Schedule logout based on token expiration
-    scheduleLogout(response.token, response.expiresInSeconds);
   };
 
   const signUp = async (userData: RegisterRequest) => {
     // Register the user
-    await authProvider.register(userData);
+    await authService.register(userData);
 
     // Auto-login after registration
     await signIn({ email: userData.email, password: userData.password });
   };
 
   const signOut = async () => {
-    if (logoutTimer) {
-      clearTimeout(logoutTimer);
-    }
-
     try {
-      const token = getToken();
-      if (token) {
-        await authProvider.logout(token);
-      }
+      // Backend reads tokens from cookies and clears them
+      await authService.logout();
       console.log("User logged out successfully");
     } catch (error) {
       console.error("Failed to log out", error);
@@ -87,9 +55,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     // Clear client-side state
     setUser(null);
     setUsername(null);
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("tokenExpiresAt");
   };
 
   function isLoggedIn() {
@@ -102,44 +68,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    const token = getToken();
     const storedUser = localStorage.getItem("user");
-    const tokenExpiresAt = localStorage.getItem("tokenExpiresAt");
 
-    if (token && storedUser) {
+    if (storedUser) {
       try {
-        // Check if token is already expired
-        if (tokenExpiresAt) {
-          const expiryTime = parseInt(tokenExpiresAt);
-          const now = Date.now();
-          
-          if (now >= expiryTime) {
-            // Token already expired, clear everything
-            signOut();
-            return;
-          }
-        }
-
-        // Verify token by fetching current user
-        authProvider
-          .getCurrentUser(token)
+        // Verify authentication by fetching current user (access token cookie is sent automatically)
+        authService
+          .getCurrentUser()
           .then((freshUser: AuthUser) => {
             setUser(freshUser);
             setUsername(`${freshUser.firstName} ${freshUser.lastName}`);
-
-            // Calculate remaining time until expiry
-            if (tokenExpiresAt) {
-              const expiryTime = parseInt(tokenExpiresAt);
-              const now = Date.now();
-              const remainingSeconds = Math.floor((expiryTime - now) / 1000);
-              scheduleLogout(token, remainingSeconds);
-            } else {
-              // Fallback if expiry time not stored
-              scheduleLogout(token, 900);
-            }
           })
           .catch(() => {
-            // Token is invalid, clear everything
+            // Access token is invalid or expired, clear everything
             signOut();
           });
       } catch {
@@ -147,7 +88,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         signOut();
       }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const value = { user, username, isLoggedIn, isLoggedInAs, signIn, signUp, signOut };
 

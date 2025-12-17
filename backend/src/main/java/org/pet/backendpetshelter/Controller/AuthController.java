@@ -22,13 +22,18 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private static final String REFRESH_COOKIE = "refresh_token";
+    private static final String ACCESS_COOKIE = "access_token";
 
     private final AuthService authService;
     private final long refreshMaxAge;
+    private final long accessMaxAge;
+    private final boolean cookieSecure;
 
     public AuthController(AuthService authService, JwtProperties props) {
         this.authService = authService;
         this.refreshMaxAge = props.getRefreshExpirationSeconds();
+        this.accessMaxAge = props.getAccessExpirationSeconds();
+        this.cookieSecure = props.isCookieSecure();
     }
 
     @PostMapping("/register")
@@ -41,9 +46,20 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse res) {
         var pair = authService.loginIssueTokens(request);
 
+        // Set access token cookie
+        ResponseCookie access = ResponseCookie.from(ACCESS_COOKIE, pair.getAccessToken())
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(accessMaxAge)
+                .sameSite("Strict")
+                .build();
+        res.addHeader(HttpHeaders.SET_COOKIE, access.toString());
+
+        // Set refresh token cookie
         ResponseCookie refresh = ResponseCookie.from(REFRESH_COOKIE, pair.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)            // true i prod (HTTPS)
+                .secure(cookieSecure)
                 .path("/api/auth")
                 .maxAge(refreshMaxAge)
                 .sameSite("Strict")      
@@ -51,7 +67,6 @@ public class AuthController {
         res.addHeader(HttpHeaders.SET_COOKIE, refresh.toString());
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + pair.getAccessToken())
                 .body(new AuthResponse(pair.getAccessToken(), "Bearer", pair.getAccessExpiresInSeconds()));
     }
 
@@ -63,9 +78,20 @@ public class AuthController {
         }
         var result = authService.rotateRefreshToken(refreshToken);
 
+        // Set new access token cookie
+        ResponseCookie access = ResponseCookie.from(ACCESS_COOKIE, result.getAccessToken())
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(accessMaxAge)
+                .sameSite("Strict")
+                .build();
+        res.addHeader(HttpHeaders.SET_COOKIE, access.toString());
+
+        // Set new refresh token cookie
         ResponseCookie refresh = ResponseCookie.from(REFRESH_COOKIE, result.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/api/auth")
                 .maxAge(refreshMaxAge)
                 .sameSite("Strict")
@@ -76,27 +102,43 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest req, HttpServletResponse res,
-                                       @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader) {
-        String accessToken = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            accessToken = authHeader.substring(7).trim();
-        }
+    public ResponseEntity<Void> logout(HttpServletRequest req, HttpServletResponse res) {
+        String accessToken = extractAccessCookie(req);
         String refreshToken = extractRefreshCookie(req);
 
         authService.logout(accessToken, refreshToken);
 
-        // Slet refresh cookie
-        ResponseCookie delete = ResponseCookie.from(REFRESH_COOKIE, "")
+        // Clear access token cookie
+        ResponseCookie deleteAccess = ResponseCookie.from(ACCESS_COOKIE, "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+        res.addHeader(HttpHeaders.SET_COOKIE, deleteAccess.toString());
+
+        // Clear refresh token cookie
+        ResponseCookie deleteRefresh = ResponseCookie.from(REFRESH_COOKIE, "")
+                .httpOnly(true)
+                .secure(cookieSecure)
                 .path("/api/auth")
                 .maxAge(0)
                 .sameSite("Strict")
                 .build();
-        res.addHeader(HttpHeaders.SET_COOKIE, delete.toString());
+        res.addHeader(HttpHeaders.SET_COOKIE, deleteRefresh.toString());
 
         return ResponseEntity.noContent().build();
+    }
+
+    private String extractAccessCookie(HttpServletRequest req) {
+        if (req.getCookies() == null) return null;
+        for (Cookie c : req.getCookies()) {
+            if (ACCESS_COOKIE.equals(c.getName())) {
+                return c.getValue();
+            }
+        }
+        return null;
     }
 
     private String extractRefreshCookie(HttpServletRequest req) {
