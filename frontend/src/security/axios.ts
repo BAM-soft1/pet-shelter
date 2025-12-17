@@ -29,9 +29,21 @@ const processQueue = (error: unknown) => {
 // Response interceptor for handling 401 errors and refreshing tokens
 axiosWithAuth.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => {
+  async (error: AxiosError<{ message?: string; status?: number; error?: string }>) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
+    };
+
+    // Enhanced error message
+    const enhanceError = (err: AxiosError<{ message?: string; status?: number; error?: string }>) => {
+      if (err.response?.data?.message) {
+        err.message = err.response.data.message;
+      } else if (err.response?.data?.error) {
+        err.message = err.response.data.error;
+      } else if (err.response?.statusText) {
+        err.message = `${err.response.status}: ${err.response.statusText}`;
+      }
+      return err;
     };
 
     // If error is 401 and we haven't tried to refresh yet
@@ -46,7 +58,7 @@ axiosWithAuth.interceptors.response.use(
             return axiosWithAuth(originalRequest);
           })
           .catch((err) => {
-            return Promise.reject(err);
+            return Promise.reject(enhanceError(err));
           });
       }
 
@@ -67,16 +79,19 @@ axiosWithAuth.interceptors.response.use(
         processQueue(refreshError);
         localStorage.removeItem("user");
 
+        console.error("Session expired. Redirecting to login...");
+
         // Redirect to login page
         window.location.href = "/login";
 
-        return Promise.reject(refreshError);
+        return Promise.reject(enhanceError(refreshError as AxiosError<{ message?: string; status?: number; error?: string }>));
       } finally {
         isRefreshing = false;
       }
     }
 
-    return Promise.reject(error);
+    // For other errors, enhance the error message
+    return Promise.reject(enhanceError(error));
   }
 );
 
