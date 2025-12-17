@@ -1,46 +1,30 @@
 import axios from "axios";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { API_URL } from "../settings";
-import getToken from "./authToken";
 import { authService } from "./authUtils";
 
 const axiosWithAuth = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Important: sends cookies with requests
+  withCredentials: true, // Important: sends cookies (access_token and refresh_token) with requests
 });
 
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (token: string) => void;
+  resolve: (value?: unknown) => void;
   reject: (error: unknown) => void;
 }> = [];
 
-const processQueue = (error: unknown, token: string | null = null) => {
+const processQueue = (error: unknown) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
-    } else if (token) {
-      prom.resolve(token);
+    } else {
+      prom.resolve();
     }
   });
 
   failedQueue = [];
 };
-
-// Interceptor that will run before every request made using axios
-axiosWithAuth.interceptors.request.use(
-  (config) => {
-    const token = getToken();
-    // If a token exists, add it to the req headers as a Bearer (for making authenticated reqs to API)
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) =>
-    // in case of error while setting up the request, reject the promise
-    Promise.reject(error)
-);
 
 // Response interceptor for handling 401 errors and refreshing tokens
 axiosWithAuth.interceptors.response.use(
@@ -57,8 +41,8 @@ axiosWithAuth.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
+          .then(() => {
+            // Retry with the new access token cookie set by refresh endpoint
             return axiosWithAuth(originalRequest);
           })
           .catch((err) => {
@@ -70,29 +54,18 @@ axiosWithAuth.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Try to refresh the token
-        const { token: newAccessToken, expiresInSeconds } = await authService.refreshToken();
+        // Try to refresh the token - new cookies are set by the backend
+        await authService.refreshToken();
 
-        // Store new token
-        localStorage.setItem("token", newAccessToken);
-        const expiresAt = Date.now() + expiresInSeconds * 1000;
-        localStorage.setItem("tokenExpiresAt", expiresAt.toString());
+        // Process all queued requests - they'll use the new access token cookie
+        processQueue(null);
 
-        // Update default authorization header
-        axiosWithAuth.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
-
-        // Process all queued requests with new token
-        processQueue(null, newAccessToken);
-
-        // Retry the original request with new token
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        // Retry the original request with new access token cookie
         return axiosWithAuth(originalRequest);
       } catch (refreshError) {
         // Refresh failed - clear auth state and redirect to login
-        processQueue(refreshError, null);
-        localStorage.removeItem("token");
+        processQueue(refreshError);
         localStorage.removeItem("user");
-        localStorage.removeItem("tokenExpiresAt");
 
         // Redirect to login page
         window.location.href = "/login";

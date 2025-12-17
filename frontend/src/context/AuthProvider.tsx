@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { authService } from "../security/authUtils";
 import type { LoginRequest, RegisterRequest, AuthUser } from "../types/types";
-import getToken from "../security/authToken";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -24,17 +23,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<string | null>(user ? `${user.firstName} ${user.lastName}` : null);
 
   const signIn = async (credentials: LoginRequest) => {
-    const response = await authService.signIn(credentials);
+    // Tokens are set as HttpOnly cookies by the backend
+    await authService.signIn(credentials);
 
-    // Store token and expiry time
-    localStorage.setItem("token", response.token);
-    const expiresAt = Date.now() + response.expiresInSeconds * 1000; // Calculate absolute expiry timestamp
-    localStorage.setItem("tokenExpiresAt", expiresAt.toString());
+    // Fetch full user details (access token cookie is automatically sent)
+    const userDetails = await authService.getCurrentUser();
 
-    // Fetch full user details
-    const userDetails = await authService.getCurrentUser(response.token);
-
-    // Store user info
+    // Store user info (non-sensitive display data)
     setUser(userDetails);
     setUsername(`${userDetails.firstName} ${userDetails.lastName}`);
     localStorage.setItem("user", JSON.stringify(userDetails));
@@ -50,10 +45,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
-      const token = getToken();
-      if (token) {
-        await authService.logout(token);
-      }
+      // Backend reads tokens from cookies and clears them
+      await authService.logout();
       console.log("User logged out successfully");
     } catch (error) {
       console.error("Failed to log out", error);
@@ -62,9 +55,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     // Clear client-side state
     setUser(null);
     setUsername(null);
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("tokenExpiresAt");
   };
 
   function isLoggedIn() {
@@ -77,20 +68,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    const token = getToken();
     const storedUser = localStorage.getItem("user");
 
-    if (token && storedUser) {
+    if (storedUser) {
       try {
-        // Verify token by fetching current user
+        // Verify authentication by fetching current user (access token cookie is sent automatically)
         authService
-          .getCurrentUser(token)
+          .getCurrentUser()
           .then((freshUser: AuthUser) => {
             setUser(freshUser);
             setUsername(`${freshUser.firstName} ${freshUser.lastName}`);
           })
           .catch(() => {
-            // Token is invalid, clear everything
+            // Access token is invalid or expired, clear everything
             signOut();
           });
       } catch {
