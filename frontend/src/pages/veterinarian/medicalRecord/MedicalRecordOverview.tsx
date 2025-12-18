@@ -147,15 +147,16 @@ export default function MedicalRecordOverview() {
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Medical Record Overview</h2>
+    <div className="p-4 md:p-6 bg-white rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-6 gap-4">
+        <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Medical Record Overview</h2>
         <button
           onClick={handleAddClick}
-          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
+          className="flex items-center px-3 py-2 md:px-4 text-sm md:text-base bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors whitespace-nowrap"
         >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Add Record
+          <PlusIcon className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
+          <span className="hidden sm:inline">Add Record</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
@@ -184,17 +185,37 @@ export default function MedicalRecordOverview() {
       <div className="flex gap-4 flex-wrap mb-6">
         <div>
           <span className="block text-sm font-medium mb-2">Animal Status</span>
-          <div className="flex gap-2">
-            <Button variant={animalStatus === undefined ? "default" : "outline"} size="sm" onClick={() => setAnimalStatus(undefined)}>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={animalStatus === undefined ? "default" : "outline"}
+              size="sm"
+              className="text-xs sm:text-sm"
+              onClick={() => setAnimalStatus(undefined)}
+            >
               All
             </Button>
-            <Button variant={animalStatus === "available" ? "default" : "outline"} size="sm" onClick={() => setAnimalStatus("available")}>
+            <Button
+              variant={animalStatus === "available" ? "default" : "outline"}
+              size="sm"
+              className="text-xs sm:text-sm"
+              onClick={() => setAnimalStatus("available")}
+            >
               Available
             </Button>
-            <Button variant={animalStatus === "fostered" ? "default" : "outline"} size="sm" onClick={() => setAnimalStatus("fostered")}>
+            <Button
+              variant={animalStatus === "fostered" ? "default" : "outline"}
+              size="sm"
+              className="text-xs sm:text-sm"
+              onClick={() => setAnimalStatus("fostered")}
+            >
               Fostered
             </Button>
-            <Button variant={animalStatus === "adopted" ? "default" : "outline"} size="sm" onClick={() => setAnimalStatus("adopted")}>
+            <Button
+              variant={animalStatus === "adopted" ? "default" : "outline"}
+              size="sm"
+              className="text-xs sm:text-sm"
+              onClick={() => setAnimalStatus("adopted")}
+            >
               Adopted
             </Button>
           </div>
@@ -202,19 +223,20 @@ export default function MedicalRecordOverview() {
 
         <div>
           <span className="block text-sm font-medium mb-2">Date Range</span>
-          <div className="flex gap-2 items-center">
+          <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="px-3 py-1.5 text-sm border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+              className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring w-full sm:w-auto"
             />
-            <span className="text-sm text-muted-foreground">to</span>
+            <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline">to</span>
+            <span className="text-xs text-muted-foreground sm:hidden text-center">to</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="px-3 py-1.5 text-sm border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+              className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring w-full sm:w-auto"
             />
           </div>
         </div>

@@ -116,20 +116,20 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg w-[95vw] sm:w-full">
         <DialogHeader>
-          <DialogTitle className="text-2xl">{record ? "Edit Medical Record" : "New Medical Record"}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl md:text-2xl">{record ? "Edit Medical Record" : "New Medical Record"}</DialogTitle>
+          <DialogDescription className="text-sm">
             {record ? "Update the details of the medical record." : "Fill in the details for a new medical record."}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 py-4">
+        <div className="space-y-4 md:space-y-5 py-4">
           <div className="space-y-2">
             <Label htmlFor="animalId">Patient</Label>
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-2 md:gap-3 items-center">
               {selectedAnimal?.imageUrl && (
-                <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-indigo-200 shrink-0">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden border-2 border-indigo-200 shrink-0">
                   <img src={selectedAnimal.imageUrl} alt={selectedAnimal.name} className="w-full h-full object-cover" />
                 </div>
               )}
@@ -138,7 +138,7 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
                 name="animalId"
                 value={formData.animalId ?? ""}
                 onChange={handleChange}
-                className="flex-1 h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="flex-1 h-10 px-2 md:px-3 rounded-md border border-input bg-background text-xs md:text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 <option value="" disabled>
                   Select an animal
@@ -153,38 +153,55 @@ export default function MedicalRecordFormDialog({ record, isOpen, onClose, onSub
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="date" className="text-sm">
+              Date
+            </Label>
             <DatePicker id="date" selectedDate={formData.date ? new Date(formData.date) : null} onDateChange={handleDateChange} className="w-full" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="diagnosis">Diagnosis</Label>
+              <Label htmlFor="diagnosis" className="text-sm">
+                Diagnosis
+              </Label>
               <Textarea
                 id="diagnosis"
                 name="diagnosis"
                 value={formData.diagnosis}
                 onChange={handleChange}
                 placeholder="Enter diagnosis..."
-                className="min-h-[100px] resize-none"
+                className="min-h-20 md:min-h-[100px] resize-none text-xs md:text-sm"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="treatment">Treatment</Label>
+              <Label htmlFor="treatment" className="text-sm">
+                Treatment
+              </Label>
               <Textarea
                 id="treatment"
                 name="treatment"
                 value={formData.treatment}
                 onChange={handleChange}
                 placeholder="Enter treatment..."
-                className="min-h-[100px] resize-none"
+                className="min-h-20 md:min-h-[100px] resize-none text-xs md:text-sm"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cost">Medical Cost: ($)</Label>
-            <Input type="number" id="cost" name="cost" value={formData.cost} onChange={handleChange} min={0} step={0.01} />
+            <Label htmlFor="cost" className="text-sm">
+              Medical Cost: ($)
+            </Label>
+            <Input
+              type="number"
+              id="cost"
+              name="cost"
+              value={formData.cost}
+              onChange={handleChange}
+              min={0}
+              step={0.01}
+              className="text-xs md:text-sm"
+            />
           </div>
 
           {error && <div className="p-3 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>}

@@ -19,10 +19,10 @@ export default function ApproveConfirmDialog({ application, isOpen, onClose, onC
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="w-[95vw] sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Approve Application</DialogTitle>
-          <DialogDescription>Are you sure you want to approve this adoption application?</DialogDescription>
+          <DialogTitle className="text-lg md:text-xl">Approve Application</DialogTitle>
+          <DialogDescription className="text-sm">Are you sure you want to approve this adoption application?</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">

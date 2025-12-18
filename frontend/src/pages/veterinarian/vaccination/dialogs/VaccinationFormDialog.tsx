@@ -120,10 +120,10 @@ export default function VaccinationFormDialog({ vaccination, isOpen, onClose, on
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg p-6">
+      <DialogContent className="max-w-lg w-[95vw] sm:w-full p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>{vaccination ? "Edit Vaccination" : "Add Vaccination"}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg md:text-xl">{vaccination ? "Edit Vaccination" : "Add Vaccination"}</DialogTitle>
+          <DialogDescription className="text-sm">
             {vaccination ? "Update the details of the vaccination." : "Fill in the details to add a new vaccination."}
           </DialogDescription>
         </DialogHeader>

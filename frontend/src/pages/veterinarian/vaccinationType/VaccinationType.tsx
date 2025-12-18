@@ -116,15 +116,16 @@ export default function VaccinationTypeOverview() {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Vaccination Types</h2>
+    <div className="p-4 md:p-6 bg-white rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-6 gap-4">
+        <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Vaccination Types</h2>
         <button
           onClick={handleAddClick}
-          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
+          className="flex items-center px-3 py-2 md:px-4 text-sm md:text-base bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors whitespace-nowrap"
         >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Add Vaccination Type
+          <PlusIcon className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
+          <span className="hidden sm:inline">Add Type</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 

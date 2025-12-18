@@ -178,16 +178,17 @@ export default function AdminAnimals() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-gray-800">Animal Management</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Animal Management</h2>
         </div>
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center gap-2"
+          className="bg-indigo-600 text-white px-3 py-2 md:px-6 md:py-3 rounded-lg font-semibold text-sm md:text-base hover:bg-indigo-700 transition-colors flex items-center gap-1 md:gap-2 whitespace-nowrap"
         >
-          <PlusIcon className="size-5" />
-          Add Animal
+          <PlusIcon className="size-4 md:size-5" />
+          <span className="hidden sm:inline">Add Animal</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
@@ -248,20 +249,27 @@ export default function AdminAnimals() {
 
             <div>
               <span className="block text-sm font-medium mb-2">Vaccination Status</span>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant={vaccinationStatusFilter === undefined ? "default" : "outline"}
                   size="sm"
+                  className="text-xs sm:text-sm"
                   onClick={() => setVaccinationStatusFilter(undefined)}
                 >
                   All
                 </Button>
-                <Button variant={vaccinationStatusFilter === true ? "default" : "outline"} size="sm" onClick={() => setVaccinationStatusFilter(true)}>
+                <Button
+                  variant={vaccinationStatusFilter === true ? "default" : "outline"}
+                  size="sm"
+                  className="text-xs sm:text-sm"
+                  onClick={() => setVaccinationStatusFilter(true)}
+                >
                   Fully Vaccinated
                 </Button>
                 <Button
                   variant={vaccinationStatusFilter === false ? "default" : "outline"}
                   size="sm"
+                  className="text-xs sm:text-sm"
                   onClick={() => setVaccinationStatusFilter(false)}
                 >
                   Needs Vaccinations

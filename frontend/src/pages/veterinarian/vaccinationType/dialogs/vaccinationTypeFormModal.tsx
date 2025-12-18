@@ -73,10 +73,10 @@ export default function VaccinationTypeFormModal({ vaccinationType, isOpen, onCl
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg w-[95vw] sm:w-full">
         <DialogHeader>
-          <DialogTitle>{vaccinationType ? "Edit Vaccination Type" : "Add Vaccination Type"}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg md:text-xl">{vaccinationType ? "Edit Vaccination Type" : "Add Vaccination Type"}</DialogTitle>
+          <DialogDescription className="text-sm">
             {vaccinationType ? "Update the details of the vaccination type." : "Fill in the details for the new vaccination type."}
           </DialogDescription>
         </DialogHeader>
