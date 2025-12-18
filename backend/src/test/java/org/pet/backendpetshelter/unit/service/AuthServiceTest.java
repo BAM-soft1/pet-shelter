@@ -272,6 +272,7 @@ class AuthServiceTest {
         void testWeakPasswordThrowsException() {
             RegisterUserRequest request = createValidRequest();
             request.setPassword("Pass123");
+            
             when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
 
             IllegalArgumentException exception = assertThrows(
