@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import type { VaccinationType } from "@/types/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
@@ -116,15 +118,16 @@ export default function VaccinationTypeOverview() {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Vaccination Types</h2>
+    <div className="p-4 md:p-6 bg-white rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-6 gap-4">
+        <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Vaccination Types</h2>
         <button
           onClick={handleAddClick}
-          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors"
+          className="flex items-center px-3 py-2 md:px-4 text-sm md:text-base bg-indigo-600 text-white rounded hover:bg-indigo-500 transition-colors whitespace-nowrap"
         >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Add Vaccination Type
+          <PlusIcon className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
+          <span className="hidden sm:inline">Add Type</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
@@ -169,49 +172,91 @@ export default function VaccinationTypeOverview() {
         <p>Loading...</p>
       ) : error ? (
         <p className="text-red-500">Error: {error}</p>
+      ) : vaccinationTypes.length === 0 ? (
+        <p className="text-center py-12 text-muted-foreground">No vaccination types found.</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Duration (Months)</TableHead>
-              <TableHead>Required for Adoption</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {vaccinationTypes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center">
-                  No vaccination types found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              vaccinationTypes.map((type) => (
-                <TableRow key={type.id}>
-                  <TableCell>{type.vaccineName}</TableCell>
-                  <TableCell>{type.description}</TableCell>
-                  <TableCell>{type.durationMonths}</TableCell>
-                  <TableCell>{type.requiredForAdoption ? "Yes" : "No"}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <button onClick={() => handleViewClick(type)} className="text-green-600 hover:text-green-800" title="View details">
-                        <EyeIcon className="h-5 w-5" />
-                      </button>
-                      <button onClick={() => handleEditClick(type)} className="text-blue-600 hover:text-blue-800" title="Edit vaccination type">
-                        <PencilIcon className="h-5 w-5" />
-                      </button>
-                      <button onClick={() => handleDeleteClick(type)} className="text-red-600 hover:text-red-800" title="Delete vaccination type">
-                        <TrashIcon className="h-5 w-5" />
-                      </button>
+        <>
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4 px-4">
+            {vaccinationTypes.map((type) => (
+              <Card key={type.id}>
+                <CardContent className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-base truncate">{type.vaccineName}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{type.description}</p>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <button onClick={() => handleViewClick(type)} className="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded" title="View">
+                          <EyeIcon className="h-4 w-4" />
+                        </button>
+                        <button onClick={() => handleEditClick(type)} className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded" title="Edit">
+                          <PencilIcon className="h-4 w-4" />
+                        </button>
+                        <button onClick={() => handleDeleteClick(type)} className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded" title="Delete">
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
-                  </TableCell>
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Duration:</span>
+                        <span className="font-medium">{type.durationMonths} months</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Required:</span>
+                        {type.requiredForAdoption ? (
+                          <Badge className="bg-green-500 hover:bg-green-600 text-xs">Required</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs">Optional</Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Duration (Months)</TableHead>
+                  <TableHead>Required for Adoption</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              </TableHeader>
+              <TableBody>
+                {vaccinationTypes.map((type) => (
+                  <TableRow key={type.id}>
+                    <TableCell>{type.vaccineName}</TableCell>
+                    <TableCell>{type.description}</TableCell>
+                    <TableCell>{type.durationMonths}</TableCell>
+                    <TableCell>{type.requiredForAdoption ? "Yes" : "No"}</TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <button onClick={() => handleViewClick(type)} className="text-green-600 hover:text-green-800" title="View details">
+                          <EyeIcon className="h-5 w-5" />
+                        </button>
+                        <button onClick={() => handleEditClick(type)} className="text-blue-600 hover:text-blue-800" title="Edit vaccination type">
+                          <PencilIcon className="h-5 w-5" />
+                        </button>
+                        <button onClick={() => handleDeleteClick(type)} className="text-red-600 hover:text-red-800" title="Delete vaccination type">
+                          <TrashIcon className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       <PaginationControls currentPage={currentPage} totalPages={totalPages} totalElements={totalElements} onPageChange={setCurrentPage} />

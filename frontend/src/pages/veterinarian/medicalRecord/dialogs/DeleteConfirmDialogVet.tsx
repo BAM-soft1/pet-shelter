@@ -1,13 +1,6 @@
 import { useState } from "react";
 import type { MedicalRecord } from "@/types/types";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
@@ -18,12 +11,7 @@ type DeleteConfirmDialogVetProps = {
   onConfirm: () => Promise<void>;
 };
 
-export default function DeleteConfirmDialogVet({
-  record,
-  isOpen,
-  onClose,
-  onConfirm,
-}: DeleteConfirmDialogVetProps) {
+export default function DeleteConfirmDialogVet({ record, isOpen, onClose, onConfirm }: DeleteConfirmDialogVetProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -42,17 +30,15 @@ export default function DeleteConfirmDialogVet({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md w-[95vw] sm:w-full">
         <DialogHeader>
-          <div className="flex items-center gap-4">
-            <div className="shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-              <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-red-100 flex items-center justify-center">
+              <ExclamationTriangleIcon className="w-5 h-5 md:w-6 md:h-6 text-red-600" />
             </div>
             <div>
-              <DialogTitle className="text-lg">Delete Medical Record</DialogTitle>
-              <DialogDescription className="mt-1">
-                This action cannot be undone.
-              </DialogDescription>
+              <DialogTitle className="text-base md:text-lg">Delete Medical Record</DialogTitle>
+              <DialogDescription className="mt-1 text-sm">This action cannot be undone.</DialogDescription>
             </div>
           </div>
         </DialogHeader>
@@ -62,17 +48,11 @@ export default function DeleteConfirmDialogVet({
             <div className="flex gap-4">
               {record.animal?.imageUrl && (
                 <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0">
-                  <img
-                    src={record.animal.imageUrl}
-                    alt={record.animal.name}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={record.animal.imageUrl} alt={record.animal.name} className="w-full h-full object-cover" />
                 </div>
               )}
               <div className="space-y-1">
-                <p className="font-semibold text-gray-900">
-                  Record #{record.id}
-                </p>
+                <p className="font-semibold text-gray-900">Record #{record.id}</p>
                 <p className="text-sm text-gray-600">
                   Patient: <span className="font-medium">{record.animal?.name || "Unknown"}</span>
                 </p>

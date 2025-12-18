@@ -33,10 +33,10 @@ export default function DeleteConfirmDialog({ animal, isOpen, onClose, onConfirm
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md w-[95vw] sm:w-full">
         <DialogHeader>
-          <DialogTitle>Delete Animal</DialogTitle>
-          <DialogDescription>Are you sure you want to delete this animal? This action cannot be undone.</DialogDescription>
+          <DialogTitle className="text-lg md:text-xl">Delete Animal</DialogTitle>
+          <DialogDescription className="text-sm">Are you sure you want to delete this animal? This action cannot be undone.</DialogDescription>
         </DialogHeader>
 
         <div className="py-4 space-y-3">

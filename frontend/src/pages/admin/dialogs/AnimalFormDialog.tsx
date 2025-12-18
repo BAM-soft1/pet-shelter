@@ -152,10 +152,10 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <DialogTitle className="text-lg md:text-xl">{title}</DialogTitle>
+          <DialogDescription className="text-sm">{description}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
@@ -175,7 +175,7 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
             </div>
 
             {/* Species and Breed */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="species">Species *</Label>
                 <select
@@ -220,7 +220,7 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
             </div>
 
             {/* Birth Date and Intake Date */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="birthDate">Birth Date *</Label>
                 <Input
@@ -244,7 +244,7 @@ export default function AnimalFormDialog({ animal, isOpen, onClose, onSubmit, ti
             </div>
 
             {/* Sex and Status */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="sex">Sex *</Label>
                 <select

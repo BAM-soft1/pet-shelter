@@ -80,45 +80,93 @@ export default function AdminAdoptions() {
           {adoptions.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">No adoptions found.</p>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Animal</TableHead>
-                    <TableHead>Species</TableHead>
-                    <TableHead>Breed</TableHead>
-                    <TableHead>Adopter</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Adoption Date</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {adoptions.map((adoption) => (
-                    <TableRow key={adoption.id}>
-                      <TableCell className="font-medium">{adoption.animal.name}</TableCell>
-                      <TableCell>{adoption.animal.species.name}</TableCell>
-                      <TableCell>{adoption.animal.breed?.name || "N/A"}</TableCell>
-                      <TableCell>
-                        {adoption.user.firstName} {adoption.user.lastName}
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          <div>{adoption.user.email}</div>
-                          {adoption.user.phone && <div className="text-muted-foreground">{adoption.user.phone}</div>}
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {adoptions.map((adoption) => (
+                  <Card key={adoption.id}>
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-base truncate">{adoption.animal.name}</h3>
+                            <p className="text-xs text-muted-foreground">
+                              {adoption.animal.species.name} • {adoption.animal.breed?.name || "N/A"}
+                            </p>
+                          </div>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 shrink-0">
+                            {adoption.animal.status}
+                          </span>
                         </div>
-                      </TableCell>
-                      <TableCell>{formatDate(adoption.adoptionDate)}</TableCell>
-                      <TableCell className="text-right">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          {adoption.animal.status}
-                        </span>
-                      </TableCell>
+                        <div className="space-y-1.5 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Adopter:</span>
+                            <span className="font-medium">
+                              {adoption.user.firstName} {adoption.user.lastName}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Email:</span>
+                            <span className="text-xs truncate max-w-[200px]">{adoption.user.email}</span>
+                          </div>
+                          {adoption.user.phone && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Phone:</span>
+                              <span className="text-xs">{adoption.user.phone}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Adopted:</span>
+                            <span className="text-xs">{formatDate(adoption.adoptionDate)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Animal</TableHead>
+                      <TableHead>Species</TableHead>
+                      <TableHead>Breed</TableHead>
+                      <TableHead>Adopter</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Adoption Date</TableHead>
+                      <TableHead className="text-right">Status</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {adoptions.map((adoption) => (
+                      <TableRow key={adoption.id}>
+                        <TableCell className="font-medium">{adoption.animal.name}</TableCell>
+                        <TableCell>{adoption.animal.species.name}</TableCell>
+                        <TableCell>{adoption.animal.breed?.name || "N/A"}</TableCell>
+                        <TableCell>
+                          {adoption.user.firstName} {adoption.user.lastName}
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            <div>{adoption.user.email}</div>
+                            {adoption.user.phone && <div className="text-muted-foreground">{adoption.user.phone}</div>}
+                          </div>
+                        </TableCell>
+                        <TableCell>{formatDate(adoption.adoptionDate)}</TableCell>
+                        <TableCell className="text-right">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {adoption.animal.status}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
