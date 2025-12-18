@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { Animal, AnimalRequest } from "@/types/types";
 import { AnimalService } from "@/api/animals";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -278,7 +279,78 @@ export default function AdminAnimals() {
             </div>
           </div>
         </div>
-        <div className="p-6">
+
+        {/* Mobile Card View */}
+        <div className="md:hidden p-4 space-y-4">
+          {animals.map((animal) => {
+            const age = calculateAge(animal.birthDate);
+            return (
+              <Card key={animal.id}>
+                <CardContent className="p-4">
+                  <div className="flex gap-4">
+                    {animal.imageUrl && <img src={animal.imageUrl} alt={animal.name} className="w-20 h-20 rounded-lg object-cover shrink-0" />}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-lg truncate">{animal.name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {animal.species.name} {animal.breed && `• ${animal.breed.name}`}
+                          </p>
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <button
+                            onClick={() => openEditDialog(animal)}
+                            className="p-2 text-gray-600 hover:text-indigo-600 hover:bg-gray-100 rounded transition-colors"
+                          >
+                            <PencilIcon className="size-4" />
+                          </button>
+                          <button
+                            onClick={() => openDeleteDialog(animal)}
+                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          >
+                            <TrashIcon className="size-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-1.5 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Age:</span>
+                          <span className="font-medium">
+                            {age} {age === 1 ? "yr" : "yrs"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Sex:</span>
+                          <span className="font-medium capitalize">{animal.sex}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Price:</span>
+                          <span className="font-medium">${animal.price}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Status:</span>
+                          <div className="flex gap-2">
+                            <Badge variant="outline" className="capitalize text-xs">
+                              {animal.status}
+                            </Badge>
+                            {animal.isActive ? (
+                              <Badge className="bg-green-500 hover:bg-green-600 text-xs">Active</Badge>
+                            ) : (
+                              <Badge className="bg-gray-500 hover:bg-gray-600 text-xs">Inactive</Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block p-6">
           <Table>
             <TableHeader>
               <TableRow>

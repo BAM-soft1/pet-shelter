@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import PaginationControls from "@/components/ui/PaginationControls";
 import SearchAndFilter from "@/components/ui/SearchAndFilter";
 import { AdoptionApplicationService } from "../../api/adoptionApplication";
@@ -108,71 +109,126 @@ export default function AdminApplications() {
           </div>
         </div>
 
-        <div className="p-6">
-          {applications.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No applications found.</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Animal</TableHead>
-                  <TableHead>Applicant</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Applied</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {applications.map((application) => (
-                  <TableRow key={application.id}>
-                    <TableCell className="font-medium">{application.id}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{application.animal.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {application.animal.species.name}
-                          {application.animal.breed && ` • ${application.animal.breed.name}`}
-                        </span>
+        {applications.length === 0 ? (
+          <p className="text-muted-foreground text-center py-8">No applications found.</p>
+        ) : (
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden p-4 space-y-4">
+              {applications.map((application) => (
+                <Card key={application.id}>
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-base truncate">{application.animal.name}</h3>
+                          <p className="text-xs text-muted-foreground">
+                            {application.animal.species.name}
+                            {application.animal.breed && ` • ${application.animal.breed.name}`}
+                          </p>
+                        </div>
+                        <Badge
+                          variant={application.status === "REJECTED" ? "destructive" : "default"}
+                          className={`shrink-0 text-xs ${application.status === "APPROVED" ? "bg-green-500 hover:bg-green-600" : ""}`}
+                        >
+                          {application.status === "PENDING" ? "Pending" : application.status === "APPROVED" ? "Approved" : "Rejected"}
+                        </Badge>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-medium">
-                        {application.user.firstName} {application.user.lastName}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm">{application.user.email}</span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={application.status === "REJECTED" ? "destructive" : "default"}
-                        className={application.status === "APPROVED" ? "bg-green-500 hover:bg-green-600" : ""}
-                      >
-                        {application.status === "PENDING" ? "Pending" : application.status === "APPROVED" ? "Approved" : "Rejected"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-muted-foreground">
-                        {new Date(application.applicationDate).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="outline" size="sm" onClick={() => handleReview(application)}>
-                        Review
+                      <div className="space-y-1.5 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Applicant:</span>
+                          <span className="font-medium">
+                            {application.user.firstName} {application.user.lastName}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Email:</span>
+                          <span className="text-xs truncate max-w-[200px]">{application.user.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Applied:</span>
+                          <span className="text-xs">
+                            {new Date(application.applicationDate).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" className="w-full" onClick={() => handleReview(application)}>
+                        Review Application
                       </Button>
-                    </TableCell>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block p-6">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Animal</TableHead>
+                    <TableHead>Applicant</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Applied</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </div>
+                </TableHeader>
+                <TableBody>
+                  {applications.map((application) => (
+                    <TableRow key={application.id}>
+                      <TableCell className="font-medium">{application.id}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{application.animal.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {application.animal.species.name}
+                            {application.animal.breed && ` • ${application.animal.breed.name}`}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="font-medium">
+                          {application.user.firstName} {application.user.lastName}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm">{application.user.email}</span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={application.status === "REJECTED" ? "destructive" : "default"}
+                          className={application.status === "APPROVED" ? "bg-green-500 hover:bg-green-600" : ""}
+                        >
+                          {application.status === "PENDING" ? "Pending" : application.status === "APPROVED" ? "Approved" : "Rejected"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {new Date(application.applicationDate).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="outline" size="sm" onClick={() => handleReview(application)}>
+                          Review
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </>
+        )}
       </div>
 
       <PaginationControls currentPage={currentPage} totalPages={totalPages} totalElements={totalElements} onPageChange={setCurrentPage} />

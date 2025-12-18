@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { MedicalRecord } from "@/types/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { getErrorMessage } from "@/services/fetchUtils";
@@ -249,44 +250,109 @@ export default function MedicalRecordOverview() {
       ) : records.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No medical records found</div>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Record ID</TableHead>
-              <TableHead>Animal Name</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Diagnosis</TableHead>
-              <TableHead>Treatment</TableHead>
-              <TableHead>Medical Price</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+        <>
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4 px-4">
             {records.map((record) => (
-              <TableRow key={record.id}>
-                <TableCell>{record.id}</TableCell>
-                <TableCell>{record.animal?.name || "N/A"}</TableCell>
-                <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
-                <TableCell>{record.diagnosis}</TableCell>
-                <TableCell>{record.treatment}</TableCell>
-                <TableCell>${record.cost.toFixed(2)}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleViewClick(record)} className="text-green-600 hover:text-green-800" title="View details">
-                      <EyeIcon className="h-5 w-5" />
-                    </button>
-                    <button onClick={() => handleEditClick(record)} className="text-blue-600 hover:text-blue-800" title="Edit">
-                      <PencilIcon className="h-5 w-5" />
-                    </button>
-                    <button onClick={() => handleDeleteClick(record)} className="text-red-600 hover:text-red-800" title="Delete">
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
+              <Card key={record.id}>
+                <CardContent className="p-4">
+                  <div className="flex gap-4">
+                    {record.animal?.imageUrl && (
+                      <img src={record.animal.imageUrl} alt={record.animal.name} className="w-16 h-16 rounded-lg object-cover shrink-0" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-base truncate">{record.animal?.name || "N/A"}</h3>
+                          <p className="text-xs text-muted-foreground">{new Date(record.date).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <button
+                            onClick={() => handleViewClick(record)}
+                            className="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded"
+                            title="View"
+                          >
+                            <EyeIcon className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleEditClick(record)}
+                            className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                            title="Edit"
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(record)}
+                            className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                            title="Delete"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-1.5 text-sm">
+                        <div>
+                          <span className="text-muted-foreground text-xs">Diagnosis: </span>
+                          <span className="text-xs line-clamp-2">{record.diagnosis}</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground text-xs">Treatment: </span>
+                          <span className="text-xs line-clamp-2">{record.treatment}</span>
+                        </div>
+                        <div className="flex justify-between items-center pt-1">
+                          <span className="text-muted-foreground text-xs">Cost:</span>
+                          <span className="font-semibold text-green-600">${record.cost.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </TableCell>
-              </TableRow>
+                </CardContent>
+              </Card>
             ))}
-          </TableBody>
-        </Table>
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Record ID</TableHead>
+                  <TableHead>Animal Name</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Diagnosis</TableHead>
+                  <TableHead>Treatment</TableHead>
+                  <TableHead>Medical Price</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {records.map((record) => (
+                  <TableRow key={record.id}>
+                    <TableCell>{record.id}</TableCell>
+                    <TableCell>{record.animal?.name || "N/A"}</TableCell>
+                    <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{record.diagnosis}</TableCell>
+                    <TableCell>{record.treatment}</TableCell>
+                    <TableCell>${record.cost.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <button onClick={() => handleViewClick(record)} className="text-green-600 hover:text-green-800" title="View details">
+                          <EyeIcon className="h-5 w-5" />
+                        </button>
+                        <button onClick={() => handleEditClick(record)} className="text-blue-600 hover:text-blue-800" title="Edit">
+                          <PencilIcon className="h-5 w-5" />
+                        </button>
+                        <button onClick={() => handleDeleteClick(record)} className="text-red-600 hover:text-red-800" title="Delete">
+                          <TrashIcon className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       <PaginationControls currentPage={currentPage} totalPages={totalPages} totalElements={totalElements} onPageChange={setCurrentPage} />
