@@ -8,7 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,7 +115,6 @@ public class Neo4jMigrator implements CommandLineRunner {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void run(String... args) {
         if (!migrationEnabled) {
             System.out.println("Neo4j migration disabled. Set migration.neo4j.enabled=true to run.");
