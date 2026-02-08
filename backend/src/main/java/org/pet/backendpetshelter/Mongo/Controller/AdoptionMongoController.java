@@ -30,9 +30,9 @@ public class AdoptionMongoController {
         return adoptionService.getAdoptionById(id);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<AdoptionDocument> addAdoption(@RequestBody AdoptionDocument adoption) {
-        return ResponseEntity.status(201).body(adoptionService.addAdoption(adoption));
+      @PostMapping("/add")
+    public ResponseEntity<AdoptionDocument> create(@RequestBody AdoptionDocument adoption) {
+        return ResponseEntity.status(201).body(adoptionService.createAdoption(adoption));
     }
 
     @PutMapping("/update/{id}")

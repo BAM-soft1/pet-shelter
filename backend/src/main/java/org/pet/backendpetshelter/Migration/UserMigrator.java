@@ -47,16 +47,17 @@ public class UserMigrator implements CommandLineRunner {
         System.out.println("Migrated " + docs.size() + " users to MongoDB");
     }
 
+    
     private UserDocument toDocument(User u) {
         return UserDocument.builder()
-                .id(u.getId() != null ? u.getId().toString() : null)
+                .id(u.getId().toString())
                 .email(u.getEmail())
-                .password(u.getPassword())
                 .firstName(u.getFirstName())
                 .lastName(u.getLastName())
                 .phone(u.getPhone())
-                .isActive(u.getIsActive())
-                .role(u.getRole())
+                .password(u.getPassword())
+                .role(u.getRole() != null ? u.getRole().name() : null)  // <-- .name() konverterer enum til String
+                .isActive(u.getIsActive() != null ? u.getIsActive() : true)
                 .build();
     }
 }

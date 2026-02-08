@@ -7,17 +7,40 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
 @Document(collection = "adoptions")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class AdoptionDocument {
-
     @Id
     private String id;
 
-    private String applicationId;
     private Date adoptionDate;
-    private Boolean isActive;
+    private boolean isActive;
+
+    private EmbeddedAdopter adopter;
+    private EmbeddedAnimal animal;
+    private EmbeddedApplication application;
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class EmbeddedAdopter {
+        private String name;
+        private String email;
+        private String phone;
+    }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class EmbeddedAnimal {
+        private String name;
+        private String species;
+        private String breed;
+        private String imageUrl;
+    }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class EmbeddedApplication {
+        private Date applicationDate;
+        private String status;
+        private String description;
+    }
 }

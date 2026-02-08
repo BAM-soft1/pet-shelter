@@ -30,10 +30,11 @@ public class AdoptionApplicationMongoController {
         return applicationService.getApplicationById(id);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<AdoptionApplicationDocument> addApplication(@RequestBody AdoptionApplicationDocument application) {
-        return ResponseEntity.status(201).body(applicationService.addApplication(application));
+      @PostMapping("/add")
+    public ResponseEntity<AdoptionApplicationDocument> create(@RequestBody AdoptionApplicationDocument application) {
+        return ResponseEntity.status(201).body(applicationService.createApplication(application));
     }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<AdoptionApplicationDocument> updateApplication(@PathVariable String id, @RequestBody AdoptionApplicationDocument application) {

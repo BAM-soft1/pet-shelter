@@ -33,21 +33,18 @@ public class AnimalDocument {
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EmbeddedSpecies {
-        private String id;
         private String name;
         private String description;
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EmbeddedBreed {
-        private String id;
         private String name;
-        private String description;
+        private String speciesName;
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EmbeddedVaccination {
-        private String id;
         private String vaccineName;
         private String description;
         private int durationMonths;
@@ -59,7 +56,6 @@ public class AnimalDocument {
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EmbeddedMedicalRecord {
-        private String id;
         private Date date;
         private String diagnosis;
         private String treatment;
@@ -68,28 +64,24 @@ public class AnimalDocument {
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class EmbeddedVet {
+        private String firstName;
+        private String lastName;
+        private String email;
+    }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EmbeddedAdoptionApplication {
-        private String id;
         private Date applicationDate;
-        private String description;
         private String status;
+        private String description;
         private EmbeddedApplicant applicant;
-        private EmbeddedApplicant reviewedBy;
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EmbeddedApplicant {
-        private String id;
         private String name;
         private String email;
         private String phone;
-    }
-
-    @Data @Builder @NoArgsConstructor @AllArgsConstructor
-    public static class EmbeddedVet {
-        private String id;
-        private String firstName;
-        private String lastName;
-        private String email;
     }
 }

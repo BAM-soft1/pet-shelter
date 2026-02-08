@@ -2,14 +2,15 @@ package org.pet.backendpetshelter.Migration;
 
 import org.pet.backendpetshelter.Entity.AdoptionApplication;
 import org.pet.backendpetshelter.Mongo.Entity.AdoptionApplicationDocument;
-import org.springframework.transaction.annotation.Transactional;
 import org.pet.backendpetshelter.Mongo.Repository.AdoptionApplicationMongoRepository;
 import org.pet.backendpetshelter.Repository.AdoptionApplicationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Collectors;
 
 @Component
 @Profile("migrate-mongo")
@@ -31,18 +32,14 @@ public class AdoptionApplicationMigrator implements CommandLineRunner {
     @Transactional(readOnly = true)
     public void run(String... args) {
         if (!migrationEnabled) {
-            System.out.println("Adoptionapplication migration is disabled. Skipping...");
+            System.out.println("AdoptionApplication migration is disabled. Skipping...");
             return;
         }
 
-        System.out.println("Starting adoptionapplication migration...");
+        System.out.println("Starting adoption application migration...");
 
-        var adoptionsApplications = adoptionApplicationRepository.findAll();
-
-        var docs = adoptionsApplications.stream()
-                .map(this::toDocument)
-                .toList();
-
+        var applications = adoptionApplicationRepository.findAll();
+        var docs = applications.stream().map(this::toDocument).collect(Collectors.toList());
         adoptionApplicationMongoRepository.saveAll(docs);
 
         System.out.println("Migrated " + docs.size() + " adoption applications to MongoDB");
@@ -50,40 +47,33 @@ public class AdoptionApplicationMigrator implements CommandLineRunner {
 
     private AdoptionApplicationDocument toDocument(AdoptionApplication a) {
         return AdoptionApplicationDocument.builder()
-                .id(toStringOrNull(a.getId()))
-                .user(toEmbeddedUser(a.getUser()))
-                .animal(toEmbeddedAnimal(a.getAnimal()))
+                .id(a.getId().toString())
                 .applicationDate(a.getApplicationDate())
                 .status(a.getStatus() != null ? a.getStatus().name() : null)
                 .description(a.getDescription())
-                .isActive(a.getIsActive())
-                .reviewedBy(a.getReviewedByUser() != null ? toEmbeddedUser(a.getReviewedByUser()) : null)
+                .isActive(a.getIsActive() != null ? a.getIsActive() : true)
+                .applicant(a.getUser() != null ?
+                        AdoptionApplicationDocument.EmbeddedApplicant.builder()
+                                .name(a.getUser().getFirstName() + " " + a.getUser().getLastName())
+                                .email(a.getUser().getEmail())
+                                .phone(a.getUser().getPhone())
+                                .build()
+                        : null)
+                .animal(a.getAnimal() != null ?
+                        AdoptionApplicationDocument.EmbeddedAnimal.builder()
+                                .name(a.getAnimal().getName())
+                                .species(a.getAnimal().getSpecies() != null ? a.getAnimal().getSpecies().getName() : null)
+                                .breed(a.getAnimal().getBreed() != null ? a.getAnimal().getBreed().getName() : null)
+                                .status(a.getAnimal().getStatus() != null ? a.getAnimal().getStatus().name() : null)
+                                .imageUrl(a.getAnimal().getImageUrl())
+                                .build()
+                        : null)
+                .reviewedBy(a.getReviewedByUser() != null ?
+                        AdoptionApplicationDocument.EmbeddedReviewer.builder()
+                                .name(a.getReviewedByUser().getFirstName() + " " + a.getReviewedByUser().getLastName())
+                                .email(a.getReviewedByUser().getEmail())
+                                .build()
+                        : null)
                 .build();
-    }
-
-    private AdoptionApplicationDocument.EmbeddedUser toEmbeddedUser(org.pet.backendpetshelter.Entity.User u) {
-        if (u == null) return null;
-        return AdoptionApplicationDocument.EmbeddedUser.builder()
-                .id(toStringOrNull(u.getId()))
-                .name(u.getFirstName() + " " + u.getLastName())
-                .email(u.getEmail())
-                .phone(u.getPhone())
-                .build();
-    }
-
-    private AdoptionApplicationDocument.EmbeddedAnimal toEmbeddedAnimal(org.pet.backendpetshelter.Entity.Animal a) {
-        if (a == null) return null;
-        return AdoptionApplicationDocument.EmbeddedAnimal.builder()
-                .id(toStringOrNull(a.getId()))
-                .name(a.getName())
-                .species(a.getSpecies() != null ? a.getSpecies().getName() : null)
-                .breed(a.getBreed() != null ? a.getBreed().getName() : null)
-                .status(a.getStatus() != null ? a.getStatus().name() : null)
-                .imageUrl(a.getImageUrl())
-                .build();
-    }
-
-    private String toStringOrNull(Long id) {
-        return id != null ? id.toString() : null;
     }
 }

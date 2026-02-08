@@ -27,23 +27,21 @@ public class AdoptionMongoService {
                 .orElseThrow(() -> new RuntimeException("Adoption not found with id: " + id));
     }
 
-    public AdoptionDocument addAdoption(AdoptionDocument adoption) {
+    public AdoptionDocument createAdoption(AdoptionDocument adoption) {
         if (adoption.getId() == null) {
             adoption.setId(UUID.randomUUID().toString());
         }
-        adoption.setIsActive(true);
         return adoptionRepository.save(adoption);
     }
 
     public AdoptionDocument updateAdoption(String id, AdoptionDocument request) {
-        AdoptionDocument adoption = adoptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adoption not found with id: " + id));
-        
-        adoption.setAdoptionDate(request.getAdoptionDate());
-        adoption.setIsActive(request.getIsActive());
-        adoption.setApplicationId(request.getApplicationId());
-        
-        return adoptionRepository.save(adoption);
+        AdoptionDocument existing = getAdoptionById(id);
+        existing.setAdoptionDate(request.getAdoptionDate());
+        existing.setActive(request.isActive());
+        existing.setAdopter(request.getAdopter());
+        existing.setAnimal(request.getAnimal());
+        existing.setApplication(request.getApplication());
+        return adoptionRepository.save(existing);
     }
 
     public void deleteAdoption(String id) {

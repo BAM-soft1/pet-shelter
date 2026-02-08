@@ -27,7 +27,7 @@ public class AdoptionApplicationMongoService {
                 .orElseThrow(() -> new RuntimeException("Adoption Application not found with id: " + id));
     }
 
-    public AdoptionApplicationDocument addApplication(AdoptionApplicationDocument application) {
+    public AdoptionApplicationDocument createApplication(AdoptionApplicationDocument application) {
         if (application.getId() == null) {
             application.setId(UUID.randomUUID().toString());
         }
@@ -35,19 +35,15 @@ public class AdoptionApplicationMongoService {
     }
 
     public AdoptionApplicationDocument updateApplication(String id, AdoptionApplicationDocument request) {
-        AdoptionApplicationDocument application = applicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adoption Application not found with id: " + id));
-
-        // Embedded objekter — ikke userId/animalId
-        application.setUser(request.getUser());
-        application.setAnimal(request.getAnimal());
-        application.setApplicationDate(request.getApplicationDate());
-        application.setDescription(request.getDescription());
-        application.setStatus(request.getStatus());
-        application.setActive(request.isActive());
-        application.setReviewedBy(request.getReviewedBy());
-
-        return applicationRepository.save(application);
+        AdoptionApplicationDocument existing = getApplicationById(id);
+        existing.setApplicant(request.getApplicant());
+        existing.setAnimal(request.getAnimal());
+        existing.setApplicationDate(request.getApplicationDate());
+        existing.setDescription(request.getDescription());
+        existing.setStatus(request.getStatus());
+        existing.setActive(request.isActive());
+        existing.setReviewedBy(request.getReviewedBy());
+        return applicationRepository.save(existing);
     }
 
     public void deleteApplication(String id) {

@@ -15,20 +15,17 @@ public class AdoptionApplicationDocument {
     @Id
     private String id;
 
-    // EMBEDDED — ikke userId/animalId
-    private EmbeddedUser user;
-    private EmbeddedAnimal animal;
-
     private Date applicationDate;
     private String status;
     private String description;
     private boolean isActive;
 
-    private EmbeddedUser reviewedBy;
+    private EmbeddedApplicant applicant;
+    private EmbeddedAnimal animal;
+    private EmbeddedReviewer reviewedBy;
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
-    public static class EmbeddedUser {
-        private String id;
+    public static class EmbeddedApplicant {
         private String name;
         private String email;
         private String phone;
@@ -36,11 +33,16 @@ public class AdoptionApplicationDocument {
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class EmbeddedAnimal {
-        private String id;
         private String name;
         private String species;
         private String breed;
         private String status;
         private String imageUrl;
+    }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class EmbeddedReviewer {
+        private String name;
+        private String email;
     }
 }
