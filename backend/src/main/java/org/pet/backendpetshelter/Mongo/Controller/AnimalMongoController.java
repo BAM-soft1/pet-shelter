@@ -9,40 +9,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/mongo/animals")
+@RequestMapping("/api/mongo/animal")
 @CrossOrigin
 @Profile("mongo")
 public class AnimalMongoController {
 
-    private final AnimalMongoService animalService;
+    private final AnimalMongoService animalMongoService;
 
-    public AnimalMongoController(AnimalMongoService animalService) {
-        this.animalService = animalService;
+    public AnimalMongoController(AnimalMongoService animalMongoService) {
+        this.animalMongoService = animalMongoService;
     }
 
     @GetMapping
     public List<AnimalDocument> getAllAnimals() {
-        return animalService.getAllAnimals();
+        return animalMongoService.getAllAnimals();
     }
 
     @GetMapping("/{id}")
     public AnimalDocument getAnimalById(@PathVariable String id) {
-        return animalService.getAnimalById(id);
+        return animalMongoService.getAnimalById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<AnimalDocument> addAnimal(@RequestBody AnimalDocument animal) {
-        return ResponseEntity.status(201).body(animalService.addAnimal(animal));
+    public ResponseEntity<AnimalDocument> createAnimal(@RequestBody AnimalDocument animal) {
+        return ResponseEntity.status(201).body(animalMongoService.createAnimal(animal));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<AnimalDocument> updateAnimal(@PathVariable String id, @RequestBody AnimalDocument animal) {
-        return ResponseEntity.ok(animalService.updateAnimal(id, animal));
+    public AnimalDocument updateAnimal(@PathVariable String id, @RequestBody AnimalDocument animal) {
+        return animalMongoService.updateAnimal(id, animal);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteAnimal(@PathVariable String id) {
-        animalService.deleteAnimal(id);
+        animalMongoService.deleteAnimal(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -37,15 +37,16 @@ public class AdoptionApplicationMongoService {
     public AdoptionApplicationDocument updateApplication(String id, AdoptionApplicationDocument request) {
         AdoptionApplicationDocument application = applicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Adoption Application not found with id: " + id));
-        
+
+        // Embedded objekter — ikke userId/animalId
+        application.setUser(request.getUser());
+        application.setAnimal(request.getAnimal());
         application.setApplicationDate(request.getApplicationDate());
         application.setDescription(request.getDescription());
         application.setStatus(request.getStatus());
-        application.setIsActive(request.getIsActive());
-        application.setUserId(request.getUserId());
-        application.setAnimalId(request.getAnimalId());
-        application.setReviewedByUserId(request.getReviewedByUserId());
-        
+        application.setActive(request.isActive());
+        application.setReviewedBy(request.getReviewedBy());
+
         return applicationRepository.save(application);
     }
 

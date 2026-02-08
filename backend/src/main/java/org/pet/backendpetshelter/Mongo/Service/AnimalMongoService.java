@@ -6,61 +6,49 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Profile("mongo")
 public class AnimalMongoService {
 
-    private final AnimalMongoRepository animalRepository;
+    private final AnimalMongoRepository animalMongoRepository;
 
-    public AnimalMongoService(AnimalMongoRepository animalRepository) {
-        this.animalRepository = animalRepository;
+    public AnimalMongoService(AnimalMongoRepository animalMongoRepository) {
+        this.animalMongoRepository = animalMongoRepository;
     }
 
     public List<AnimalDocument> getAllAnimals() {
-        return animalRepository.findAll();
+        return animalMongoRepository.findAll();
     }
 
     public AnimalDocument getAnimalById(String id) {
-        return animalRepository.findById(id)
+        return animalMongoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
     }
 
-    public AnimalDocument addAnimal(AnimalDocument animal) {
-        if (animal.getId() == null) {
-            animal.setId(UUID.randomUUID().toString());
-        }
-        animal.setIsActive(isStatusActive(animal.getStatus()));
-        return animalRepository.save(animal);
+    public AnimalDocument createAnimal(AnimalDocument animal) {
+        return animalMongoRepository.save(animal);
     }
 
-    public AnimalDocument updateAnimal(String id, AnimalDocument request) {
-        AnimalDocument animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Animal not found with id: " + id));
-        
-        animal.setName(request.getName());
-        animal.setSex(request.getSex());
-        animal.setSpeciesId(request.getSpeciesId());
-        animal.setBreedId(request.getBreedId());
-        animal.setBirthDate(request.getBirthDate());
-        animal.setIntakeDate(request.getIntakeDate());
-        animal.setStatus(request.getStatus());
-        animal.setPrice(request.getPrice());
-        animal.setIsActive(isStatusActive(request.getStatus()));
-        animal.setImageUrl(request.getImageUrl());
-        
-        return animalRepository.save(animal);
+    public AnimalDocument updateAnimal(String id, AnimalDocument animal) {
+        AnimalDocument existing = getAnimalById(id);
+        existing.setName(animal.getName());
+        existing.setSex(animal.getSex());
+        existing.setBirthDate(animal.getBirthDate());
+        existing.setIntakeDate(animal.getIntakeDate());
+        existing.setStatus(animal.getStatus());
+        existing.setPrice(animal.getPrice());
+        existing.setActive(animal.isActive());
+        existing.setImageUrl(animal.getImageUrl());
+        existing.setSpecies(animal.getSpecies());
+        existing.setBreed(animal.getBreed());
+        existing.setVaccinations(animal.getVaccinations());
+        existing.setMedicalRecords(animal.getMedicalRecords());
+        existing.setAdoptionApplications(animal.getAdoptionApplications());
+        return animalMongoRepository.save(existing);
     }
 
     public void deleteAnimal(String id) {
-        if (!animalRepository.existsById(id)) {
-            throw new RuntimeException("Animal not found with id: " + id);
-        }
-        animalRepository.deleteById(id);
-    }
-
-    private boolean isStatusActive(String status) {
-        return "available".equalsIgnoreCase(status) || "fostered".equalsIgnoreCase(status);
+        animalMongoRepository.deleteById(id);
     }
 }

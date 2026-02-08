@@ -5,6 +5,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @Profile({"mongo", "migrate-mongo"})
-public interface AnimalMongoRepository extends MongoRepository<AnimalDocument, String> {}
+public interface AnimalMongoRepository extends MongoRepository<AnimalDocument, String> {
+    List<AnimalDocument> findByStatus(String status);
+    List<AnimalDocument> findByIsActiveTrue();
+    List<AnimalDocument> findBySpeciesName(String speciesName);
+}
