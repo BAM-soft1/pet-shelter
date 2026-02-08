@@ -18,37 +18,34 @@ public class VaccinationTypeMongoService {
         this.vaccinationTypeRepository = vaccinationTypeRepository;
     }
 
-    public List<VaccinationTypeDocument> getAllVaccinationTypes() {
+    public List<VaccinationTypeDocument> getAll() {
         return vaccinationTypeRepository.findAll();
     }
 
-    public VaccinationTypeDocument getVaccinationTypeById(String id) {
+    public VaccinationTypeDocument getById(String id) {
         return vaccinationTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination Type not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("VaccinationType not found with id: " + id));
     }
 
-    public VaccinationTypeDocument addVaccinationType(VaccinationTypeDocument vaccinationType) {
+    public VaccinationTypeDocument create(VaccinationTypeDocument vaccinationType) {
         if (vaccinationType.getId() == null) {
             vaccinationType.setId(UUID.randomUUID().toString());
         }
         return vaccinationTypeRepository.save(vaccinationType);
     }
 
-    public VaccinationTypeDocument updateVaccinationType(String id, VaccinationTypeDocument request) {
-        VaccinationTypeDocument vaccinationType = vaccinationTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination Type not found with id: " + id));
-        
-        vaccinationType.setVaccineName(request.getVaccineName());
-        vaccinationType.setDescription(request.getDescription());
-        vaccinationType.setDurationMonths(request.getDurationMonths());
-        vaccinationType.setRequiredForAdoption(request.getRequiredForAdoption());
-        
-        return vaccinationTypeRepository.save(vaccinationType);
+    public VaccinationTypeDocument update(String id, VaccinationTypeDocument request) {
+        VaccinationTypeDocument existing = getById(id);
+        existing.setVaccineName(request.getVaccineName());
+        existing.setDescription(request.getDescription());
+        existing.setDurationMonths(request.getDurationMonths());
+        existing.setRequiredForAdoption(request.isRequiredForAdoption());
+        return vaccinationTypeRepository.save(existing);
     }
 
-    public void deleteVaccinationType(String id) {
+    public void delete(String id) {
         if (!vaccinationTypeRepository.existsById(id)) {
-            throw new RuntimeException("Vaccination Type not found with id: " + id);
+            throw new RuntimeException("VaccinationType not found with id: " + id);
         }
         vaccinationTypeRepository.deleteById(id);
     }

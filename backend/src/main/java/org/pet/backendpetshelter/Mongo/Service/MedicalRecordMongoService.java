@@ -18,39 +18,36 @@ public class MedicalRecordMongoService {
         this.medicalRecordRepository = medicalRecordRepository;
     }
 
-    public List<MedicalRecordDocument> getAllMedicalRecords() {
+    public List<MedicalRecordDocument> getAll() {
         return medicalRecordRepository.findAll();
     }
 
-    public MedicalRecordDocument getMedicalRecordById(String id) {
+    public MedicalRecordDocument getById(String id) {
         return medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Medical record not found with id: " + id));
     }
 
-    public MedicalRecordDocument addMedicalRecord(MedicalRecordDocument medicalRecord) {
-        if (medicalRecord.getId() == null) {
-            medicalRecord.setId(UUID.randomUUID().toString());
+    public MedicalRecordDocument create(MedicalRecordDocument record) {
+        if (record.getId() == null) {
+            record.setId(UUID.randomUUID().toString());
         }
-        return medicalRecordRepository.save(medicalRecord);
+        return medicalRecordRepository.save(record);
     }
 
-    public MedicalRecordDocument updateMedicalRecord(String id, MedicalRecordDocument request) {
-        MedicalRecordDocument medicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Record not found with id: " + id));
-        
-        medicalRecord.setDate(request.getDate());
-        medicalRecord.setDiagnosis(request.getDiagnosis());
-        medicalRecord.setTreatment(request.getTreatment());
-        medicalRecord.setCost(request.getCost());
-        medicalRecord.setAnimalId(request.getAnimalId());
-        medicalRecord.setVeterinarianId(request.getVeterinarianId());
-        
-        return medicalRecordRepository.save(medicalRecord);
+    public MedicalRecordDocument update(String id, MedicalRecordDocument request) {
+        MedicalRecordDocument existing = getById(id);
+        existing.setAnimal(request.getAnimal());
+        existing.setVeterinarian(request.getVeterinarian());
+        existing.setDate(request.getDate());
+        existing.setDiagnosis(request.getDiagnosis());
+        existing.setTreatment(request.getTreatment());
+        existing.setCost(request.getCost());
+        return medicalRecordRepository.save(existing);
     }
 
-    public void deleteMedicalRecord(String id) {
+    public void delete(String id) {
         if (!medicalRecordRepository.existsById(id)) {
-            throw new RuntimeException("Medical Record not found with id: " + id);
+            throw new RuntimeException("Medical record not found with id: " + id);
         }
         medicalRecordRepository.deleteById(id);
     }

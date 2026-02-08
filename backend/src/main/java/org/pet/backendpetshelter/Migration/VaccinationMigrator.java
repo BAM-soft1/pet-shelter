@@ -21,7 +21,7 @@ public class VaccinationMigrator implements CommandLineRunner {
     private boolean migrationEnabled;
 
     public VaccinationMigrator(VaccinationRepository vaccinationRepository,
-                               VaccinationMongoRepository vaccinationMongoRepository) {
+                                VaccinationMongoRepository vaccinationMongoRepository) {
         this.vaccinationRepository = vaccinationRepository;
         this.vaccinationMongoRepository = vaccinationMongoRepository;
     }
@@ -30,18 +30,14 @@ public class VaccinationMigrator implements CommandLineRunner {
     @Transactional(readOnly = true)
     public void run(String... args) {
         if (!migrationEnabled) {
-            System.out.println("Vaccination migration disabled. Set migration.enabled=true to run.");
+            System.out.println("Vaccination migration is disabled. Skipping...");
             return;
         }
 
-        System.out.println("Starting Vaccination migration from SQL to MongoDB...");
+        System.out.println("Starting vaccination migration...");
 
         var vaccinations = vaccinationRepository.findAll();
-
-        var docs = vaccinations.stream()
-                .map(this::toDocument)
-                .toList();
-
+        var docs = vaccinations.stream().map(this::toDocument).toList();
         vaccinationMongoRepository.saveAll(docs);
 
         System.out.println("Migrated " + docs.size() + " vaccinations to MongoDB");
@@ -50,9 +46,30 @@ public class VaccinationMigrator implements CommandLineRunner {
     private VaccinationDocument toDocument(Vaccination v) {
         return VaccinationDocument.builder()
                 .id(toStringOrNull(v.getId()))
-                .animalId(v.getAnimal() != null ? toStringOrNull(v.getAnimal().getId()) : null)
-                .veterinarianId(v.getVeterinarian() != null ? toStringOrNull(v.getVeterinarian().getId()) : null)
-                .vaccinationTypeId(v.getVaccinationType() != null ? toStringOrNull(v.getVaccinationType().getId()) : null)
+                .animal(v.getAnimal() != null ?
+                        VaccinationDocument.EmbeddedAnimal.builder()
+                                .id(toStringOrNull(v.getAnimal().getId()))
+                                .name(v.getAnimal().getName())
+                                .status(v.getAnimal().getStatus() != null ? v.getAnimal().getStatus().name() : null)
+                                .build()
+                        : null)
+                .veterinarian(v.getVeterinarian() != null ?
+                        VaccinationDocument.EmbeddedVet.builder()
+                                .id(toStringOrNull(v.getVeterinarian().getId()))
+                                .firstName(v.getVeterinarian().getUser().getFirstName())
+                                .lastName(v.getVeterinarian().getUser().getLastName())
+                                .email(v.getVeterinarian().getUser().getEmail())
+                                .build()
+                        : null)
+                .vaccinationType(v.getVaccinationType() != null ?
+                        VaccinationDocument.EmbeddedVaccinationType.builder()
+                                .id(toStringOrNull(v.getVaccinationType().getId()))
+                                .vaccineName(v.getVaccinationType().getVaccineName())
+                                .description(v.getVaccinationType().getDescription())
+                                .durationMonths(v.getVaccinationType().getDurationMonths())
+                                .requiredForAdoption(v.getVaccinationType().getRequiredForAdoption())
+                                .build()
+                        : null)
                 .dateAdministered(v.getDateAdministered())
                 .nextDueDate(v.getNextDueDate())
                 .build();

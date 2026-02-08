@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/mongo/vaccinations")
+@RequestMapping("/api/mongo/vaccination")
 @CrossOrigin
 @Profile("mongo")
 public class VaccinationMongoController {
@@ -21,28 +21,28 @@ public class VaccinationMongoController {
     }
 
     @GetMapping
-    public List<VaccinationDocument> getAllVaccinations() {
-        return vaccinationService.getAllVaccinations();
+    public List<VaccinationDocument> getAll() {
+        return vaccinationService.getAll();
     }
 
     @GetMapping("/{id}")
-    public VaccinationDocument getVaccinationById(@PathVariable String id) {
-        return vaccinationService.getVaccinationById(id);
+    public VaccinationDocument getById(@PathVariable String id) {
+        return vaccinationService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<VaccinationDocument> addVaccination(@RequestBody VaccinationDocument vaccination) {
-        return ResponseEntity.status(201).body(vaccinationService.addVaccination(vaccination));
+    public ResponseEntity<VaccinationDocument> create(@RequestBody VaccinationDocument vaccination) {
+        return ResponseEntity.status(201).body(vaccinationService.create(vaccination));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<VaccinationDocument> updateVaccination(@PathVariable String id, @RequestBody VaccinationDocument vaccination) {
-        return ResponseEntity.ok(vaccinationService.updateVaccination(id, vaccination));
+    public VaccinationDocument update(@PathVariable String id, @RequestBody VaccinationDocument vaccination) {
+        return vaccinationService.update(id, vaccination);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteVaccination(@PathVariable String id) {
-        vaccinationService.deleteVaccination(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        vaccinationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

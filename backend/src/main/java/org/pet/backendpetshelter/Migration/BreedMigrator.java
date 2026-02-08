@@ -20,8 +20,7 @@ public class BreedMigrator implements CommandLineRunner {
     @Value("${migration.enabled:false}")
     private boolean migrationEnabled;
 
-    public BreedMigrator(BreedRepository breedRepository,
-                         BreedMongoRepository breedMongoRepository) {
+    public BreedMigrator(BreedRepository breedRepository, BreedMongoRepository breedMongoRepository) {
         this.breedRepository = breedRepository;
         this.breedMongoRepository = breedMongoRepository;
     }
@@ -30,18 +29,14 @@ public class BreedMigrator implements CommandLineRunner {
     @Transactional(readOnly = true)
     public void run(String... args) {
         if (!migrationEnabled) {
-            System.out.println("Breed migration disabled. Set migration.enabled=true to run.");
+            System.out.println("Breed migration is disabled. Skipping...");
             return;
         }
 
-        System.out.println("Starting Breed migration from SQL to MongoDB...");
+        System.out.println("Starting breed migration...");
 
         var breeds = breedRepository.findAll();
-
-        var docs = breeds.stream()
-                .map(this::toDocument)
-                .toList();
-
+        var docs = breeds.stream().map(this::toDocument).toList();
         breedMongoRepository.saveAll(docs);
 
         System.out.println("Migrated " + docs.size() + " breeds to MongoDB");
@@ -50,8 +45,14 @@ public class BreedMigrator implements CommandLineRunner {
     private BreedDocument toDocument(Breed b) {
         return BreedDocument.builder()
                 .id(toStringOrNull(b.getId()))
-                .speciesId(b.getSpecies() != null ? toStringOrNull(b.getSpecies().getId()) : null)
                 .name(b.getName())
+                .description(null)
+                .species(b.getSpecies() != null ?
+                        BreedDocument.EmbeddedSpecies.builder()
+                                .id(toStringOrNull(b.getSpecies().getId()))
+                                .name(b.getSpecies().getName())
+                                .build()
+                        : null)
                 .build();
     }
 

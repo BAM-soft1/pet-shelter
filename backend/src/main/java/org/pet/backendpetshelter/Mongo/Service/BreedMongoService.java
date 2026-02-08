@@ -18,31 +18,31 @@ public class BreedMongoService {
         this.breedRepository = breedRepository;
     }
 
-    public List<BreedDocument> getAllBreeds() {
+    public List<BreedDocument> getAll() {
         return breedRepository.findAll();
     }
 
-    public BreedDocument getBreedById(String id) {
+    public BreedDocument getById(String id) {
         return breedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Breed not found with id: " + id));
     }
 
-    public BreedDocument addBreed(BreedDocument breed) {
+    public BreedDocument create(BreedDocument breed) {
         if (breed.getId() == null) {
             breed.setId(UUID.randomUUID().toString());
         }
         return breedRepository.save(breed);
     }
 
-    public BreedDocument updateBreed(String id, BreedDocument request) {
-        BreedDocument breed = breedRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Breed not found with id: " + id));
-        breed.setName(request.getName());
-        breed.setSpeciesId(request.getSpeciesId());
-        return breedRepository.save(breed);
+    public BreedDocument update(String id, BreedDocument request) {
+        BreedDocument existing = getById(id);
+        existing.setName(request.getName());
+        existing.setDescription(request.getDescription());
+        existing.setSpecies(request.getSpecies());
+        return breedRepository.save(existing);
     }
 
-    public void deleteBreed(String id) {
+    public void delete(String id) {
         if (!breedRepository.existsById(id)) {
             throw new RuntimeException("Breed not found with id: " + id);
         }

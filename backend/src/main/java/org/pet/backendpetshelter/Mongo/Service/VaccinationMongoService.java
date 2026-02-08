@@ -18,36 +18,33 @@ public class VaccinationMongoService {
         this.vaccinationRepository = vaccinationRepository;
     }
 
-    public List<VaccinationDocument> getAllVaccinations() {
+    public List<VaccinationDocument> getAll() {
         return vaccinationRepository.findAll();
     }
 
-    public VaccinationDocument getVaccinationById(String id) {
+    public VaccinationDocument getById(String id) {
         return vaccinationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
     }
 
-    public VaccinationDocument addVaccination(VaccinationDocument vaccination) {
+    public VaccinationDocument create(VaccinationDocument vaccination) {
         if (vaccination.getId() == null) {
             vaccination.setId(UUID.randomUUID().toString());
         }
         return vaccinationRepository.save(vaccination);
     }
 
-    public VaccinationDocument updateVaccination(String id, VaccinationDocument request) {
-        VaccinationDocument vaccination = vaccinationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vaccination not found with id: " + id));
-        
-        vaccination.setDateAdministered(request.getDateAdministered());
-        vaccination.setNextDueDate(request.getNextDueDate());
-        vaccination.setAnimalId(request.getAnimalId());
-        vaccination.setVeterinarianId(request.getVeterinarianId());
-        vaccination.setVaccinationTypeId(request.getVaccinationTypeId());
-        
-        return vaccinationRepository.save(vaccination);
+    public VaccinationDocument update(String id, VaccinationDocument request) {
+        VaccinationDocument existing = getById(id);
+        existing.setAnimal(request.getAnimal());
+        existing.setVeterinarian(request.getVeterinarian());
+        existing.setVaccinationType(request.getVaccinationType());
+        existing.setDateAdministered(request.getDateAdministered());
+        existing.setNextDueDate(request.getNextDueDate());
+        return vaccinationRepository.save(existing);
     }
 
-    public void deleteVaccination(String id) {
+    public void delete(String id) {
         if (!vaccinationRepository.existsById(id)) {
             throw new RuntimeException("Vaccination not found with id: " + id);
         }

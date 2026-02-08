@@ -21,7 +21,7 @@ public class MedicalRecordMigrator implements CommandLineRunner {
     private boolean migrationEnabled;
 
     public MedicalRecordMigrator(MedicalRecordRepository medicalRecordRepository,
-                                 MedicalRecordMongoRepository medicalRecordMongoRepository) {
+                                  MedicalRecordMongoRepository medicalRecordMongoRepository) {
         this.medicalRecordRepository = medicalRecordRepository;
         this.medicalRecordMongoRepository = medicalRecordMongoRepository;
     }
@@ -30,18 +30,14 @@ public class MedicalRecordMigrator implements CommandLineRunner {
     @Transactional(readOnly = true)
     public void run(String... args) {
         if (!migrationEnabled) {
-            System.out.println("MedicalRecord migration disabled. Set migration.enabled=true to run.");
+            System.out.println("MedicalRecord migration is disabled. Skipping...");
             return;
         }
 
-        System.out.println("Starting MedicalRecord migration from SQL to MongoDB...");
+        System.out.println("Starting medical record migration...");
 
         var records = medicalRecordRepository.findAll();
-
-        var docs = records.stream()
-                .map(this::toDocument)
-                .toList();
-
+        var docs = records.stream().map(this::toDocument).toList();
         medicalRecordMongoRepository.saveAll(docs);
 
         System.out.println("Migrated " + docs.size() + " medical records to MongoDB");
@@ -50,8 +46,20 @@ public class MedicalRecordMigrator implements CommandLineRunner {
     private MedicalRecordDocument toDocument(MedicalRecord r) {
         return MedicalRecordDocument.builder()
                 .id(toStringOrNull(r.getId()))
-                .animalId(r.getAnimal() != null ? toStringOrNull(r.getAnimal().getId()) : null)
-                .veterinarianId(r.getVeterinarian() != null ? toStringOrNull(r.getVeterinarian().getId()) : null)
+                .animal(r.getAnimal() != null ?
+                        MedicalRecordDocument.EmbeddedAnimal.builder()
+                                .id(toStringOrNull(r.getAnimal().getId()))
+                                .name(r.getAnimal().getName())
+                                .build()
+                        : null)
+                .veterinarian(r.getVeterinarian() != null ?
+                        MedicalRecordDocument.EmbeddedVet.builder()
+                                .id(toStringOrNull(r.getVeterinarian().getId()))
+                                .firstName(r.getVeterinarian().getUser().getFirstName())
+                                .lastName(r.getVeterinarian().getUser().getLastName())
+                                .email(r.getVeterinarian().getUser().getEmail())
+                                .build()
+                        : null)
                 .date(r.getDate())
                 .diagnosis(r.getDiagnosis())
                 .treatment(r.getTreatment())

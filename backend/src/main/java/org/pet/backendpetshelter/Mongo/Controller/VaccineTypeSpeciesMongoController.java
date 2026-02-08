@@ -14,35 +14,35 @@ import java.util.List;
 @Profile("mongo")
 public class VaccineTypeSpeciesMongoController {
 
-    private final VaccineTypeSpeciesMongoService vaccineTypeSpeciesService;
+    private final VaccineTypeSpeciesMongoService service;
 
-    public VaccineTypeSpeciesMongoController(VaccineTypeSpeciesMongoService vaccineTypeSpeciesService) {
-        this.vaccineTypeSpeciesService = vaccineTypeSpeciesService;
+    public VaccineTypeSpeciesMongoController(VaccineTypeSpeciesMongoService service) {
+        this.service = service;
     }
 
     @GetMapping
-    public List<VaccineTypeSpeciesDocument> getAllVaccineTypeSpecies() {
-        return vaccineTypeSpeciesService.getAllVaccineTypeSpecies();
+    public List<VaccineTypeSpeciesDocument> getAll() {
+        return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public VaccineTypeSpeciesDocument getVaccineTypeSpeciesById(@PathVariable String id) {
-        return vaccineTypeSpeciesService.getVaccineTypeSpeciesById(id);
+    public VaccineTypeSpeciesDocument getById(@PathVariable String id) {
+        return service.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<VaccineTypeSpeciesDocument> addVaccineTypeSpecies(@RequestBody VaccineTypeSpeciesDocument vaccineTypeSpecies) {
-        return ResponseEntity.status(201).body(vaccineTypeSpeciesService.addVaccineTypeSpecies(vaccineTypeSpecies));
+    public ResponseEntity<VaccineTypeSpeciesDocument> create(@RequestBody VaccineTypeSpeciesDocument doc) {
+        return ResponseEntity.status(201).body(service.create(doc));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<VaccineTypeSpeciesDocument> updateVaccineTypeSpecies(@PathVariable String id, @RequestBody VaccineTypeSpeciesDocument vaccineTypeSpecies) {
-        return ResponseEntity.ok(vaccineTypeSpeciesService.updateVaccineTypeSpecies(id, vaccineTypeSpecies));
+    public VaccineTypeSpeciesDocument update(@PathVariable String id, @RequestBody VaccineTypeSpeciesDocument doc) {
+        return service.update(id, doc);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteVaccineTypeSpecies(@PathVariable String id) {
-        vaccineTypeSpeciesService.deleteVaccineTypeSpecies(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

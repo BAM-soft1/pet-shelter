@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Profile({"mongo", "migrate-mongo"})
-public interface VaccinationMongoRepository extends MongoRepository<VaccinationDocument, String> {}
+public interface VaccinationMongoRepository extends MongoRepository<VaccinationDocument, String> {
+}

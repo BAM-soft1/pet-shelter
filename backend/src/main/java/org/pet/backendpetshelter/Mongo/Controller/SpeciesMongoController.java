@@ -21,28 +21,28 @@ public class SpeciesMongoController {
     }
 
     @GetMapping
-    public List<SpeciesDocument> getAllSpecies() {
-        return speciesService.getAllSpecies();
+    public List<SpeciesDocument> getAll() {
+        return speciesService.getAll();
     }
 
     @GetMapping("/{id}")
-    public SpeciesDocument getSpeciesById(@PathVariable String id) {
-        return speciesService.getSpeciesById(id);
+    public SpeciesDocument getById(@PathVariable String id) {
+        return speciesService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<SpeciesDocument> addSpecies(@RequestBody SpeciesDocument species) {
-        return ResponseEntity.status(201).body(speciesService.addSpecies(species));
+    public ResponseEntity<SpeciesDocument> create(@RequestBody SpeciesDocument species) {
+        return ResponseEntity.status(201).body(speciesService.create(species));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<SpeciesDocument> updateSpecies(@PathVariable String id, @RequestBody SpeciesDocument species) {
-        return ResponseEntity.ok(speciesService.updateSpecies(id, species));
+    public SpeciesDocument update(@PathVariable String id, @RequestBody SpeciesDocument species) {
+        return speciesService.update(id, species);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteSpecies(@PathVariable String id) {
-        speciesService.deleteSpecies(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        speciesService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

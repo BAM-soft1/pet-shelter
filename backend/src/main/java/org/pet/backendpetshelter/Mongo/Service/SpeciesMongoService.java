@@ -18,30 +18,30 @@ public class SpeciesMongoService {
         this.speciesRepository = speciesRepository;
     }
 
-    public List<SpeciesDocument> getAllSpecies() {
+    public List<SpeciesDocument> getAll() {
         return speciesRepository.findAll();
     }
 
-    public SpeciesDocument getSpeciesById(String id) {
+    public SpeciesDocument getById(String id) {
         return speciesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Species not found with id: " + id));
     }
 
-    public SpeciesDocument addSpecies(SpeciesDocument species) {
+    public SpeciesDocument create(SpeciesDocument species) {
         if (species.getId() == null) {
             species.setId(UUID.randomUUID().toString());
         }
         return speciesRepository.save(species);
     }
 
-    public SpeciesDocument updateSpecies(String id, SpeciesDocument request) {
-        SpeciesDocument species = speciesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Species not found with id: " + id));
-        species.setName(request.getName());
-        return speciesRepository.save(species);
+    public SpeciesDocument update(String id, SpeciesDocument request) {
+        SpeciesDocument existing = getById(id);
+        existing.setName(request.getName());
+        existing.setDescription(request.getDescription());
+        return speciesRepository.save(existing);
     }
 
-    public void deleteSpecies(String id) {
+    public void delete(String id) {
         if (!speciesRepository.existsById(id)) {
             throw new RuntimeException("Species not found with id: " + id);
         }

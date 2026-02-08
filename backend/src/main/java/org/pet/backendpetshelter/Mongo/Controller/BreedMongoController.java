@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/mongo/breeds")
+@RequestMapping("/api/mongo/breed")
 @CrossOrigin
 @Profile("mongo")
 public class BreedMongoController {
@@ -21,28 +21,28 @@ public class BreedMongoController {
     }
 
     @GetMapping
-    public List<BreedDocument> getAllBreeds() {
-        return breedService.getAllBreeds();
+    public List<BreedDocument> getAll() {
+        return breedService.getAll();
     }
 
     @GetMapping("/{id}")
-    public BreedDocument getBreedById(@PathVariable String id) {
-        return breedService.getBreedById(id);
+    public BreedDocument getById(@PathVariable String id) {
+        return breedService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<BreedDocument> addBreed(@RequestBody BreedDocument breed) {
-        return ResponseEntity.status(201).body(breedService.addBreed(breed));
+    public ResponseEntity<BreedDocument> create(@RequestBody BreedDocument breed) {
+        return ResponseEntity.status(201).body(breedService.create(breed));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<BreedDocument> updateBreed(@PathVariable String id, @RequestBody BreedDocument breed) {
-        return ResponseEntity.ok(breedService.updateBreed(id, breed));
+    public BreedDocument update(@PathVariable String id, @RequestBody BreedDocument breed) {
+        return breedService.update(id, breed);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBreed(@PathVariable String id) {
-        breedService.deleteBreed(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        breedService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

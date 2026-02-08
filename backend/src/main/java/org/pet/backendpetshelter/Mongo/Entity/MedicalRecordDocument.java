@@ -7,21 +7,32 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
 @Document(collection = "medical_records")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class MedicalRecordDocument {
-
     @Id
     private String id;
 
-    private String animalId;
-    private String veterinarianId;
-
+    private EmbeddedAnimal animal;
+    private EmbeddedVet veterinarian;
     private Date date;
     private String diagnosis;
     private String treatment;
-    private int cost;
+    private double cost;
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class EmbeddedAnimal {
+        private String id;
+        private String name;
+    }
+
+    @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class EmbeddedVet {
+        private String id;
+        private String firstName;
+        private String lastName;
+        private String email;
+    }
 }

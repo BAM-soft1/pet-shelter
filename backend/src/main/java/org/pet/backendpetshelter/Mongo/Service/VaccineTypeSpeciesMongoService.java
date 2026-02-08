@@ -12,42 +12,39 @@ import java.util.UUID;
 @Profile("mongo")
 public class VaccineTypeSpeciesMongoService {
 
-    private final VaccineTypeSpeciesMongoRepository vaccineTypeSpeciesRepository;
+    private final VaccineTypeSpeciesMongoRepository repository;
 
-    public VaccineTypeSpeciesMongoService(VaccineTypeSpeciesMongoRepository vaccineTypeSpeciesRepository) {
-        this.vaccineTypeSpeciesRepository = vaccineTypeSpeciesRepository;
+    public VaccineTypeSpeciesMongoService(VaccineTypeSpeciesMongoRepository repository) {
+        this.repository = repository;
     }
 
-    public List<VaccineTypeSpeciesDocument> getAllVaccineTypeSpecies() {
-        return vaccineTypeSpeciesRepository.findAll();
+    public List<VaccineTypeSpeciesDocument> getAll() {
+        return repository.findAll();
     }
 
-    public VaccineTypeSpeciesDocument getVaccineTypeSpeciesById(String id) {
-        return vaccineTypeSpeciesRepository.findById(id)
+    public VaccineTypeSpeciesDocument getById(String id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("VaccineTypeSpecies not found with id: " + id));
     }
 
-    public VaccineTypeSpeciesDocument addVaccineTypeSpecies(VaccineTypeSpeciesDocument vaccineTypeSpecies) {
-        if (vaccineTypeSpecies.getId() == null) {
-            vaccineTypeSpecies.setId(UUID.randomUUID().toString());
+    public VaccineTypeSpeciesDocument create(VaccineTypeSpeciesDocument doc) {
+        if (doc.getId() == null) {
+            doc.setId(UUID.randomUUID().toString());
         }
-        return vaccineTypeSpeciesRepository.save(vaccineTypeSpecies);
+        return repository.save(doc);
     }
 
-    public VaccineTypeSpeciesDocument updateVaccineTypeSpecies(String id, VaccineTypeSpeciesDocument request) {
-        VaccineTypeSpeciesDocument vaccineTypeSpecies = vaccineTypeSpeciesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("VaccineTypeSpecies not found with id: " + id));
-        
-        vaccineTypeSpecies.setSpeciesId(request.getSpeciesId());
-        vaccineTypeSpecies.setVaccinationTypeId(request.getVaccinationTypeId());
-        
-        return vaccineTypeSpeciesRepository.save(vaccineTypeSpecies);
+    public VaccineTypeSpeciesDocument update(String id, VaccineTypeSpeciesDocument request) {
+        VaccineTypeSpeciesDocument existing = getById(id);
+        existing.setSpecies(request.getSpecies());
+        existing.setVaccinationType(request.getVaccinationType());
+        return repository.save(existing);
     }
 
-    public void deleteVaccineTypeSpecies(String id) {
-        if (!vaccineTypeSpeciesRepository.existsById(id)) {
+    public void delete(String id) {
+        if (!repository.existsById(id)) {
             throw new RuntimeException("VaccineTypeSpecies not found with id: " + id);
         }
-        vaccineTypeSpeciesRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }

@@ -14,44 +14,53 @@ import org.springframework.transaction.annotation.Transactional;
 @Profile("migrate-mongo")
 public class VaccineTypeSpeciesMigrator implements CommandLineRunner {
 
-    private final VaccineTypeSpeciesRepository vtsRepository;
-    private final VaccineTypeSpeciesMongoRepository vtsMongoRepository;
+    private final VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository;
+    private final VaccineTypeSpeciesMongoRepository vaccineTypeSpeciesMongoRepository;
 
     @Value("${migration.enabled:false}")
     private boolean migrationEnabled;
 
-    public VaccineTypeSpeciesMigrator(VaccineTypeSpeciesRepository vtsRepository,
-                                      VaccineTypeSpeciesMongoRepository vtsMongoRepository) {
-        this.vtsRepository = vtsRepository;
-        this.vtsMongoRepository = vtsMongoRepository;
+    public VaccineTypeSpeciesMigrator(VaccineTypeSpeciesRepository vaccineTypeSpeciesRepository,
+                                      VaccineTypeSpeciesMongoRepository vaccineTypeSpeciesMongoRepository) {
+        this.vaccineTypeSpeciesRepository = vaccineTypeSpeciesRepository;
+        this.vaccineTypeSpeciesMongoRepository = vaccineTypeSpeciesMongoRepository;
     }
 
     @Override
     @Transactional(readOnly = true)
     public void run(String... args) {
         if (!migrationEnabled) {
-            System.out.println("VaccineTypeSpecies migration disabled. Set migration.enabled=true to run.");
+            System.out.println("VaccineTypeSpecies migration is disabled. Skipping...");
             return;
         }
 
-        System.out.println("Starting VaccineTypeSpecies migration from SQL to MongoDB...");
+        System.out.println("Starting vaccine type species migration...");
 
-        var links = vtsRepository.findAll();
+        var entries = vaccineTypeSpeciesRepository.findAll();
+        var docs = entries.stream().map(this::toDocument).toList();
+        vaccineTypeSpeciesMongoRepository.saveAll(docs);
 
-        var docs = links.stream()
-                .map(this::toDocument)
-                .toList();
-
-        vtsMongoRepository.saveAll(docs);
-
-        System.out.println("Migrated " + docs.size() + " vaccine-type-species links to MongoDB");
+        System.out.println("Migrated " + docs.size() + " vaccine type species to MongoDB");
     }
 
     private VaccineTypeSpeciesDocument toDocument(VaccineTypeSpecies vts) {
         return VaccineTypeSpeciesDocument.builder()
                 .id(toStringOrNull(vts.getId()))
-                .speciesId(vts.getSpecies() != null ? toStringOrNull(vts.getSpecies().getId()) : null)
-                .vaccinationTypeId(vts.getVaccinationType() != null ? toStringOrNull(vts.getVaccinationType().getId()) : null)
+                .species(vts.getSpecies() != null ?
+                        VaccineTypeSpeciesDocument.EmbeddedSpecies.builder()
+                                .id(toStringOrNull(vts.getSpecies().getId()))
+                                .name(vts.getSpecies().getName())
+                                .build()
+                        : null)
+                .vaccinationType(vts.getVaccinationType() != null ?
+                        VaccineTypeSpeciesDocument.EmbeddedVaccinationType.builder()
+                                .id(toStringOrNull(vts.getVaccinationType().getId()))
+                                .vaccineName(vts.getVaccinationType().getVaccineName())
+                                .description(vts.getVaccinationType().getDescription())
+                                .durationMonths(vts.getVaccinationType().getDurationMonths())
+                                .requiredForAdoption(vts.getVaccinationType().getRequiredForAdoption())
+                                .build()
+                        : null)
                 .build();
     }
 

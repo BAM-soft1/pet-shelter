@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/mongo/medical-records")
+@RequestMapping("/api/mongo/medical-record")
 @CrossOrigin
 @Profile("mongo")
 public class MedicalRecordMongoController {
@@ -21,28 +21,28 @@ public class MedicalRecordMongoController {
     }
 
     @GetMapping
-    public List<MedicalRecordDocument> getAllMedicalRecords() {
-        return medicalRecordService.getAllMedicalRecords();
+    public List<MedicalRecordDocument> getAll() {
+        return medicalRecordService.getAll();
     }
 
     @GetMapping("/{id}")
-    public MedicalRecordDocument getMedicalRecordById(@PathVariable String id) {
-        return medicalRecordService.getMedicalRecordById(id);
+    public MedicalRecordDocument getById(@PathVariable String id) {
+        return medicalRecordService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<MedicalRecordDocument> addMedicalRecord(@RequestBody MedicalRecordDocument medicalRecord) {
-        return ResponseEntity.status(201).body(medicalRecordService.addMedicalRecord(medicalRecord));
+    public ResponseEntity<MedicalRecordDocument> create(@RequestBody MedicalRecordDocument record) {
+        return ResponseEntity.status(201).body(medicalRecordService.create(record));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<MedicalRecordDocument> updateMedicalRecord(@PathVariable String id, @RequestBody MedicalRecordDocument medicalRecord) {
-        return ResponseEntity.ok(medicalRecordService.updateMedicalRecord(id, medicalRecord));
+    public MedicalRecordDocument update(@PathVariable String id, @RequestBody MedicalRecordDocument record) {
+        return medicalRecordService.update(id, record);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteMedicalRecord(@PathVariable String id) {
-        medicalRecordService.deleteMedicalRecord(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        medicalRecordService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

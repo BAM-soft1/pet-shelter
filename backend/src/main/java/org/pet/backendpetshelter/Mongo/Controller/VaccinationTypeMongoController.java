@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/mongo/vaccination-types")
+@RequestMapping("/api/mongo/vaccination-type")
 @CrossOrigin
 @Profile("mongo")
 public class VaccinationTypeMongoController {
@@ -21,28 +21,28 @@ public class VaccinationTypeMongoController {
     }
 
     @GetMapping
-    public List<VaccinationTypeDocument> getAllVaccinationTypes() {
-        return vaccinationTypeService.getAllVaccinationTypes();
+    public List<VaccinationTypeDocument> getAll() {
+        return vaccinationTypeService.getAll();
     }
 
     @GetMapping("/{id}")
-    public VaccinationTypeDocument getVaccinationTypeById(@PathVariable String id) {
-        return vaccinationTypeService.getVaccinationTypeById(id);
+    public VaccinationTypeDocument getById(@PathVariable String id) {
+        return vaccinationTypeService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<VaccinationTypeDocument> addVaccinationType(@RequestBody VaccinationTypeDocument vaccinationType) {
-        return ResponseEntity.status(201).body(vaccinationTypeService.addVaccinationType(vaccinationType));
+    public ResponseEntity<VaccinationTypeDocument> create(@RequestBody VaccinationTypeDocument vaccinationType) {
+        return ResponseEntity.status(201).body(vaccinationTypeService.create(vaccinationType));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<VaccinationTypeDocument> updateVaccinationType(@PathVariable String id, @RequestBody VaccinationTypeDocument vaccinationType) {
-        return ResponseEntity.ok(vaccinationTypeService.updateVaccinationType(id, vaccinationType));
+    public VaccinationTypeDocument update(@PathVariable String id, @RequestBody VaccinationTypeDocument vaccinationType) {
+        return vaccinationTypeService.update(id, vaccinationType);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteVaccinationType(@PathVariable String id) {
-        vaccinationTypeService.deleteVaccinationType(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        vaccinationTypeService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
