@@ -46,6 +46,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/refresh").permitAll()
                         .requestMatchers("/api/auth/logout").authenticated()
 
+
+                         .requestMatchers(HttpMethod.GET, "/api/mongo/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/neo4j/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/mongo/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/neo4j/**").permitAll()
+
                         // Public GET endpoints - allow browsing without authentication
                         .requestMatchers(HttpMethod.GET, "/api/animal/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/species/**").permitAll()
@@ -64,6 +70,8 @@ public class SecurityConfig {
                         // Mongo and Neo4j GET's public
                         .requestMatchers(HttpMethod.GET, "/api/mongo/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/neo4j/**").permitAll()
+
+                       
                         
                         // Dog Facts
                         .requestMatchers(HttpMethod.GET, "/api/dog-facts/**").permitAll()
